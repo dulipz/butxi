@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ProductCard from '../components/ProductCard.astro';
+import RecipeCard from '../components/RecipeCard.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+import Icon from '../components/Icon.astro';
+import { products } from '../data/products';
+import { recipes } from '../data/recipes';
+
+const classics = ['fulla-d-olivera', 'habanero-orange', 'salsa-coenta', 'carolina-reaper']
+  .map((s) => products.find((p) => p.slug === s)!);
+const homeRecipes = recipes.filter((r) =>
+  ['mais-limetten-salat', 'knoblauchbrot-butxi-picante'].includes(r.slug)
+);
+const HERO_IMG = 'https://butxigourmet.com/wp-content/uploads/2026/02/butxi-desktop-hero-home-flasche_ergebnis-scaled-e1771935609951.webp';
+---
+<BaseLayout title="BUTXI Gourmet — Das Feuer Mallorcas">
+  <!-- Hero -->
+  <section class="section hero">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <span class="badge badge--olive">Aus Eigenanbau · Mallorca</span>
+        <h1 class="display-xl">Mach jedes Essen zu Butxi</h1>
+        <p class="lead">
+          Das Feuer Mallorcas — in Öl, Chili und Charakter. Für alle, die Geschmack wollen…
+          <strong>und ein bisschen Gefahr.</strong>
+        </p>
+        <div class="hero__actions">
+          <a href="/shop/" class="btn btn--primary btn--lg">Produkte entdecken</a>
+          <a href="/ueber-uns/" class="btn btn--secondary btn--lg">Mehr erfahren</a>
+        </div>
+      </div>
+      <img class="hero__img" src={HERO_IMG} alt="BUTXI Hot Sauce Flasche" loading="eager" fetchpriority="high" />
+    </div>
+  </section>
+
+  <!-- Klassiker -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="row-head reveal">
+        <SectionHeader eyebrow="Unsere Klassiker" title="Schärfe mit Handschrift" />
+        <a href="/shop/" class="btn btn--ghost">Alle Produkte <Icon name="arrow-right" size={17} /></a>
+      </div>
+      <div class="grid-4">
+        {classics.map((p, i) => <ProductCard product={p} loading={i < 2 ? 'eager' : 'lazy'} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Legende -->
+  <section class="section--dark section--editorial">
+    <div class="container legend reveal">
+      <span class="eyebrow">Die Legende von BUTXI</span>
+      <p class="legend__quote">
+        „Wenn Piratenschiffe am Horizont auftauchten, suchten sie keine Truhen —
+        sie suchten den Geschmack, der Mut macht."
+      </p>
+      <p class="legend__text">
+        BUTXI war kein Gewürz. BUTXI war ein Versprechen.
+        Ein Tropfen — und Mallorca steht in Flammen.
+      </p>
+      <a href="/ueber-uns/" class="btn btn--inverse">Unsere Geschichte</a>
+    </div>
+  </section>
+
+  <!-- Werte -->
+  <section class="section">
+    <div class="container">
+      <SectionHeader align="center" eyebrow="Natürlich. Bewusst. BUTXI." title="Vom Feld in die Flasche" />
+      <div class="grid-3 features reveal">
+        <div class="feature">
+          <span class="feature__icon"><Icon name="clock" size={22} /></span>
+          <h3>Verantwortung</h3>
+          <p>Bewusster Anbau mit Fokus auf Umwelt und Qualität.</p>
+        </div>
+        <div class="feature">
+          <span class="feature__icon"><Icon name="leaf" size={22} /></span>
+          <h3>Pflanzenkraft</h3>
+          <p>Natürliche Prävention statt harter Eingriffe.</p>
+        </div>
+        <div class="feature">
+          <span class="feature__icon"><Icon name="flame" size={22} /></span>
+          <h3>Volles Aroma</h3>
+          <p>Reife Zutaten aus Eigenanbau — für intensive Soßen &amp; Salze.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Anbau -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container anbau">
+      <div class="anbau__imgs reveal">
+        <img src="/images/anbau/pflanze_001.webp" alt="Junge Chilipflanze im Eigenanbau" loading="lazy" />
+        <img src="/images/anbau/pflanze_002.webp" alt="Chilifeld auf Mallorca" loading="lazy" class="anbau__img--offset" />
+      </div>
+      <div class="anbau__copy">
+        <SectionHeader
+          eyebrow="Unser Anbau"
+          title="Geerntet nach Reife, nicht nach Kalender"
+          text="Bei BUTXI beginnt jede Hot Sauce im Eigenanbau: Wir ziehen ausgewählte Chilis, Kräuter und Zutaten selbst groß, damit Schärfe, Aroma und Qualität von Anfang an stimmen."
+        />
+        <a href="/produktion/" class="btn btn--secondary">Mehr erfahren</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rezepte -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="row-head reveal">
+        <SectionHeader eyebrow="Unsere Rezepte" title="Gesund kochen, intensiver schmecken" />
+        <a href="/rezepte/" class="btn btn--ghost">Alle Rezepte <Icon name="arrow-right" size={17} /></a>
+      </div>
+      <div class="grid-2">
+        {homeRecipes.map((r) => <RecipeCard recipe={r} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="section--sand section">
+    <div class="container">
+      <NewsletterForm />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { padding-top: 4.5rem; }
+  .hero__grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+  .hero__copy { display: flex; flex-direction: column; gap: 22px; align-items: flex-start; }
+  .hero__copy .lead { max-width: 460px; font-size: 19px; }
+  .hero__copy .lead strong { color: var(--color-text-primary); }
+  .hero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero__img { width: 100%; max-height: 480px; object-fit: contain; }
+
+  .row-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 36px; gap: 24px;
+  }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  .legend {
+    max-width: 720px; text-align: center;
+    display: flex; flex-direction: column; gap: 24px; align-items: center;
+  }
+  .legend__quote {
+    margin: 0; font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.25;
+    color: var(--color-text-inverse); text-wrap: balance;
+  }
+  .legend__text {
+    margin: 0; font-size: 16px; line-height: 1.7;
+    color: var(--color-text-inverse-secondary); max-width: 560px;
+  }
+
+  .features { margin-top: 48px; }
+  .feature { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .feature__icon {
+    display: grid; place-items: center; width: 52px; height: 52px;
+    border-radius: var(--radius-md); background: var(--color-mallorca-sand);
+    color: var(--color-deep-brown); margin-bottom: 4px;
+  }
+  .feature p { margin: 0; color: var(--color-text-secondary); }
+
+  .anbau { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .anbau__imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .anbau__imgs img {
+    width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: var(--radius-xl);
+  }
+  .anbau__img--offset { margin-top: 32px; }
+  .anbau__copy { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
+
+  @media (max-width: 1023px) {
+    .hero__grid { grid-template-columns: 1fr; }
+    .hero__img { max-height: 360px; order: -1; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr; gap: 28px; }
+    .anbau { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 639px) {
+    .grid-4 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .row-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+</style>

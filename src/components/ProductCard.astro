@@ -1,0 +1,61 @@
+---
+import type { Product } from '../data/products';
+import { productImage, formatPrice } from '../data/products';
+import HeatMeter from './HeatMeter.astro';
+
+interface Props { product: Product; loading?: 'lazy' | 'eager' }
+const { product: p, loading = 'lazy' } = Astro.props;
+const href = `/product/${p.slug}/`;
+---
+<article class="card product-card" data-category={p.category}>
+  <a href={href} class="product-card__media">
+    {p.badge && <span class={`badge badge--${p.badgeVariant ?? 'sand'} product-card__badge`}>{p.badge}</span>}
+    <img src={productImage(p)} alt={p.name} loading={loading} width="413" height="413" />
+  </a>
+  <div class="product-card__body">
+    <span class="product-card__category">{p.category}</span>
+    <a href={href} class="product-card__name">{p.name}</a>
+    {p.heat != null && <HeatMeter level={p.heat} size="sm" />}
+    <div class="product-card__row">
+      <span class="product-card__price">{formatPrice(p.price)}</span>
+      <button
+        class="btn btn--primary btn--sm"
+        data-add-to-cart
+        data-id={p.slug}
+        data-name={p.name}
+        data-price={p.price}
+        data-image={productImage(p)}
+        data-meta={p.volume ?? p.category}
+      >In den Warenkorb</button>
+    </div>
+  </div>
+</article>
+
+<style>
+  .product-card { display: flex; flex-direction: column; }
+  .product-card__media {
+    position: relative; display: block; aspect-ratio: 1;
+    background: var(--color-soft-cream); overflow: hidden;
+  }
+  .product-card__badge { position: absolute; top: 12px; left: 12px; z-index: 1; }
+  .product-card__media img {
+    width: 100%; height: 100%; object-fit: contain; padding: 20px;
+    transition: transform var(--duration-slow) var(--ease-standard);
+  }
+  .product-card:hover .product-card__media img { transform: scale(1.03); }
+  .product-card__body { display: flex; flex-direction: column; gap: 8px; padding: 16px 18px 18px; flex: 1; }
+  .product-card__category {
+    font-size: 11px; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--color-text-muted);
+  }
+  .product-card__name {
+    font-family: var(--font-display); font-weight: 600; font-size: 20px;
+    line-height: 1.15; color: var(--color-text-primary);
+  }
+  .product-card__name:hover { color: var(--color-action-primary); }
+  .product-card__row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-top: auto; padding-top: 6px; flex-wrap: wrap;
+  }
+  .product-card__price { font-weight: 800; font-size: 17px; }
+</style>

@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Über uns — BUTXI Gourmet" description="Die Legende von BUTXI: das Feuer Mallorcas, das Piraten einst suchten. Handgemachte Hot Sauces aus Eigenanbau.">
+  <section class="section" style="padding-bottom: 3rem;">
+    <div class="container intro">
+      <span class="eyebrow">Über uns</span>
+      <h1>Unsere Geschichte</h1>
+      <p class="lead measure">
+        BUTXI ist mehr als nur eine scharfe Soße — es ist das Feuer Mallorcas,
+        das Piraten einst suchten.
+      </p>
+    </div>
+  </section>
+
+  <section class="section--dark section--editorial">
+    <div class="container story">
+      <span class="eyebrow">Die Legende von BUTXI</span>
+      <p class="story__text">
+        Seefahrer erzählten sich von einer Sauce, deren Feuer selbst wettergegerbten
+        Seemännern ein Lächeln ins Gesicht trieb. Ein Aroma von reifen Chilis,
+        mallorquinischer Sonne — und einem Charakter, den man nicht vergisst.
+      </p>
+      <h2 class="story__h">Ein Feuer, das lebendig machte</h2>
+      <p class="story__text">
+        Dieses Feuer brannte nicht einfach — es weckte die Sinne. Ein gewöhnliches
+        Essen wurde zu einem Erlebnis, an das man sich erinnert.
+        <strong>Schärfe war nie das Ziel. Geschmack war es immer.</strong>
+      </p>
+      <h2 class="story__h">Die Piraten nannten es BUTXI</h2>
+      <p class="story__text">
+        Die Piraten gaben diesem Feuer einen Namen: BUTXI. Für sie war es kein
+        Gewürz, sondern ein Versprechen.
+      </p>
+      <blockquote class="story__quote">
+        „Wer BUTXI schmeckt, schmeckt Mallorca: Es beginnt mit Wärme auf den Lippen —
+        und bleibt als Erinnerung."
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container today">
+      <div class="today__copy">
+        <span class="eyebrow">Heute</span>
+        <h2>Handwerk statt Massenware</h2>
+        <p>
+          Aus der Legende ist eine Manufaktur geworden: Wir bauen unsere Chilis selbst an,
+          kochen in kleinen Chargen und füllen von Hand ab. Jede Flasche trägt das,
+          was die Seefahrer damals suchten — <strong>Geschmack, der Mut macht.</strong>
+        </p>
+        <p>Natürlich. Bewusst. BUTXI.</p>
+        <a href="/shop/" class="btn btn--primary btn--lg">Entfache das Feuer</a>
+      </div>
+      <img class="today__img" src="/images/anbau/pflanze_002.webp" alt="Chilipflanzen im BUTXI Eigenanbau" loading="lazy" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .intro p { margin: 0; }
+
+  .story { max-width: var(--editorial-max); display: flex; flex-direction: column; gap: 22px; }
+  .story__h { color: var(--color-text-inverse); font-size: clamp(1.6rem, 2.5vw, 2.2rem); margin-top: 16px; }
+  .story__text { margin: 0; font-size: 17px; line-height: 1.8; color: var(--color-text-inverse-secondary); }
+  .story__text strong { color: var(--color-text-inverse); }
+  .story__quote {
+    margin: 24px 0 0; padding: 0;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.3;
+    color: var(--color-heat-mild); text-wrap: balance;
+  }
+
+  .today { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+  .today__copy { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .today__copy p { margin: 0; color: var(--color-text-secondary); max-width: 52ch; }
+  .today__copy p strong { color: var(--color-text-primary); }
+  .today__img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-xl); }
+
+  @media (max-width: 1023px) { .today { grid-template-columns: 1fr; } }
+</style>

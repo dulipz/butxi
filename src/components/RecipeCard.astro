@@ -1,0 +1,57 @@
+---
+import type { Recipe } from '../data/recipes';
+import Icon from './Icon.astro';
+
+interface Props { recipe: Recipe }
+const { recipe: r } = Astro.props;
+const heatBadge = { mild: 'olive', mittel: 'sand', scharf: 'fire' } as const;
+---
+<article class="card recipe-card" data-category={r.category}>
+  <div class={`recipe-card__media ${r.image ? '' : 'recipe-card__media--placeholder'}`}>
+    {r.image
+      ? <img src={r.image} alt={r.title} loading="lazy" />
+      : <Icon name="flame" size={44} class="recipe-card__flame" />}
+    <span class={`badge badge--${heatBadge[r.heat]} recipe-card__heat`}>{r.heat}</span>
+  </div>
+  <div class="recipe-card__body">
+    <span class="recipe-card__category">{r.category}</span>
+    <h3 class="recipe-card__title">{r.title}</h3>
+    <p class="recipe-card__desc">{r.desc}</p>
+    <div class="recipe-card__meta">
+      <span class="recipe-card__time"><Icon name="clock" size={15} /> {r.time}</span>
+      <span class="recipe-card__product">mit {r.product}</span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .recipe-card { display: flex; flex-direction: column; }
+  .recipe-card__media {
+    position: relative; aspect-ratio: 16 / 10; overflow: hidden;
+    background: var(--color-soft-cream);
+  }
+  .recipe-card__media img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-standard);
+  }
+  .recipe-card:hover .recipe-card__media img { transform: scale(1.03); }
+  .recipe-card__media--placeholder {
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--color-mallorca-sand), var(--color-soft-cream));
+  }
+  :global(.recipe-card__flame) { color: var(--color-fire-orange); opacity: 0.7; }
+  .recipe-card__heat { position: absolute; top: 12px; left: 12px; }
+  .recipe-card__body { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px 20px; flex: 1; }
+  .recipe-card__category {
+    font-size: 11px; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--color-text-muted);
+  }
+  .recipe-card__title { font-size: 20px; line-height: 1.2; }
+  .recipe-card__desc { margin: 0; font-size: 14.5px; color: var(--color-text-secondary); }
+  .recipe-card__meta {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-top: auto; padding-top: 10px; font-size: 13px; color: var(--color-text-muted);
+  }
+  .recipe-card__time { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+  .recipe-card__product { font-style: italic; text-align: right; }
+</style>

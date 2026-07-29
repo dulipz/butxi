@@ -1,0 +1,209 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const {
+  title,
+  description = 'BUTXI Gourmet — Hot Sauces, Salze & Gewürze aus Eigenanbau, handgemacht auf Mallorca. Das Feuer Mallorcas für deine Küche.',
+} = Astro.props;
+const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
+---
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/images/brand/butxi-logo-black.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <CartDrawer />
+
+    {snipcartKey && (
+      <>
+        <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.4.1/default/snipcart.css" />
+        <script async src="https://cdn.snipcart.com/themes/v3.4.1/default/snipcart.js"></script>
+        <div hidden id="snipcart" data-api-key={snipcartKey} data-config-modal-style="side"></div>
+      </>
+    )}
+
+    <script>
+      // ------------------------------------------------------------------
+      // BUTXI Cart — lightweight local cart (localStorage) with Snipcart
+      // hand-off at checkout when PUBLIC_SNIPCART_API_KEY is configured.
+      // ------------------------------------------------------------------
+      type CartItem = { id: string; name: string; price: number; image: string; meta: string; qty: number };
+      const KEY = 'butxi-cart';
+      const FREE_SHIPPING = 39;
+
+      const read = (): CartItem[] => {
+        try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
+      };
+      const write = (items: CartItem[]) => localStorage.setItem(KEY, JSON.stringify(items));
+      const fmt = (n: number) => n.toFixed(2).replace('.', ',') + ' €';
+
+      const drawer = document.querySelector('[data-cart]') as HTMLElement | null;
+      const itemsEl = document.querySelector('[data-cart-items]') as HTMLElement | null;
+      const tpl = document.querySelector('[data-cart-line-template]') as HTMLTemplateElement | null;
+
+      function render() {
+        const items = read();
+        const count = items.reduce((n, i) => n + i.qty, 0);
+        const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+
+        // Header count
+        document.querySelectorAll('[data-cart-count]').forEach((el) => {
+          (el as HTMLElement).hidden = count === 0;
+          el.textContent = String(count);
+        });
+        const titleCount = document.querySelector('[data-cart-title-count]');
+        if (titleCount) titleCount.textContent = count ? `(${count})` : '';
+
+        // Shipping progress
+        const bar = document.querySelector('[data-shipping-bar]') as HTMLElement | null;
+        const label = document.querySelector('[data-shipping-label]');
+        if (bar) bar.style.width = Math.min(100, (subtotal / FREE_SHIPPING) * 100) + '%';
+        if (label) {
+          label.textContent = subtotal >= FREE_SHIPPING
+            ? 'Kostenloser Versand — geschafft!'
+            : `Noch ${fmt(FREE_SHIPPING - subtotal)} bis zum kostenlosen Versand`;
+        }
+
+        // Lines
+        if (itemsEl && tpl) {
+          itemsEl.innerHTML = '';
+          if (items.length === 0) {
+            itemsEl.innerHTML = '<p class="cart__empty">Dein Warenkorb ist noch leer. Zeit für ein bisschen Gefahr.</p>';
+          } else {
+            for (const it of items) {
+              const node = tpl.content.cloneNode(true) as DocumentFragment;
+              const img = node.querySelector('img')!;
+              img.src = it.image; img.alt = it.name;
+              node.querySelector('.cart-line__name')!.textContent = it.name;
+              node.querySelector('.cart-line__meta')!.textContent = it.meta;
+              node.querySelector('[data-qty-value]')!.textContent = String(it.qty);
+              node.querySelector('.cart-line__price')!.textContent = fmt(it.price * it.qty);
+              node.querySelector('[data-qty-plus]')!.addEventListener('click', () => changeQty(it.id, 1));
+              node.querySelector('[data-qty-minus]')!.addEventListener('click', () => changeQty(it.id, -1));
+              node.querySelector('[data-line-remove]')!.addEventListener('click', () => removeItem(it.id));
+              itemsEl.appendChild(node);
+            }
+          }
+        }
+
+        // Subtotal + checkout button
+        const subEl = document.querySelector('[data-cart-subtotal]');
+        if (subEl) subEl.textContent = fmt(subtotal);
+        const checkout = document.querySelector('[data-checkout]') as HTMLButtonElement | null;
+        if (checkout) checkout.disabled = items.length === 0;
+      }
+
+      function addItem(data: Omit<CartItem, 'qty'>, qty = 1) {
+        const items = read();
+        const ex = items.find((i) => i.id === data.id);
+        if (ex) ex.qty += qty; else items.push({ ...data, qty });
+        write(items);
+        render();
+        openDrawer();
+      }
+      function changeQty(id: string, delta: number) {
+        let items = read();
+        items = items
+          .map((i) => (i.id === id ? { ...i, qty: i.qty + delta } : i))
+          .filter((i) => i.qty > 0);
+        write(items);
+        render();
+      }
+      function removeItem(id: string) {
+        write(read().filter((i) => i.id !== id));
+        render();
+      }
+      function openDrawer() {
+        drawer?.classList.add('is-open');
+        drawer?.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeDrawer() {
+        drawer?.classList.remove('is-open');
+        drawer?.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      // Wire up
+      document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const el = btn as HTMLElement;
+          const qtyInput = document.querySelector('[data-pdp-qty]') as HTMLElement | null;
+          const qty = el.hasAttribute('data-use-pdp-qty') && qtyInput
+            ? parseInt(qtyInput.textContent || '1', 10)
+            : 1;
+          addItem({
+            id: el.dataset.id!,
+            name: el.dataset.name!,
+            price: parseFloat(el.dataset.price!),
+            image: el.dataset.image!,
+            meta: el.dataset.meta || '',
+          }, qty);
+        });
+      });
+      document.querySelectorAll('[data-cart-open]').forEach((b) => b.addEventListener('click', openDrawer));
+      document.querySelectorAll('[data-cart-close]').forEach((b) => b.addEventListener('click', closeDrawer));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+
+      // Checkout: hand off to Snipcart when configured
+      const checkoutBtn = document.querySelector('[data-checkout]') as HTMLButtonElement | null;
+      checkoutBtn?.addEventListener('click', async () => {
+        const w = window as any;
+        if (checkoutBtn.dataset.snipcartKey && w.Snipcart) {
+          const items = read();
+          try {
+            await w.Snipcart.api.cart.items.add(...items.map((i) => ({
+              id: i.id, name: i.name, price: i.price, quantity: i.qty,
+              url: '/product/' + i.id + '/', image: i.image,
+            })));
+            w.Snipcart.api.theme.cart.open();
+          } catch (err) { console.error('Snipcart error', err); }
+        } else {
+          const note = document.querySelector('[data-checkout-note]');
+          if (note) note.textContent = 'Checkout folgt: Snipcart-API-Key in .env hinterlegen (PUBLIC_SNIPCART_API_KEY).';
+        }
+      });
+
+      // PDP quantity stepper
+      document.querySelectorAll('[data-pdp-stepper]').forEach((st) => {
+        const val = st.querySelector('[data-pdp-qty]') as HTMLElement;
+        st.querySelector('[data-pdp-plus]')?.addEventListener('click', () => {
+          val.textContent = String(Math.min(10, parseInt(val.textContent || '1', 10) + 1));
+        });
+        st.querySelector('[data-pdp-minus]')?.addEventListener('click', () => {
+          val.textContent = String(Math.max(1, parseInt(val.textContent || '1', 10) - 1));
+        });
+      });
+
+      // Scroll reveals
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-visible'); observer.unobserve(e.target); } });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+      render();
+    </script>
+  </body>
+</html>

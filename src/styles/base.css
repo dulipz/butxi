@@ -1,0 +1,13 @@
+/* Minimal base — consumers may keep or override */
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-leading);
+  color: var(--color-text-primary);
+  background: var(--color-background-primary);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--color-action-primary); text-decoration: none; }
+a:hover { color: var(--color-action-primary-hover); }
+:focus-visible { outline: none; box-shadow: var(--focus-ring-strong); border-radius: 4px; }

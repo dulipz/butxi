@@ -1,0 +1,63 @@
+:root {
+  /* Brand */
+  --color-charcoal: #171310;
+  --color-chili-red: #D83220;
+  --color-fire-orange: #F06A24;
+  --color-mallorca-sand: #E8D8BE;
+  --color-olive-green: #687247;
+  --color-soft-cream: #F7F2E8;
+  --color-warm-white: #FFFDF8;
+  --color-deep-brown: #2B211B;
+
+  /* Neutrals (warm) */
+  --color-neutral-950: #171310;
+  --color-neutral-900: #211C18;
+  --color-neutral-800: #352E29;
+  --color-neutral-700: #504841;
+  --color-neutral-600: #6B625A;
+  --color-neutral-500: #857B72;
+  --color-neutral-400: #A49B92;
+  --color-neutral-300: #C7BFB7;
+  --color-neutral-200: #DED8D1;
+  --color-neutral-100: #EFEAE4;
+  --color-neutral-50: #F8F5F1;
+
+  /* Semantic surfaces & text */
+  --color-background-primary: #F7F2E8;
+  --color-background-secondary: #FFFDF8;
+  --color-background-dark: #171310;
+  --color-background-dark-elevated: #211C18;
+  --color-text-primary: #211C18;
+  --color-text-secondary: #6B625A;
+  --color-text-muted: #857B72;
+  --color-text-inverse: #FFFDF8;
+  --color-text-inverse-secondary: #C7BFB7;
+
+  /* Actions */
+  --color-action-primary: #D83220;
+  --color-action-primary-hover: #B82818;
+  --color-action-secondary: #F06A24;
+
+  /* Borders */
+  --color-border-default: #DED8D1;
+  --color-border-strong: #A49B92;
+  --color-border-inverse: #3D3630;
+
+  /* Status */
+  --color-success: #4F6F43;
+  --color-warning: #E58B2A;
+  --color-error: #C83024;
+  --color-info: #506D82;
+
+  /* Heat ramp — light orange → deep red (never green for mild) */
+  --color-heat-mild: #F0A35C;
+  --color-heat-medium: #F06A24;
+  --color-heat-hot: #D83220;
+  --color-heat-extreme: #8F1B10;
+  --color-heat-track: #DED8D1;
+  --color-heat-track-dark: #3D3630;
+
+  /* Focus ring */
+  --focus-ring: 0 0 0 3px rgba(216, 50, 32, 0.16);
+  --focus-ring-strong: 0 0 0 3px rgba(216, 50, 32, 0.35);
+}

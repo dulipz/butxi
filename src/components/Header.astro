@@ -1,0 +1,125 @@
+---
+import Icon from './Icon.astro';
+
+const links = [
+  { label: 'Home', href: '/' },
+  { label: 'Shop', href: '/shop/' },
+  { label: 'Über uns', href: '/ueber-uns/' },
+  { label: 'Produktion', href: '/produktion/' },
+  { label: 'Rezepte', href: '/rezepte/' },
+  { label: 'Kontakt', href: '/kontakt/' },
+];
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href.replace(/\/$/, ''));
+---
+<div class="announcement">
+  <p>Kostenloser Versand ab 39 € &nbsp;·&nbsp; 10 % Rabatt mit dem Newsletter</p>
+</div>
+
+<header class="site-header">
+  <div class="site-header__inner container">
+    <button class="site-header__burger" data-menu-toggle aria-label="Menü öffnen" aria-expanded="false">
+      <Icon name="menu" size={22} />
+    </button>
+    <a href="/" class="site-header__logo" aria-label="BUTXI Gourmet — Startseite">
+      <img src="/images/brand/butxi-logo-black.png" alt="BUTXI Gourmet" width="132" height="44" />
+    </a>
+    <nav class="site-header__nav" aria-label="Hauptnavigation">
+      {links.map((l) => (
+        <a href={l.href} class:list={['site-header__link', { 'is-active': isActive(l.href) }]}>{l.label}</a>
+      ))}
+    </nav>
+    <div class="site-header__actions">
+      <button class="site-header__iconbtn" data-cart-open aria-label="Warenkorb öffnen">
+        <Icon name="bag" size={21} />
+        <span class="site-header__count" data-cart-count hidden>0</span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" data-mobile-nav aria-label="Mobile Navigation" hidden>
+    {links.map((l) => (
+      <a href={l.href} class:list={['mobile-nav__link', { 'is-active': isActive(l.href) }]}>{l.label}</a>
+    ))}
+  </nav>
+</header>
+
+<style>
+  .announcement {
+    background: var(--color-background-dark);
+    color: var(--color-text-inverse-secondary);
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .announcement p { margin: 0; padding: 8px 16px; }
+
+  .site-header {
+    position: sticky; top: 0; z-index: var(--z-sticky);
+    background: rgba(247, 242, 232, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-border-default);
+  }
+  .site-header__inner { display: flex; align-items: center; gap: 28px; height: 76px; }
+  .site-header__logo { flex: none; display: flex; }
+  .site-header__logo img { height: 44px; width: auto; }
+  .site-header__nav { display: flex; gap: 22px; flex: 1; justify-content: center; }
+  .site-header__link {
+    font-size: 15px; font-weight: 600; color: var(--color-text-primary);
+    padding: 6px 2px; border-bottom: 2px solid transparent;
+    transition: color var(--duration-fast) var(--ease-standard);
+  }
+  .site-header__link:hover { color: var(--color-action-primary); }
+  .site-header__link.is-active {
+    font-weight: 800; color: var(--color-action-primary);
+    border-bottom-color: var(--color-action-primary);
+  }
+  .site-header__actions { display: flex; gap: 8px; flex: none; margin-left: auto; }
+  .site-header__iconbtn, .site-header__burger {
+    position: relative; display: grid; place-items: center;
+    width: 42px; height: 42px; border-radius: var(--radius-pill);
+    border: none; background: transparent; color: var(--color-text-primary); cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard);
+  }
+  .site-header__iconbtn:hover, .site-header__burger:hover { background: var(--color-neutral-100); }
+  .site-header__count {
+    position: absolute; top: 2px; right: 0;
+    min-width: 18px; height: 18px; padding: 0 5px;
+    display: grid; place-items: center;
+    background: var(--color-action-primary); color: var(--color-text-inverse);
+    font-size: 11px; font-weight: 800; border-radius: 99px;
+  }
+  .site-header__burger { display: none; }
+
+  .mobile-nav {
+    display: none; flex-direction: column; padding: 8px 16px 16px;
+    border-top: 1px solid var(--color-border-default);
+    background: var(--color-background-primary);
+  }
+  .mobile-nav__link {
+    padding: 12px 8px; font-size: 16px; font-weight: 700;
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+  .mobile-nav__link.is-active { color: var(--color-action-primary); }
+  .mobile-nav.is-open { display: flex; }
+
+  @media (max-width: 1023px) {
+    .site-header__nav { display: none; }
+    .site-header__burger { display: grid; }
+    .site-header__inner { gap: 12px; }
+    .site-header__logo { position: absolute; left: 50%; transform: translateX(-50%); }
+    .site-header__inner { position: relative; }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector('[data-menu-toggle]');
+  const nav = document.querySelector('[data-mobile-nav]');
+  toggle?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('is-open');
+    if (nav) nav.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(!!open));
+  });
+</script>

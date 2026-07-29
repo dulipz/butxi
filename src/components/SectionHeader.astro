@@ -1,0 +1,15 @@
+---
+interface Props { eyebrow?: string; title: string; text?: string; align?: 'left' | 'center' }
+const { eyebrow, title, text, align = 'left' } = Astro.props;
+---
+<header class={`section-header ${align === 'center' ? 'section-header--center' : ''}`}>
+  {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+  <h2>{title}</h2>
+  {text && <p class="lead measure">{text}</p>}
+</header>
+
+<style>
+  .section-header { display: flex; flex-direction: column; gap: 14px; }
+  .section-header--center { align-items: center; text-align: center; }
+  .section-header p { margin: 0; }
+</style>

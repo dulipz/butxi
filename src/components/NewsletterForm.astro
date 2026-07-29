@@ -1,0 +1,41 @@
+---
+interface Props { onDark?: boolean }
+const { onDark = false } = Astro.props;
+---
+<div class={`newsletter ${onDark ? 'newsletter--dark' : ''}`}>
+  <span class="eyebrow">Newsletter</span>
+  <h2>10 % auf deine erste Lieferung</h2>
+  <p>Neue Sorten, Rezepte und Aktionen — direkt aus der Manufaktur. Kein Spam, versprochen.</p>
+  <form class="newsletter__form" data-newsletter>
+    <label class="visually-hidden" for="nl-email">E-Mail-Adresse</label>
+    <input class="input" id="nl-email" type="email" name="email" placeholder="deine@email.com" required />
+    <button class="btn btn--primary" type="submit">Anmelden</button>
+  </form>
+  <p class="newsletter__success" data-newsletter-success hidden>
+    Fast geschafft — bitte bestätige deine Anmeldung in deinem Postfach.
+  </p>
+</div>
+
+<style>
+  .newsletter {
+    display: flex; flex-direction: column; gap: 12px;
+    align-items: center; text-align: center; max-width: 520px; margin: 0 auto;
+  }
+  .newsletter p { margin: 0; color: var(--color-text-secondary); }
+  .newsletter__form { display: flex; gap: 10px; width: 100%; max-width: 440px; margin-top: 8px; }
+  .newsletter__form .input { flex: 1; }
+  .newsletter__success { font-weight: 700; color: var(--color-success); }
+  @media (max-width: 479px) { .newsletter__form { flex-direction: column; } }
+</style>
+
+<script>
+  document.querySelectorAll('[data-newsletter]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // TODO: An Newsletter-Dienst anbinden (z. B. Mailchimp/Brevo API-Endpunkt)
+      (form as HTMLFormElement).hidden = true;
+      const success = form.parentElement?.querySelector('[data-newsletter-success]') as HTMLElement | null;
+      if (success) success.hidden = false;
+    });
+  });
+</script>

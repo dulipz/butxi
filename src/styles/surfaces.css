@@ -1,0 +1,22 @@
+:root {
+  /* Radius — moderate, organic */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  /* Shadows — subtle; prefer borders + background contrast */
+  --shadow-sm: 0 2px 8px rgba(23, 19, 16, 0.06);
+  --shadow-md: 0 10px 30px rgba(23, 19, 16, 0.10);
+  --shadow-lg: 0 24px 60px rgba(23, 19, 16, 0.16);
+
+  /* Z-index */
+  --z-base: 0;
+  --z-dropdown: 20;
+  --z-sticky: 30;
+  --z-overlay: 40;
+  --z-drawer: 50;
+  --z-modal: 60;
+  --z-toast: 70;
+}

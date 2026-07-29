@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { products, categories } from '../data/products';
+---
+<BaseLayout title="Shop — BUTXI Gourmet" description="Alle BUTXI Produkte: Hot Sauces, Gewürze, Olivenöl, Salze und Bundles — handgemacht, aus Eigenanbau auf Mallorca.">
+  <section class="section" style="padding-bottom: 2rem;">
+    <div class="container">
+      <SectionHeader
+        eyebrow="Shop"
+        title="Alle Produkte"
+        text="Hot Sauces, Salze und Gewürze — handgemacht, aus Eigenanbau."
+      />
+      <div class="filters" data-filters>
+        {categories.map((c, i) => (
+          <button class:list={['filter', { 'is-active': i === 0 }]} data-filter={c}>{c}</button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0.5rem;">
+    <div class="container">
+      <p class="empty" data-empty hidden>
+        In dieser Kategorie ist gerade nichts auf Lager — schau bald wieder vorbei.
+      </p>
+      <div class="grid" data-product-grid>
+        {products.map((p, i) => <ProductCard product={p} loading={i < 4 ? 'eager' : 'lazy'} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .filters { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+  .filter {
+    font-family: var(--font-sans); font-size: 14px; font-weight: 700;
+    padding: 8px 18px; border-radius: 999px; cursor: pointer;
+    border: 1.5px solid var(--color-border-default);
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    transition: all var(--duration-fast) var(--ease-standard);
+  }
+  .filter:hover { border-color: var(--color-border-strong); }
+  .filter.is-active {
+    border-color: var(--color-neutral-950);
+    background: var(--color-neutral-950);
+    color: var(--color-text-inverse);
+  }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .empty { color: var(--color-text-secondary); padding: 40px 0; }
+  @media (max-width: 1023px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 559px)  { .grid { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-product-grid] [data-category]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+      const cat = btn.dataset.filter;
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = cat === 'Alle' || card.dataset.category === cat;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      if (empty) empty.hidden = visible > 0;
+    });
+  });
+</script>

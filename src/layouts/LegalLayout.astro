@@ -1,0 +1,28 @@
+---
+import BaseLayout from './BaseLayout.astro';
+interface Props { title: string; heading: string }
+const { title, heading } = Astro.props;
+---
+<BaseLayout title={title}>
+  <section class="section">
+    <div class="container legal">
+      <h1>{heading}</h1>
+      <div class="legal__body">
+        <slot />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal { max-width: var(--editorial-max); }
+  .legal h1 { margin-bottom: 32px; }
+  .legal__body :global(h2) { font-size: 1.5rem; margin: 32px 0 12px; }
+  .legal__body :global(p) { margin: 0 0 14px; color: var(--color-text-secondary); line-height: 1.75; }
+  .legal__body :global(strong) { color: var(--color-text-primary); }
+  .legal__body :global(.placeholder) {
+    padding: 20px 24px; border: 1.5px dashed var(--color-border-strong);
+    border-radius: var(--radius-lg); background: var(--color-background-secondary);
+    color: var(--color-text-secondary); font-size: 14.5px;
+  }
+</style>

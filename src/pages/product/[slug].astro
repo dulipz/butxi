@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import HeatMeter from '../../components/HeatMeter.astro';
+import { products, productImage, formatPrice } from '../../data/products';
+
+export function getStaticPaths() {
+  return products.map((p) => ({ params: { slug: p.slug }, props: { product: p } }));
+}
+
+const { product: p } = Astro.props;
+const related = products
+  .filter((x) => x.category === p.category && x.slug !== p.slug)
+  .slice(0, 4);
+---
+<BaseLayout title={`${p.name} — BUTXI Gourmet`} description={p.desc}>
+  <section class="section" style="padding-top: 2.5rem;">
+    <div class="container">
+      <nav class="crumbs" aria-label="Brotkrumen">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/shop/">Shop</a> <span>/</span>
+        <strong>{p.name}</strong>
+      </nav>
+
+      <div class="pdp">
+        <div class="pdp__media">
+          {p.badge && <span class={`badge badge--${p.badgeVariant ?? 'sand'} pdp__badge`}>{p.badge}</span>}
+          <img src={productImage(p)} alt={p.name} loading="eager" fetchpriority="high" />
+        </div>
+
+        <div class="pdp__info">
+          <span class="pdp__category">{p.category}{p.volume ? ` · ${p.volume}` : ''}</span>
+          <h1>{p.name}</h1>
+          {p.heat != null && <HeatMeter level={p.heat} size="lg" />}
+          <p class="pdp__price">
+            {formatPrice(p.price)}
+            <span class="pdp__tax">inkl. MwSt.</span>
+          </p>
+          <p class="pdp__desc">{p.longDesc ?? p.desc}</p>
+
+          {p.tags && p.tags.length > 0 && (
+            <div class="pdp__tags">
+              {p.tags.map((t) => <span class="badge badge--outline">{t}</span>)}
+            </div>
+          )}
+
+          <div class="pdp__buy">
+            <div class="stepper" data-pdp-stepper>
+              <button class="stepper__btn" data-pdp-minus aria-label="Menge verringern">−</button>
+              <span class="stepper__value" data-pdp-qty>1</span>
+              <button class="stepper__btn" data-pdp-plus aria-label="Menge erhöhen">+</button>
+            </div>
+            <button
+              class="btn btn--primary btn--lg pdp__add"
+              data-add-to-cart
+              data-use-pdp-qty
+              data-id={p.slug}
+              data-name={p.name}
+              data-price={p.price}
+              data-image={productImage(p)}
+              data-meta={p.volume ?? p.category}
+            >In den Warenkorb</button>
+          </div>
+          <p class="pdp__shipnote">Versand in 2–4 Werktagen · Kostenlos ab 39 €</p>
+
+          <div class="accordion">
+            <details>
+              <summary>Zutaten</summary>
+              <p>Chilis aus Eigenanbau, Meersalz, Apfelessig, natürliche Gewürze — ohne Konservierungs- und Zusatzstoffe.</p>
+            </details>
+            <details>
+              <summary>So schmeckt's am besten</summary>
+              <p>Zu Tapas, Gegrilltem, Pasta oder einfach aufs Brot. Ein Tropfen genügt.</p>
+            </details>
+            <details>
+              <summary>Versand &amp; Rückgabe</summary>
+              <p>Versand aus Deutschland in 2–4 Werktagen. Kostenloser Versand ab 39 €. 14 Tage Widerrufsrecht.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <SectionHeader eyebrow="Passt dazu" title={`Mehr aus ${p.category}`} />
+        <div class="related">
+          {related.map((r) => <ProductCard product={r} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .crumbs { font-size: 13.5px; color: var(--color-text-muted); margin-bottom: 28px; }
+  .crumbs a:hover { color: var(--color-action-primary); }
+  .crumbs strong { color: var(--color-text-primary); font-weight: 600; }
+  .crumbs span { margin: 0 6px; }
+
+  .pdp { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .pdp__media {
+    position: relative;
+    background: var(--color-soft-cream);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xl);
+    aspect-ratio: 1; display: grid; place-items: center; padding: 40px;
+  }
+  .pdp__badge { position: absolute; top: 20px; left: 20px; }
+  .pdp__media img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  .pdp__info { display: flex; flex-direction: column; gap: 18px; }
+  .pdp__category {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--color-text-muted);
+  }
+  .pdp__price { margin: 0; font-size: 26px; font-weight: 800; display: flex; align-items: baseline; gap: 10px; }
+  .pdp__tax { font-size: 13px; font-weight: 500; color: var(--color-text-muted); }
+  .pdp__desc { margin: 0; font-size: 16.5px; line-height: 1.7; color: var(--color-text-secondary); }
+  .pdp__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .pdp__buy { display: flex; gap: 14px; align-items: center; margin-top: 6px; }
+  .pdp__add { flex: 1; }
+  .stepper {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1.5px solid var(--color-border-strong); border-radius: var(--radius-pill);
+    padding: 4px;
+  }
+  .stepper__btn {
+    width: 36px; height: 36px; border: none; background: transparent;
+    font-size: 18px; font-weight: 700; cursor: pointer; border-radius: 99px;
+    color: var(--color-text-primary);
+  }
+  .stepper__btn:hover { background: var(--color-neutral-100); }
+  .stepper__value { min-width: 28px; text-align: center; font-weight: 800; font-size: 16px; }
+
+  .pdp__shipnote { margin: 0; font-size: 13.5px; color: var(--color-text-muted); }
+
+  .accordion { display: flex; flex-direction: column; margin-top: 8px; border-top: 1px solid var(--color-border-default); }
+  .accordion details { border-bottom: 1px solid var(--color-border-default); }
+  .accordion summary {
+    padding: 16px 4px; font-weight: 700; font-size: 15px; cursor: pointer;
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
+  }
+  .accordion summary::-webkit-details-marker { display: none; }
+  .accordion summary::after {
+    content: '+'; font-size: 20px; font-weight: 400; color: var(--color-text-muted);
+    transition: transform var(--duration-fast) var(--ease-standard);
+  }
+  .accordion details[open] summary::after { transform: rotate(45deg); }
+  .accordion details p { margin: 0; padding: 0 4px 18px; color: var(--color-text-secondary); }
+
+  .related { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 36px; }
+
+  @media (max-width: 1023px) {
+    .pdp { grid-template-columns: 1fr; gap: 32px; }
+    .related { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 559px) {
+    .related { grid-template-columns: 1fr; }
+    .pdp__buy { flex-wrap: wrap; }
+  }
+</style>

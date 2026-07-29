@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import RecipeCard from '../components/RecipeCard.astro';
+import { recipes, recipeCategories } from '../data/recipes';
+---
+<BaseLayout title="Rezepte — BUTXI Gourmet" description="BUTXI Rezepte mit Hot Sauce, Chili-Ölen und Gourmet-Salzen: gesund kochen, intensiver schmecken.">
+  <section class="section" style="padding-bottom: 2rem;">
+    <div class="container">
+      <SectionHeader
+        eyebrow="Rezepte"
+        title="Gesund kochen, intensiver schmecken"
+        text="BUTXI Rezepte mit Hot Sauce, Chili-Ölen und Gourmet-Salzen."
+      />
+      <div class="filters" data-filters>
+        {recipeCategories.map((c, i) => (
+          <button class:list={['filter', { 'is-active': i === 0 }]} data-filter={c}>{c}</button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0.5rem;">
+    <div class="container">
+      <div class="grid" data-recipe-grid>
+        {recipes.map((r) => <RecipeCard recipe={r} />)}
+        <div class="teaser">
+          <p>Jeden Monat neue Rezepte —<br />bleib über den Newsletter dran.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .filters { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+  .filter {
+    font-family: var(--font-sans); font-size: 14px; font-weight: 700;
+    padding: 8px 18px; border-radius: 999px; cursor: pointer;
+    border: 1.5px solid var(--color-border-default);
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    transition: all var(--duration-fast) var(--ease-standard);
+  }
+  .filter:hover { border-color: var(--color-border-strong); }
+  .filter.is-active {
+    border-color: var(--color-neutral-950);
+    background: var(--color-neutral-950);
+    color: var(--color-text-inverse);
+  }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .teaser {
+    border: 1.5px dashed var(--color-border-strong); border-radius: var(--radius-lg);
+    display: grid; place-items: center; padding: 24px; min-height: 260px;
+  }
+  .teaser p { margin: 0; font-size: 14.5px; color: var(--color-text-muted); text-align: center; }
+  @media (max-width: 1023px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 639px)  { .grid { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-recipe-grid] [data-category]');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+      const cat = btn.dataset.filter;
+      cards.forEach((card) => {
+        card.style.display = cat === 'Alle' || card.dataset.category === cat ? '' : 'none';
+      });
+    });
+  });
+</script>

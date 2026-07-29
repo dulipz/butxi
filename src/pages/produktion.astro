@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Icon from '../components/Icon.astro';
+
+const principles = [
+  {
+    icon: 'leaf', title: 'Eigenanbau',
+    text: 'Viele unserer Chilis und Kräuter bauen wir vor Ort selbst an — für maximale Frische, klare Herkunft und intensives Aroma in jeder Flasche.',
+  },
+  {
+    icon: 'heart', title: 'Manufaktur',
+    text: 'Unsere Soßen entstehen in kleinen Chargen statt Massenproduktion — mit Handarbeit vom Schneiden bis zur Abfüllung.',
+  },
+  {
+    icon: 'clock', title: 'Zeit & Reife',
+    text: 'Durch sorgfältige Verarbeitung und ausgewählte Reifeprozesse wie Fermentation entsteht Tiefe — Schärfe mit Charakter statt bloßem Brennen.',
+  },
+  {
+    icon: 'check', title: 'Qualitätskontrolle',
+    text: 'Kontrolle vom Feld bis zur Flasche: Rohstoffe, Geschmack, Schärfe und Konsistenz — jede Charge muss unseren Ansprüchen genügen.',
+  },
+];
+---
+<BaseLayout title="Produktion — BUTXI Gourmet" description="Handwerk, Zeit und Feuer: Wie BUTXI Hot Sauces und Gourmet-Salze im Eigenanbau und in der Manufaktur entstehen.">
+  <section class="section" style="padding-bottom: 3rem;">
+    <div class="container intro">
+      <span class="eyebrow">Produktion</span>
+      <h1>Handwerk, Zeit und Feuer</h1>
+      <p class="lead measure">
+        In der BUTXI Produktion verbinden wir Handwerk, Zeit und Feuer:
+        Wir kochen, fermentieren und verfeinern unsere Hot Sauce selbst,
+        statt auf Massenware zu setzen.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <SectionHeader eyebrow="Unsere Produktion" title="Vier Prinzipien, eine Handschrift" />
+      <div class="principles">
+        {principles.map((p, i) => (
+          <div class="principle card">
+            <span class="principle__num">0{i + 1}</span>
+            <span class="principle__icon"><Icon name={p.icon} size={22} /></span>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section--dark section">
+    <div class="container anbau">
+      <img src="/images/anbau/pflanze_001.webp" alt="Chilipflanze im BUTXI Eigenanbau" loading="lazy" />
+      <div class="anbau__copy">
+        <span class="eyebrow">Vom Feld in die Flasche</span>
+        <h2>Geerntet nach Reife, nicht nach Kalender</h2>
+        <p>
+          Unsere Chilis wachsen, bis Reife, Aroma und Schärfe exakt unseren Ansprüchen
+          entsprechen — erst dann wird geerntet. So stimmt die Qualität von Anfang an,
+          lange bevor die erste Flasche gefüllt ist.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container salz">
+      <div class="salz__copy">
+        <SectionHeader
+          eyebrow="Salzproduktion"
+          title="Das Finish, das man sieht und schmeckt"
+          text="Mallorquinische Salzflocken, verarbeitet mit charakterstarken Blends aus eigenem Anbau — als Finish, das Gerichte sichtbar und schmeckbar aufwertet."
+        />
+        <a href="/shop/" class="btn btn--secondary">Salze entdecken</a>
+      </div>
+      <img src="/images/products/product_001.webp" alt="BUTXI Produkte" loading="lazy" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .intro p { margin: 0; }
+
+  .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  .principle { padding: 28px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .principle__num {
+    position: absolute; top: 22px; right: 26px;
+    font-family: var(--font-display); font-size: 28px; font-weight: 600;
+    color: var(--color-neutral-200);
+  }
+  .principle__icon {
+    display: grid; place-items: center; width: 48px; height: 48px;
+    border-radius: var(--radius-md); background: var(--color-mallorca-sand);
+    color: var(--color-deep-brown); margin-bottom: 4px;
+  }
+  .principle p { margin: 0; color: var(--color-text-secondary); }
+
+  .anbau, .salz { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .anbau img, .salz img {
+    width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-xl);
+  }
+  .anbau__copy, .salz__copy { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .anbau__copy h2 { color: var(--color-text-inverse); }
+  .anbau__copy p { margin: 0; color: var(--color-text-inverse-secondary); line-height: 1.75; }
+
+  @media (max-width: 1023px) {
+    .principles { grid-template-columns: 1fr; }
+    .anbau, .salz { grid-template-columns: 1fr; }
+    .salz img { order: -1; }
+  }
+</style>
