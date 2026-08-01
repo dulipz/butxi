@@ -23,6 +23,20 @@ const related = products
         <strong>{p.name}</strong>
       </nav>
 
+      <!-- Snipcart-Preisvalidierung: unsichtbare Produktdefinition, die der
+           Snipcart-Crawler beim Checkout gegen die Warenkorb-Daten prüft -->
+      <button
+        hidden
+        aria-hidden="true"
+        tabindex="-1"
+        class="snipcart-add-item"
+        data-item-id={p.slug}
+        data-item-name={p.name}
+        data-item-price={p.price.toFixed(2)}
+        data-item-url={`/product/${p.slug}/`}
+        data-item-image={productImage(p)}
+      ></button>
+
       <div class="pdp">
         <div class="pdp__media">
           {p.badge && <span class={`badge badge--${p.badgeVariant ?? 'sand'} pdp__badge`}>{p.badge}</span>}
@@ -65,14 +79,32 @@ const related = products
           <p class="pdp__shipnote">Versand in 2–4 Werktagen · Kostenlos ab 39 €</p>
 
           <div class="accordion">
-            <details>
-              <summary>Zutaten</summary>
-              <p>Chilis aus Eigenanbau, Meersalz, Apfelessig, natürliche Gewürze — ohne Konservierungs- und Zusatzstoffe.</p>
-            </details>
-            <details>
-              <summary>So schmeckt's am besten</summary>
-              <p>Zu Tapas, Gegrilltem, Pasta oder einfach aufs Brot. Ein Tropfen genügt.</p>
-            </details>
+            {p.details?.zutaten && (
+              <details>
+                <summary>Zutaten</summary>
+                <p>{p.details.zutaten}</p>
+              </details>
+            )}
+            {p.details?.naehrwerte && (
+              <details>
+                <summary>Nährwerte</summary>
+                <div class="accordion__body">
+                  {p.details.naehrwerte.split('\n').map((line) => <p class="nv-line">{line}</p>)}
+                </div>
+              </details>
+            )}
+            {p.details?.allergene && (
+              <details>
+                <summary>Allergene</summary>
+                <p>{p.details.allergene}</p>
+              </details>
+            )}
+            {p.details?.aufbewahrung && (
+              <details>
+                <summary>Aufbewahrung &amp; Verwendung</summary>
+                <p>{p.details.aufbewahrung}</p>
+              </details>
+            )}
             <details>
               <summary>Versand &amp; Rückgabe</summary>
               <p>Versand aus Deutschland in 2–4 Werktagen. Kostenloser Versand ab 39 €. 14 Tage Widerrufsrecht.</p>
@@ -152,6 +184,9 @@ const related = products
   }
   .accordion details[open] summary::after { transform: rotate(45deg); }
   .accordion details p { margin: 0; padding: 0 4px 18px; color: var(--color-text-secondary); }
+  .accordion .accordion__body { padding: 0 4px 18px; }
+  .accordion .nv-line { padding: 2px 0; font-size: 14.5px; }
+  .accordion .nv-line:first-child { font-weight: 600; }
 
   .related { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 36px; }
 

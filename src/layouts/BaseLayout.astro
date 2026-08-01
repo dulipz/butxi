@@ -7,10 +7,13 @@ import CartDrawer from '../components/CartDrawer.astro';
 interface Props {
   title: string;
   description?: string;
+  /** Header liegt transparent über dem Seitenanfang (z. B. Fullscreen-Hero) und wird beim Scrollen fest. */
+  transparentHeader?: boolean;
 }
 const {
   title,
   description = 'BUTXI Gourmet — Hot Sauces, Salze & Gewürze aus Eigenanbau, handgemacht auf Mallorca. Das Feuer Mallorcas für deine Küche.',
+  transparentHeader = false,
 } = Astro.props;
 const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
 ---
@@ -29,7 +32,7 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
     <meta property="og:type" content="website" />
   </head>
   <body>
-    <Header />
+    <Header transparent={transparentHeader} />
     <main>
       <slot />
     </main>
@@ -40,7 +43,19 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
       <>
         <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.4.1/default/snipcart.css" />
         <script async src="https://cdn.snipcart.com/themes/v3.4.1/default/snipcart.js"></script>
-        <div hidden id="snipcart" data-api-key={snipcartKey} data-config-modal-style="side"></div>
+        <div hidden id="snipcart" data-api-key={snipcartKey} data-config-modal-style="side" data-currency="eur"></div>
+        <script>
+          // Snipcart-Checkout auf Deutsch umstellen (Übersetzungen aus dem offiziellen l10n-Repo)
+          document.addEventListener('snipcart.ready', async () => {
+            try {
+              const res = await fetch('https://cdn.jsdelivr.net/gh/snipcart/snipcart-l10n@master/locales/de.json');
+              const de = await res.json();
+              (window as any).Snipcart.api.session.setLanguage('de', de);
+            } catch (e) {
+              console.warn('Snipcart-Übersetzung konnte nicht geladen werden', e);
+            }
+          });
+        </script>
       </>
     )}
 
