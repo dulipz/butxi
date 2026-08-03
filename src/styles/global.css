@@ -247,7 +247,12 @@ html, body {
   cursor: -webkit-image-set(url('/images/cursor/chili-28.png') 1x, url('/images/cursor/chili-56.png') 2x) 4 22, auto;
   cursor: image-set(url('/images/cursor/chili-28.png') 1x, url('/images/cursor/chili-56.png') 2x) 4 22, auto;
 }
+/* Links & Buttons: leicht gedrehte Chili als "Zeiger" */
 a, button, [role='button'], summary, select, label, .btn {
-  cursor: pointer;
+  cursor: url('/images/cursor/chili-pointer-32.png') 5 24, pointer;
+}
+a, button, [role='button'], summary, select, label, .btn {
+  cursor: -webkit-image-set(url('/images/cursor/chili-pointer-32.png') 1x, url('/images/cursor/chili-pointer-64.png') 2x) 5 24, pointer;
+  cursor: image-set(url('/images/cursor/chili-pointer-32.png') 1x, url('/images/cursor/chili-pointer-64.png') 2x) 5 24, pointer;
 }
 input:not([type='checkbox']):not([type='radio']), textarea { cursor: text; }
