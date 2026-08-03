@@ -238,21 +238,21 @@ h3, .h3 {
 /* ---- Chili-Cursor ----
    Kleine Chili als Standard-Cursor; interaktive Elemente behalten die
    System-Cursor (Zeigefinger/Text) für klare Bedienbarkeit.
-   Hotspot (4/22) = Spitze der Schote unten links. */
+   Hotspot = Schotenspitze oben links (zeigt wie ein Pfeil dorthin, wo geklickt wird). */
 html, body {
-  cursor: url('/images/cursor/chili-28.png') 4 22, auto;
+  cursor: url('/images/cursor/chili-28.png') 3 1, auto;
 }
 /* Retina: scharfe 2x-Variante, wo image-set unterstützt wird */
 html, body {
-  cursor: -webkit-image-set(url('/images/cursor/chili-28.png') 1x, url('/images/cursor/chili-56.png') 2x) 4 22, auto;
-  cursor: image-set(url('/images/cursor/chili-28.png') 1x, url('/images/cursor/chili-56.png') 2x) 4 22, auto;
+  cursor: -webkit-image-set(url('/images/cursor/chili-28.png') 1x, url('/images/cursor/chili-56.png') 2x) 3 1, auto;
+  cursor: image-set(url('/images/cursor/chili-28.png') 1x, url('/images/cursor/chili-56.png') 2x) 3 1, auto;
 }
 /* Links & Buttons: leicht gedrehte Chili als "Zeiger" */
-a, button, [role='button'], summary, select, label, .btn {
-  cursor: url('/images/cursor/chili-pointer-32.png') 5 24, pointer;
+a, button:not([disabled]), [role='button'], summary, select, label, .btn:not([disabled]) {
+  cursor: url('/images/cursor/chili-pointer-32.png') 8 3, pointer;
 }
-a, button, [role='button'], summary, select, label, .btn {
-  cursor: -webkit-image-set(url('/images/cursor/chili-pointer-32.png') 1x, url('/images/cursor/chili-pointer-64.png') 2x) 5 24, pointer;
-  cursor: image-set(url('/images/cursor/chili-pointer-32.png') 1x, url('/images/cursor/chili-pointer-64.png') 2x) 5 24, pointer;
+a, button:not([disabled]), [role='button'], summary, select, label, .btn:not([disabled]) {
+  cursor: -webkit-image-set(url('/images/cursor/chili-pointer-32.png') 1x, url('/images/cursor/chili-pointer-64.png') 2x) 8 3, pointer;
+  cursor: image-set(url('/images/cursor/chili-pointer-32.png') 1x, url('/images/cursor/chili-pointer-64.png') 2x) 8 3, pointer;
 }
 input:not([type='checkbox']):not([type='radio']), textarea { cursor: text; }
