@@ -5,14 +5,14 @@ const { onDark = false } = Astro.props;
 <div class={`newsletter ${onDark ? 'newsletter--dark' : ''}`}>
   <span class="eyebrow">Newsletter</span>
   <h2>10 % auf deine erste Lieferung</h2>
-  <p>Neue Sorten, Rezepte und Aktionen — direkt aus der Manufaktur. Kein Spam, versprochen.</p>
+  <p>Neue Sorten, Rezepte und Aktionen, direkt aus der Manufaktur. Kein Spam, versprochen.</p>
   <form class="newsletter__form" data-newsletter>
     <label class="visually-hidden" for="nl-email">E-Mail-Adresse</label>
     <input class="input" id="nl-email" type="email" name="email" placeholder="deine@email.com" required />
     <button class="btn btn--primary" type="submit">Anmelden</button>
   </form>
   <p class="newsletter__success" data-newsletter-success hidden>
-    Fast geschafft — bitte bestätige deine Anmeldung in deinem Postfach.
+    Fast geschafft, bitte bestätige deine Anmeldung in deinem Postfach.
   </p>
 </div>
 

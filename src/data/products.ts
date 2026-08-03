@@ -1,4 +1,4 @@
-// BUTXI Gourmet — Produktdaten (aus der Live-Site butxigourmet.com übernommen)
+// BUTXI Gourmet, Produktdaten (aus der Live-Site butxigourmet.com übernommen)
 // Bilder: lokale WebP-Dateien unter /public/images/products/ (aus den Produktfotos
 // zugeschnitten). 7 Produkte haben noch kein Foto und nutzen den Platzhalter.
 // Details (Zutaten, Nährwerte, Allergene, Aufbewahrung) am 31.07.2026 von der Live-Site übernommen.
@@ -37,7 +37,7 @@ export const products: Product[] = [
   {
     slug: 'habanero-orange', name: 'Habanero Orange', price: 12.49, category: 'Saucen', heat: 3,
     volume: '100 ml',
-    desc: 'Fruchtige Orange trifft auf klare Habanero-Schärfe. Sonne aus Mallorca — direkt auf den Teller.',
+    desc: 'Fruchtige Orange trifft auf klare Habanero-Schärfe. Sonne aus Mallorca, direkt auf den Teller.',
     longDesc: 'Sonnengereifte Orangen und Habaneros aus Eigenanbau: fruchtig im Antritt, klar und warm in der Schärfe. Perfekt zu Tacos, Hähnchen, Meeresfrüchten, Bowls, Marinaden und Dips.',
     image: '/images/products/habanero-orange.webp',
     badge: 'Bestseller', badgeVariant: 'sand',
@@ -52,8 +52,8 @@ export const products: Product[] = [
   {
     slug: 'fulla-d-olivera', name: 'Fulla D´Olivera', price: 12.49, category: 'Saucen', heat: 1,
     volume: '100 ml',
-    desc: 'Mild, rund, mit feinem Olivenblatt — der sanfte Einstieg ins Feuer Mallorcas.',
-    longDesc: 'Die mildeste Sauce im Sortiment: Olivenblatt, Kräuter und ein Hauch Chili. Für alle, die Aroma vor Schärfe stellen — zu Fisch, Gemüse und mediterranen Gerichten.',
+    desc: 'Mild, rund, mit feinem Olivenblatt, der sanfte Einstieg ins Feuer Mallorcas.',
+    longDesc: 'Die mildeste Sauce im Sortiment: Olivenblatt, Kräuter und ein Hauch Chili. Für alle, die Aroma vor Schärfe stellen, zu Fisch, Gemüse und mediterranen Gerichten.',
     image: '/images/products/fulla-d-olivera.webp',
     badge: 'Eigenanbau', badgeVariant: 'olive',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
@@ -68,7 +68,7 @@ export const products: Product[] = [
     slug: 'salsa-coenta', name: 'Salsa Coenta', price: 12.49, category: 'Saucen', heat: 2,
     volume: '100 ml',
     desc: 'Die Allrounderin: würzig, mittelscharf, perfekt zu Tapas und Gegrilltem.',
-    longDesc: 'Würzig, ausgewogen, mittelscharf — die Sauce für jeden Tag. Zu Tapas, Gegrilltem, Pasta oder einfach aufs Brot. Ein Tropfen genügt.',
+    longDesc: 'Würzig, ausgewogen, mittelscharf, die Sauce für jeden Tag. Zu Tapas, Gegrilltem, Pasta oder einfach aufs Brot. Ein Tropfen genügt.',
     image: `${WP}/2026/02/Unbenannt-52_ergebnis-413x413.webp`,
     tags: ['100% natürlich', 'Vegan'],
     details: {
@@ -81,8 +81,8 @@ export const products: Product[] = [
   {
     slug: 'carolina-reaper', name: 'Carolina Reaper', price: 12.49, category: 'Saucen', heat: 5,
     volume: '100 ml',
-    desc: 'Nur für Mutige. Die schärfste Schote der Welt — pur aus Eigenanbau.',
-    longDesc: 'Die Carolina Reaper ist die schärfste Chili der Welt — und hier kommt sie pur aus unserem Eigenanbau in die Flasche. Extreme Schärfe, überraschend fruchtig. Vorsichtig dosieren.',
+    desc: 'Nur für Mutige. Die schärfste Schote der Welt, pur aus Eigenanbau.',
+    longDesc: 'Die Carolina Reaper ist die schärfste Chili der Welt, und hier kommt sie pur aus unserem Eigenanbau in die Flasche. Extreme Schärfe, überraschend fruchtig. Vorsichtig dosieren.',
     image: '/images/products/carolina-reaper.webp',
     badge: 'Extrem scharf', badgeVariant: 'fire',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
@@ -96,7 +96,7 @@ export const products: Product[] = [
   {
     slug: 'carolina-chocolate', name: 'Carolina Chocolate', price: 12.49, category: 'Saucen', heat: 5,
     volume: '100 ml',
-    desc: 'Dunkel, rauchig, extrem — die Reaper-Variante mit tiefem, fast schokoladigem Aroma.',
+    desc: 'Dunkel, rauchig, extrem, die Reaper-Variante mit tiefem, fast schokoladigem Aroma.',
     badge: 'Extrem scharf', badgeVariant: 'fire',
     tags: ['100% natürlich', 'Vegan'],
     image: '/images/products/carolina-chocolate.webp',
@@ -124,7 +124,7 @@ export const products: Product[] = [
   {
     slug: 'jalapeno', name: 'Jalapeño', price: 12.49, category: 'Saucen', heat: 2,
     volume: '100 ml',
-    desc: 'Grün, frisch, lebendig — die klassische Jalapeño-Sauce mit klarem Kick.',
+    desc: 'Grün, frisch, lebendig, die klassische Jalapeño-Sauce mit klarem Kick.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/jalapeno.webp',
     details: {
@@ -137,7 +137,7 @@ export const products: Product[] = [
   {
     slug: 'ueep-salsa-coenta', name: 'UEEP! Salsa Coenta', price: 12.49, category: 'Saucen', heat: 3,
     volume: '100 ml',
-    desc: 'Die Coenta mit einem Extra-Schlag Feuer. UEEP! — mehr muss man nicht sagen.',
+    desc: 'Die Coenta mit einem Extra-Schlag Feuer. UEEP!, mehr muss man nicht sagen.',
     tags: ['100% natürlich', 'Vegan'],
     image: '/images/products/ueep-salsa-coenta.webp',
     details: {
@@ -175,7 +175,7 @@ export const products: Product[] = [
   },
   {
     slug: 'confitura-picante', name: 'Confitura Picante', price: 6.49, category: 'Saucen', heat: 2,
-    desc: 'Scharfe Konfitüre — süß trifft Feuer. Zu Käse, Brot und allem Gegrillten.',
+    desc: 'Scharfe Konfitüre, süß trifft Feuer. Zu Käse, Brot und allem Gegrillten.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/confitura-picante.webp',
     details: {
@@ -187,7 +187,7 @@ export const products: Product[] = [
   },
   {
     slug: 'salsa-allioli-scharf', name: 'BUTXI Salsa Allioli – Scharf', price: 6.49, category: 'Saucen', heat: 2,
-    desc: 'Cremiges Allioli mit Chili-Kick — mallorquinischer Klassiker, neu entfacht.',
+    desc: 'Cremiges Allioli mit Chili-Kick, mallorquinischer Klassiker, neu entfacht.',
     tags: ['Glutenfrei'],
     details: {
       zutaten: 'Sonnenblumenöl, Knoblauch, Wasser, Gewürze, Salz, Zitronensaft.',
@@ -211,7 +211,7 @@ export const products: Product[] = [
   // ---------- Gewürze ----------
   {
     slug: 'jalapenos-laminados', name: 'Jalapeños Laminados', price: 3.99, category: 'Gewürze', heat: 2,
-    desc: 'Getrocknete Jalapeño-Scheiben — knusprige Schärfe zum Streuen und Kochen.',
+    desc: 'Getrocknete Jalapeño-Scheiben, knusprige Schärfe zum Streuen und Kochen.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/jalapenos-laminados.webp',
     details: {
@@ -223,7 +223,7 @@ export const products: Product[] = [
   },
   {
     slug: 'paella-spice-blend', name: 'Butxi Paella', price: 3.99, category: 'Gewürze', heat: 0,
-    desc: 'Die Gewürzmischung für echte Paella — Safran, Paprika und mallorquinische Kräuter.',
+    desc: 'Die Gewürzmischung für echte Paella, Safran, Paprika und mallorquinische Kräuter.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/paella-spice-blend.webp',
     details: {
@@ -249,7 +249,7 @@ export const products: Product[] = [
   },
   {
     slug: 'aceite-sitrie', name: 'Aceite Sitrie', price: 14.95, category: 'Olivenöl', heat: 2,
-    desc: 'Scharfes Öl mit Zitrusnote — hell, aromatisch, mit feinem Feuer im Abgang.',
+    desc: 'Scharfes Öl mit Zitrusnote, hell, aromatisch, mit feinem Feuer im Abgang.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/aceite-sitrie.webp',
     details: {
@@ -263,7 +263,7 @@ export const products: Product[] = [
   // ---------- Salz ----------
   {
     slug: 'meersalz-mit-chili', name: 'BUTXI Meersalz mit Chili', price: 3.99, category: 'Salz', heat: 1,
-    desc: 'Mallorquinische Salzflocken mit Chili — das Finish, das man sieht und schmeckt.',
+    desc: 'Mallorquinische Salzflocken mit Chili, das Finish, das man sieht und schmeckt.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     details: {
       zutaten: '80 % Meersalz, 10 % Paprika, 10 % Rosmarinblätter, Basilikumblätter, zerkleinerte Chili.',
@@ -274,7 +274,7 @@ export const products: Product[] = [
   },
   {
     slug: 'meersalz-mit-safran', name: 'BUTXI Meersalz mit Safran', price: 3.99, category: 'Salz', heat: 0,
-    desc: 'Goldene Salzflocken mit Safran — für Reisgerichte, Fisch und besondere Momente.',
+    desc: 'Goldene Salzflocken mit Safran, für Reisgerichte, Fisch und besondere Momente.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     details: {
       zutaten: '80% Meersalz, 2% Safran, 10% Petersilie, 3% Kurkuma, 5% Knoblauch (zerkleinert).',
@@ -285,7 +285,7 @@ export const products: Product[] = [
   },
   {
     slug: 'meersalz-mit-hibiskus', name: 'BUTXI Meersalz mit Hibiskus', price: 3.99, category: 'Salz', heat: 0,
-    desc: 'Blumig-säuerliche Hibiskusnote auf Meersalz — auffällig auf Salaten und Desserts.',
+    desc: 'Blumig-säuerliche Hibiskusnote auf Meersalz, auffällig auf Salaten und Desserts.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     details: {
       zutaten: '80% Meersalz (Sal Marina), 18% Hibiskusblüte (Flor de Hibiscus), 2% Basilikumblatt (Albahaca hoja).',
@@ -296,7 +296,7 @@ export const products: Product[] = [
   },
   {
     slug: 'meersalz-rosmarin-zitrone', name: 'BUTXI Meersalz „Rosmarin & Zitrone"', price: 3.99, category: 'Salz', heat: 0,
-    desc: 'Rosmarin und Zitronenschale auf Salzflocken — mediterran, frisch, vielseitig.',
+    desc: 'Rosmarin und Zitronenschale auf Salzflocken, mediterran, frisch, vielseitig.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/meersalz-rosmarin-zitrone.webp',
     details: {
@@ -308,7 +308,7 @@ export const products: Product[] = [
   },
   {
     slug: 'meersalz-schwarze-olive', name: 'Meersalz mit Schwarzer Olive', price: 3.99, category: 'Salz', heat: 0,
-    desc: 'Dunkle Salzflocken mit schwarzer Olive — intensiv, erdig, umami.',
+    desc: 'Dunkle Salzflocken mit schwarzer Olive, intensiv, erdig, umami.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/meersalz-schwarze-olive.webp',
     details: {
@@ -321,7 +321,7 @@ export const products: Product[] = [
 
   // ---------- Bundles & Sets ----------
   {
-    slug: '7er-tasting-set', name: 'Butxi Hot Sauce — 7er Tasting Set', price: 14.99, category: 'Startersets', heat: null,
+    slug: '7er-tasting-set', name: 'Butxi Hot Sauce 7er Tasting Set', price: 14.99, category: 'Startersets', heat: null,
     desc: 'Die ganze BUTXI Handschrift in einem Set: sieben Sorten zum Probieren, von mild bis extrem.',
     image: '/images/products/7er-tasting-set.webp',
     badge: 'Starterset', badgeVariant: 'dark',
@@ -335,7 +335,7 @@ export const products: Product[] = [
   },
   {
     slug: 'meersalz-trio', name: 'Butxi Meersalz-Trio', price: 6.49, category: 'Salz', heat: 0,
-    desc: 'Drei Gourmet-Salze im Set — probieren, kombinieren, verschenken.',
+    desc: 'Drei Gourmet-Salze im Set, probieren, kombinieren, verschenken.',
     badge: 'Set', badgeVariant: 'sand',
     tags: ['Geschenkidee', 'Vegan'],
     image: '/images/products/meersalz-trio.webp',
@@ -348,7 +348,7 @@ export const products: Product[] = [
   },
   {
     slug: 'chili-trio', name: 'Butxi Chili Trio', price: 6.49, category: 'Bundles', heat: 3,
-    desc: 'Drei Chili-Klassiker im praktischen Set — die schnelle Tour durchs Feuer Mallorcas.',
+    desc: 'Drei Chili-Klassiker im praktischen Set, die schnelle Tour durchs Feuer Mallorcas.',
     badge: 'Set', badgeVariant: 'sand',
     tags: ['Geschenkidee'],
     details: {
@@ -386,7 +386,7 @@ export const products: Product[] = [
   },
   {
     slug: 'blister-calamar', name: 'Blister Calamar', price: 6.49, category: 'Bundles', heat: null,
-    desc: 'Das Set für Meeresfrüchte — abgestimmt auf Calamari, Gambas und alles aus dem Meer.',
+    desc: 'Das Set für Meeresfrüchte, abgestimmt auf Calamari, Gambas und alles aus dem Meer.',
     badge: 'Set', badgeVariant: 'sand',
     tags: ['Geschenkidee'],
     image: '/images/products/blister-calamar.webp',

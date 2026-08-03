@@ -1,4 +1,4 @@
-// BUTXI Gourmet — Rezepte (von der Live-Site übernommen)
+// BUTXI Gourmet, Rezepte (von der Live-Site übernommen)
 
 export interface Recipe {
   slug: string;
@@ -37,7 +37,7 @@ export const recipes: Recipe[] = [
     slug: 'ueep-shakshuka',
     title: 'Schnelle Shakshuka „UEEP!" (mit Ei oder vegan)',
     category: 'Frühstück & Brunch', time: '20 Min.', heat: 'mittel',
-    desc: 'Die Pfanne, die alle weckt — mit einem Extra-Schlag Coenta-Feuer.',
+    desc: 'Die Pfanne, die alle weckt, mit einem Extra-Schlag Coenta-Feuer.',
     product: 'UEEP! Salsa Coenta',
   },
   {
@@ -58,21 +58,21 @@ export const recipes: Recipe[] = [
     slug: 'fantasma-cauliflower-wings',
     title: 'Rauchige Blumenkohl-Wings mit Fantasma-Glaze',
     category: 'Salate & Beilagen', time: '45 Min.', heat: 'scharf',
-    desc: 'Knusprig gebacken, klebrig glasiert — mit geräucherter Ghost-Chili.',
+    desc: 'Knusprig gebacken, klebrig glasiert, mit geräucherter Ghost-Chili.',
     product: 'Naga Jolokia „Ahumada Fantasma"',
   },
   {
     slug: 'mais-limetten-salat',
     title: 'Mais-Limetten-Salat mit Jalapeño-Kick',
     category: 'Salate & Beilagen', time: '15 Min.', heat: 'mittel',
-    desc: 'Süßer Mais, saure Limette, grüne Schärfe — der Sommer in einer Schüssel.',
+    desc: 'Süßer Mais, saure Limette, grüne Schärfe, der Sommer in einer Schüssel.',
     product: 'Jalapeño',
   },
   {
     slug: 'gegrillte-mango-aceite-sitrie',
     title: 'Gegrillte Mango mit Aceite Sitrie & Ahorn-Limetten-Glasur',
     category: 'Süß & Vegan', time: '20 Min.', heat: 'mild',
-    desc: 'Karamellisierte Mango trifft Zitrus-Chili-Öl — Dessert mit Charakter.',
+    desc: 'Karamellisierte Mango trifft Zitrus-Chili-Öl, Dessert mit Charakter.',
     product: 'Aceite Sitrie',
   },
   {

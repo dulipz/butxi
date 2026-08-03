@@ -14,7 +14,7 @@ const related = products
   .filter((x) => x.category === p.category && x.slug !== p.slug)
   .slice(0, 4);
 ---
-<BaseLayout title={`${p.name} — BUTXI Gourmet`} description={p.desc}>
+<BaseLayout title={`${p.name} · BUTXI Gourmet`} description={p.desc}>
   <section class="section" style="padding-top: 2.5rem;">
     <div class="container">
       <nav class="crumbs" aria-label="Brotkrumen">

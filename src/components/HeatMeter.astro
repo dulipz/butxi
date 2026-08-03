@@ -7,7 +7,7 @@ const lv = Math.max(0, Math.min(5, Math.round(level)));
 const segClass = (i: number) => (i < lv ? `heat__seg is-on-${i + 1}` : 'heat__seg');
 ---
 <div class={`heat heat--${size}`}>
-  <div class="heat__track" role="img" aria-label={`Schärfegrad ${lv} von 5 — ${HEAT_LABELS[lv]}`}>
+  <div class="heat__track" role="img" aria-label={`Schärfegrad ${lv} von 5: ${HEAT_LABELS[lv]}`}>
     {[0, 1, 2, 3, 4].map((i) => <span class={segClass(i)}></span>)}
   </div>
   {showLabel && (

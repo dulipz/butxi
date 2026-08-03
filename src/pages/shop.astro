@@ -4,13 +4,13 @@ import SectionHeader from '../components/SectionHeader.astro';
 import ProductCard from '../components/ProductCard.astro';
 import { products, categories } from '../data/products';
 ---
-<BaseLayout title="Shop — BUTXI Gourmet" description="Alle BUTXI Produkte: Hot Sauces, Gewürze, Olivenöl, Salze und Bundles — handgemacht, aus Eigenanbau auf Mallorca.">
+<BaseLayout title="Shop · BUTXI Gourmet" description="Alle BUTXI Produkte: Hot Sauces, Gewürze, Olivenöl, Salze und Bundles, handgemacht, aus Eigenanbau auf Mallorca.">
   <section class="section" style="padding-bottom: 2rem;">
     <div class="container">
       <SectionHeader
         eyebrow="Shop"
         title="Alle Produkte"
-        text="Hot Sauces, Salze und Gewürze — handgemacht, aus Eigenanbau."
+        text="Hot Sauces, Salze und Gewürze, handgemacht, aus Eigenanbau."
       />
       <div class="filters" data-filters>
         {categories.map((c, i) => (
@@ -23,7 +23,7 @@ import { products, categories } from '../data/products';
   <section class="section" style="padding-top: 0.5rem;">
     <div class="container">
       <p class="empty" data-empty hidden>
-        In dieser Kategorie ist gerade nichts auf Lager — schau bald wieder vorbei.
+        In dieser Kategorie ist gerade nichts auf Lager, schau bald wieder vorbei.
       </p>
       <div class="grid" data-product-grid>
         {products.map((p, i) => <ProductCard product={p} loading={i < 4 ? 'eager' : 'lazy'} />)}

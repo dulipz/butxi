@@ -4,7 +4,7 @@ import SectionHeader from '../components/SectionHeader.astro';
 import RecipeCard from '../components/RecipeCard.astro';
 import { recipes, recipeCategories } from '../data/recipes';
 ---
-<BaseLayout title="Rezepte — BUTXI Gourmet" description="BUTXI Rezepte mit Hot Sauce, Chili-Ölen und Gourmet-Salzen: gesund kochen, intensiver schmecken.">
+<BaseLayout title="Rezepte · BUTXI Gourmet" description="BUTXI Rezepte mit Hot Sauce, Chili-Ölen und Gourmet-Salzen: gesund kochen, intensiver schmecken.">
   <section class="section" style="padding-bottom: 2rem;">
     <div class="container">
       <SectionHeader
@@ -25,7 +25,7 @@ import { recipes, recipeCategories } from '../data/recipes';
       <div class="grid" data-recipe-grid>
         {recipes.map((r) => <RecipeCard recipe={r} />)}
         <div class="teaser">
-          <p>Jeden Monat neue Rezepte —<br />bleib über den Newsletter dran.</p>
+          <p>Jeden Monat neue Rezepte,<br />bleib über den Newsletter dran.</p>
         </div>
       </div>
     </div>

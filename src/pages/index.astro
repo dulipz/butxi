@@ -14,7 +14,7 @@ const homeRecipes = recipes.filter((r) =>
   ['mais-limetten-salat', 'knoblauchbrot-butxi-picante'].includes(r.slug)
 );
 ---
-<BaseLayout title="BUTXI Gourmet — Das Feuer Mallorcas" transparentHeader>
+<BaseLayout title="BUTXI Gourmet · Das Feuer Mallorcas" transparentHeader>
   <!-- Hero -->
   <section class="hero">
     <picture>
@@ -22,7 +22,7 @@ const homeRecipes = recipes.filter((r) =>
       <img
         class="hero__bg"
         src="/images/hero/hero-001.webp"
-        alt="BUTXI Sortiment — Hot Sauces, Öle und Gewürzsalze auf einem Holztisch auf Mallorca"
+        alt="BUTXI Sortiment: Hot Sauces, Öle und Gewürzsalze auf einem Holztisch auf Mallorca"
         loading="eager"
         fetchpriority="high"
       />
@@ -39,9 +39,9 @@ const homeRecipes = recipes.filter((r) =>
       </div>
       <div class="hero__bottom">
         <p class="lead">
-          <span class="hero__lead-full">Das Feuer Mallorcas — in Öl, Chili und Charakter. Für alle, die Geschmack wollen…
+          <span class="hero__lead-full">Das Feuer Mallorcas, in Öl, Chili und Charakter. Für alle, die Geschmack wollen…
           <strong>und ein bisschen Gefahr.</strong></span>
-          <span class="hero__lead-short">Das Feuer Mallorcas — <strong>mit einem bisschen Gefahr.</strong></span>
+          <span class="hero__lead-short">Das Feuer Mallorcas, <strong>mit einem bisschen Gefahr.</strong></span>
         </p>
         <div class="hero__actions">
           <a href="/shop/" class="btn btn--primary btn--lg">Produkte entdecken</a>
@@ -97,12 +97,11 @@ const homeRecipes = recipes.filter((r) =>
     <div class="container legend reveal">
       <span class="eyebrow">Die Legende von BUTXI</span>
       <p class="legend__quote">
-        „Wenn Piratenschiffe am Horizont auftauchten, suchten sie keine Truhen —
-        sie suchten den Geschmack, der Mut macht."
+        „Wenn Piratenschiffe am Horizont auftauchten, suchten sie keine Truhen, sie suchten den Geschmack, der Mut macht."
       </p>
       <p class="legend__text">
         BUTXI war kein Gewürz. BUTXI war ein Versprechen.
-        Ein Tropfen — und Mallorca steht in Flammen.
+        Ein Tropfen, und Mallorca steht in Flammen.
       </p>
       <a href="/ueber-uns/" class="btn btn--inverse">Unsere Geschichte</a>
     </div>
@@ -126,7 +125,7 @@ const homeRecipes = recipes.filter((r) =>
         <div class="feature">
           <span class="feature__icon"><Icon name="flame" size={22} /></span>
           <h3>Volles Aroma</h3>
-          <p>Reife Zutaten aus Eigenanbau — für intensive Soßen &amp; Salze.</p>
+          <p>Reife Zutaten aus Eigenanbau, für intensive Soßen &amp; Salze.</p>
         </div>
       </div>
     </div>
@@ -177,7 +176,7 @@ const homeRecipes = recipes.filter((r) =>
   /* Fullscreen-Hero: liegt unter dem transparenten Header (76px hochgezogen). */
   .hero {
     position: relative;
-    margin-top: -77px; /* 76px Header + 1px Border — sonst blitzt oben eine weiße Linie auf */
+    margin-top: -77px; /* 76px Header + 1px Border, sonst blitzt oben eine weiße Linie auf */
     min-height: calc(100svh + 1px);
     display: flex;
     align-items: stretch;
@@ -302,13 +301,14 @@ const homeRecipes = recipes.filter((r) =>
     .anbau__imgs img:nth-child(n+3) { display: none; }
     .anbau__copy :global(.section-header .lead) { display: none; }
     .hero__content { padding-top: calc(76px + 4px); } /* Text-Block höher */
+    /* Headline-Block in die linke Ecke, Zeilen linksbündig */
     .hero__copy {
-      align-self: center;
+      align-self: flex-start;
       width: 100%;
-      align-items: center;
-      text-align: center;
+      align-items: flex-start;
+      text-align: left;
     }
-    .hero__title { font-size: clamp(1.7rem, 7.65vw, 2.21rem); } /* 15 % kleiner */
+    .hero__title { align-items: flex-start; text-align: left; font-size: clamp(1.7rem, 7.65vw, 2.21rem); } /* 15 % kleiner */
 
     .classics {
       display: flex;

@@ -12,7 +12,7 @@ interface Props {
 }
 const {
   title,
-  description = 'BUTXI Gourmet — Hot Sauces, Salze & Gewürze aus Eigenanbau, handgemacht auf Mallorca. Das Feuer Mallorcas für deine Küche.',
+  description = 'BUTXI Gourmet, Hot Sauces, Salze & Gewürze aus Eigenanbau, handgemacht auf Mallorca. Das Feuer Mallorcas für deine Küche.',
   transparentHeader = false,
 } = Astro.props;
 const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
@@ -61,7 +61,7 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
 
     <script>
       // ------------------------------------------------------------------
-      // BUTXI Cart — lightweight local cart (localStorage) with Snipcart
+      // BUTXI Cart, lightweight local cart (localStorage) with Snipcart
       // hand-off at checkout when PUBLIC_SNIPCART_API_KEY is configured.
       // ------------------------------------------------------------------
       type CartItem = { id: string; name: string; price: number; image: string; meta: string; qty: number };
@@ -97,7 +97,7 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         if (bar) bar.style.width = Math.min(100, (subtotal / FREE_SHIPPING) * 100) + '%';
         if (label) {
           label.textContent = subtotal >= FREE_SHIPPING
-            ? 'Kostenloser Versand — geschafft!'
+            ? 'Kostenloser Versand, geschafft!'
             : `Noch ${fmt(FREE_SHIPPING - subtotal)} bis zum kostenlosen Versand`;
         }
 
