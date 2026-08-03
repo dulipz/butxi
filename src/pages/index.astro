@@ -31,7 +31,7 @@ const homeRecipes = recipes.filter((r) =>
     <div class="hero__overlay" aria-hidden="true"></div>
     <div class="container hero__content">
       <div class="hero__copy">
-        <span class="badge badge--olive">Aus Eigenanbau · Mallorca</span>
+        <span class="badge badge--olive hero__badge-top">Aus Eigenanbau · Mallorca</span>
         <h1 class="hero__title display-xl">
           <span>Mach jedes</span>
           <span class="hero__title-accent">Essen</span>
@@ -39,6 +39,7 @@ const homeRecipes = recipes.filter((r) =>
         </h1>
       </div>
       <div class="hero__bottom">
+        <span class="badge badge--olive hero__badge-bottom">Aus Eigenanbau · Mallorca</span>
         <p class="lead">
           <span class="hero__lead-full">Das Feuer Mallorcas, in Öl, Chili und Charakter. Für alle, die Geschmack wollen…
           <strong>und ein bisschen Gefahr.</strong></span>
@@ -203,7 +204,8 @@ const homeRecipes = recipes.filter((r) =>
     padding-bottom: 44px;
   }
   /* Hero-Badge etwas größer */
-  .hero__copy .badge { font-size: 19px; padding: 5px 18px; }
+  .hero__copy .badge, .hero__bottom .badge { font-size: 19px; padding: 5px 18px; }
+  .hero__badge-bottom { display: none; }
 
   /* Oben links: Badge + Headline (50 % kleiner), Zeilen mittig gestapelt */
   .hero__copy {
@@ -288,6 +290,10 @@ const homeRecipes = recipes.filter((r) =>
 
   /* ---- Mobile: Hero-Text mittig, Klassiker als 3D-Karussell, weniger Text ---- */
   @media (max-width: 767px) {
+    /* Badge unten mittig statt oben */
+    .hero__badge-top { display: none; }
+    .hero__badge-bottom { display: inline-flex; }
+
     /* Hero: kurze Unterzeile statt drei Zeilen */
     .hero__lead-full { display: none; }
     .hero__lead-short { display: inline; }
