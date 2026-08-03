@@ -1,6 +1,7 @@
 :root {
   /* Families */
-  --font-display: "Fraunces", Georgia, serif;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-accent: "Caveat", cursive; /* sparsam: handschriftliche Notizen & Promo-Labels */
   --font-sans: "Manrope", "Helvetica Neue", Arial, sans-serif;
 
   /* Size scale */

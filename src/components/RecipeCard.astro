@@ -53,5 +53,12 @@ const heatBadge = { mild: 'olive', mittel: 'sand', scharf: 'fire' } as const;
     margin-top: auto; padding-top: 10px; font-size: 13px; color: var(--color-text-muted);
   }
   .recipe-card__time { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
-  .recipe-card__product { font-style: italic; text-align: right; }
+  .recipe-card__product {
+    /* Handschriftliche Rezeptnotiz */
+    font-family: var(--font-accent);
+    font-size: 17px;
+    font-weight: 600;
+    text-align: right;
+    color: var(--color-deep-brown, var(--color-text-secondary));
+  }
 </style>
