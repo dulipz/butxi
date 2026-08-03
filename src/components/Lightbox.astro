@@ -1,0 +1,75 @@
+---
+// Lightbox: öffnet Bilder mit [data-lightbox] als Vollbild-Overlay.
+// Einmal pro Seite einbinden; Klick aufs Bild, Schließen per X, Klick daneben oder Esc.
+---
+<div class="lightbox" data-lightbox-overlay hidden>
+  <button class="lightbox__close" data-lightbox-close aria-label="Bild schließen">×</button>
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" src="" alt="" />
+    <figcaption class="lightbox__caption"></figcaption>
+  </figure>
+</div>
+
+<style>
+  .lightbox {
+    position: fixed; inset: 0; z-index: 999;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(15, 12, 9, 0.88);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 4vh 4vw;
+    opacity: 0; transition: opacity 0.25s ease;
+  }
+  .lightbox.is-open { opacity: 1; }
+  .lightbox__figure { margin: 0; max-width: min(1100px, 92vw); text-align: center; }
+  .lightbox__img {
+    max-width: 100%; max-height: 82vh;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  }
+  .lightbox__caption {
+    margin-top: 14px; color: rgba(255, 255, 255, 0.85);
+    font-family: var(--font-accent); font-size: 22px;
+  }
+  .lightbox__close {
+    position: absolute; top: 18px; right: 22px;
+    width: 44px; height: 44px; border: none; border-radius: 99px;
+    background: rgba(255, 255, 255, 0.12); color: #fff;
+    font-size: 26px; line-height: 1; cursor: pointer;
+  }
+  .lightbox__close:hover { background: rgba(255, 255, 255, 0.25); }
+</style>
+
+<script>
+  const overlay = document.querySelector<HTMLElement>('[data-lightbox-overlay]');
+  const img = overlay?.querySelector<HTMLImageElement>('.lightbox__img');
+  const caption = overlay?.querySelector<HTMLElement>('.lightbox__caption');
+
+  const close = () => {
+    overlay?.classList.remove('is-open');
+    setTimeout(() => { if (overlay) overlay.hidden = true; }, 250);
+    document.body.style.overflow = '';
+  };
+  const open = (src: string, title: string) => {
+    if (!overlay || !img) return;
+    img.src = src;
+    img.alt = title;
+    if (caption) caption.textContent = title;
+    overlay.hidden = false;
+    requestAnimationFrame(() => overlay.classList.add('is-open'));
+    document.body.style.overflow = 'hidden';
+  };
+
+  document.addEventListener('click', (e) => {
+    const t = (e.target as HTMLElement).closest('[data-lightbox]') as HTMLElement | null;
+    if (t) {
+      e.preventDefault();
+      open(t.dataset.lightbox || '', t.dataset.lightboxTitle || '');
+      return;
+    }
+    if (!overlay || overlay.hidden) return;
+    const inside = (e.target as HTMLElement).closest('.lightbox__img');
+    if (!inside) close();
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+</script>

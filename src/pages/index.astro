@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import ProductCard from '../components/ProductCard.astro';
 import RecipeCard from '../components/RecipeCard.astro';
+import Lightbox from '../components/Lightbox.astro';
 import NewsletterForm from '../components/NewsletterForm.astro';
 import Icon from '../components/Icon.astro';
 import { products } from '../data/products';
@@ -170,6 +171,7 @@ const homeRecipes = recipes.filter((r) =>
       <NewsletterForm />
     </div>
   </section>
+  <Lightbox />
 </BaseLayout>
 
 <style>
