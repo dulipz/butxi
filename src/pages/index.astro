@@ -39,7 +39,6 @@ const homeRecipes = recipes.filter((r) =>
         </h1>
       </div>
       <div class="hero__bottom">
-        <span class="badge badge--olive hero__badge-bottom">Aus Eigenanbau · Mallorca</span>
         <p class="lead">
           <span class="hero__lead-full">Das Feuer Mallorcas, in Öl, Chili und Charakter. Für alle, die Geschmack wollen…
           <strong>und ein bisschen Gefahr.</strong></span>
@@ -205,7 +204,6 @@ const homeRecipes = recipes.filter((r) =>
   }
   /* Hero-Badge etwas größer */
   .hero__copy .badge, .hero__bottom .badge { font-size: 19px; padding: 5px 18px; }
-  .hero__badge-bottom { display: none; }
 
   /* Oben links: Badge + Headline (50 % kleiner), Zeilen mittig gestapelt */
   .hero__copy {
@@ -290,9 +288,9 @@ const homeRecipes = recipes.filter((r) =>
 
   /* ---- Mobile: Hero-Text mittig, Klassiker als 3D-Karussell, weniger Text ---- */
   @media (max-width: 767px) {
-    /* Badge unten mittig statt oben */
-    .hero__badge-top { display: none; }
-    .hero__badge-bottom { display: inline-flex; }
+    /* Badge oben links, etwas kleiner; Headline tiefer, damit der Flaschendeckel frei bleibt */
+    .hero__copy .badge { font-size: 15px; padding: 3px 13px; }
+    .hero__title { margin-top: 14px; }
 
     /* Hero: kurze Unterzeile statt drei Zeilen */
     .hero__lead-full { display: none; }
