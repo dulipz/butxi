@@ -288,8 +288,8 @@ const homeRecipes = recipes.filter((r) =>
 
   /* ---- Mobile: Hero-Text mittig, Klassiker als 3D-Karussell, weniger Text ---- */
   @media (max-width: 767px) {
-    /* Badge oben links, etwas kleiner; Headline tiefer, damit der Flaschendeckel frei bleibt */
-    .hero__copy .badge { font-size: 15px; padding: 3px 13px; }
+    /* Badge auf Mobil ausblenden; Headline etwas tiefer (Flaschendeckel frei) */
+    .hero__copy .badge { display: none; }
     .hero__title { margin-top: 14px; }
 
     /* Hero: kurze Unterzeile statt drei Zeilen */
