@@ -22,9 +22,39 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
     </div>
 
     <div class="cart__foot">
+      <!-- Spende an KKAD: 5/10/15 % vom Warenwert oder eigener Betrag -->
+      <div class="cart__donation" data-donation-box hidden>
+        <p class="cart__donation-title">Der Natur etwas zurückgeben – Spende an KKAD</p>
+        <div class="cart__donation-opts">
+          <button type="button" class="donate-opt" data-donate-pct="5">
+            <strong>5 %</strong><span data-donate-preview="5">0,00 €</span>
+          </button>
+          <button type="button" class="donate-opt" data-donate-pct="10">
+            <strong>10 %</strong><span data-donate-preview="10">0,00 €</span>
+          </button>
+          <button type="button" class="donate-opt" data-donate-pct="15">
+            <strong>15 %</strong><span data-donate-preview="15">0,00 €</span>
+          </button>
+          <button type="button" class="donate-opt donate-opt--none" data-donate-none>Nein, danke</button>
+        </div>
+        <div class="cart__donation-custom">
+          <input class="input" type="text" inputmode="decimal" placeholder="Eigener Betrag in €" data-donate-custom-input aria-label="Eigener Spendenbetrag in Euro" />
+          <button type="button" class="btn btn--secondary btn--sm" data-donate-custom-add>Hinzufügen</button>
+        </div>
+        <p class="cart__donation-note">100 % deiner Spende gehen an KKAD.</p>
+      </div>
+
       <div class="cart__subtotal">
         <span>Zwischensumme</span>
         <strong data-cart-subtotal>0,00 €</strong>
+      </div>
+      <div class="cart__subtotal cart__donation-row" data-donation-row hidden>
+        <span>Spende an KKAD <button type="button" class="cart__donation-remove" data-donate-remove aria-label="Spende entfernen">×</button></span>
+        <strong data-donation-amount>0,00 €</strong>
+      </div>
+      <div class="cart__subtotal cart__total" data-total-row hidden>
+        <span>Gesamt</span>
+        <strong data-cart-total>0,00 €</strong>
       </div>
       <button class="btn btn--primary btn--lg btn--full" data-checkout data-snipcart-key={snipcartKey} disabled>
         Zur Kasse
@@ -104,6 +134,37 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
   }
   .cart__subtotal { display: flex; justify-content: space-between; font-size: 16px; }
   .cart__subtotal span { font-weight: 600; }
+  .cart__total { font-size: 17px; }
+  .cart__total strong { font-weight: 800; }
+
+  /* ---- Spende an KKAD ---- */
+  .cart__donation {
+    padding: 14px; border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg); background: var(--color-background-primary);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .cart__donation-title { margin: 0; font-family: var(--font-accent); font-size: 18px; }
+  .cart__donation-opts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .donate-opt {
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    padding: 8px 2px; border: 1.5px solid var(--color-border-default);
+    border-radius: var(--radius-md); background: transparent; cursor: pointer;
+    font-family: var(--font-sans); font-size: 13px; color: var(--color-text-primary);
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+  .donate-opt span { font-size: 11.5px; color: var(--color-text-muted); }
+  .donate-opt:hover { border-color: var(--color-border-strong); }
+  .donate-opt.is-active { border-color: var(--color-olive-green); background: rgba(107, 122, 74, 0.08); }
+  .donate-opt--none { justify-content: center; font-weight: 600; }
+  .cart__donation-custom { display: flex; gap: 8px; }
+  .cart__donation-custom .input { flex: 1; min-width: 0; padding: 8px 14px; font-size: 14px; }
+  .cart__donation-note { margin: 0; font-size: 11.5px; color: var(--color-text-muted); }
+  .cart__donation-row span { display: inline-flex; align-items: center; gap: 6px; }
+  .cart__donation-remove {
+    border: none; background: transparent; cursor: pointer;
+    color: var(--color-text-muted); font-size: 15px; padding: 0 4px; border-radius: 99px;
+  }
+  .cart__donation-remove:hover { color: var(--color-error, #b00020); }
   .cart__note { margin: 0; font-size: 12.5px; color: var(--color-text-muted); text-align: center; }
 
   /* Cart lines (injected via template) */

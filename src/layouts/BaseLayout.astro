@@ -33,6 +33,20 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
   </head>
   <body>
     <Header transparent={transparentHeader} />
+    <!-- Snipcart-Preisvalidierung für die KKAD-Spende (1-Cent-Einheit, Menge = Betrag in Cent) -->
+    <button
+      hidden
+      aria-hidden="true"
+      tabindex="-1"
+      class="snipcart-add-item"
+      data-item-id="spende-kkad"
+      data-item-name="Spende an KKAD"
+      data-item-price="0.01"
+      data-item-url="/"
+      data-item-shippable="false"
+      data-item-taxable="false"
+      data-item-max-quantity="100000"
+    ></button>
     <main>
       <slot />
     </main>
@@ -65,7 +79,9 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
       // hand-off at checkout when PUBLIC_SNIPCART_API_KEY is configured.
       // ------------------------------------------------------------------
       type CartItem = { id: string; name: string; price: number; image: string; meta: string; qty: number };
+      type Donation = { mode: 'none' | 'pct' | 'custom'; pct?: number; amount?: number };
       const KEY = 'butxi-cart';
+      const DON_KEY = 'butxi-donation';
       const FREE_SHIPPING = 39;
 
       const read = (): CartItem[] => {
@@ -73,6 +89,18 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
       };
       const write = (items: CartItem[]) => localStorage.setItem(KEY, JSON.stringify(items));
       const fmt = (n: number) => n.toFixed(2).replace('.', ',') + ' €';
+
+      // ---- Spende an KKAD ----
+      const readDon = (): Donation => {
+        try { return JSON.parse(localStorage.getItem(DON_KEY) || '{"mode":"none"}'); } catch { return { mode: 'none' }; }
+      };
+      const writeDon = (d: Donation) => localStorage.setItem(DON_KEY, JSON.stringify(d));
+      const donationAmount = (subtotal: number): number => {
+        const d = readDon();
+        if (d.mode === 'pct' && d.pct) return Math.round(subtotal * d.pct) / 100;
+        if (d.mode === 'custom' && d.amount) return Math.round(d.amount * 100) / 100;
+        return 0;
+      };
 
       const drawer = document.querySelector('[data-cart]') as HTMLElement | null;
       const itemsEl = document.querySelector('[data-cart-items]') as HTMLElement | null;
@@ -128,6 +156,29 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         if (subEl) subEl.textContent = fmt(subtotal);
         const checkout = document.querySelector('[data-checkout]') as HTMLButtonElement | null;
         if (checkout) checkout.disabled = items.length === 0;
+
+        // ---- Spende an KKAD: Vorschau-Beträge, Auswahl-Zustand, Summenzeilen ----
+        const don = readDon();
+        const donAmt = donationAmount(subtotal);
+        const donBox = document.querySelector('[data-donation-box]') as HTMLElement | null;
+        if (donBox) donBox.hidden = items.length === 0;
+        document.querySelectorAll('[data-donate-preview]').forEach((el) => {
+          const pct = Number((el as HTMLElement).dataset.donatePreview);
+          el.textContent = fmt(Math.round(subtotal * pct) / 100);
+        });
+        document.querySelectorAll('[data-donate-pct]').forEach((btn) => {
+          btn.classList.toggle('is-active', don.mode === 'pct' && Number((btn as HTMLElement).dataset.donatePct) === don.pct);
+        });
+        document.querySelector('[data-donate-none]')?.classList.toggle('is-active', don.mode === 'none');
+        const donRow = document.querySelector('[data-donation-row]') as HTMLElement | null;
+        const totalRow = document.querySelector('[data-total-row]') as HTMLElement | null;
+        const showDon = donAmt > 0 && items.length > 0;
+        if (donRow) donRow.hidden = !showDon;
+        if (totalRow) totalRow.hidden = !showDon;
+        const donAmtEl = document.querySelector('[data-donation-amount]');
+        if (donAmtEl) donAmtEl.textContent = fmt(donAmt);
+        const totalEl = document.querySelector('[data-cart-total]');
+        if (totalEl) totalEl.textContent = fmt(subtotal + donAmt);
       }
 
       function addItem(data: Omit<CartItem, 'qty'>, qty = 1) {
@@ -182,6 +233,31 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
       document.querySelectorAll('[data-cart-close]').forEach((b) => b.addEventListener('click', closeDrawer));
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
 
+      // ---- Spende an KKAD: Auswahl-Events ----
+      document.querySelectorAll('[data-donate-pct]').forEach((btn) =>
+        btn.addEventListener('click', () => {
+          writeDon({ mode: 'pct', pct: Number((btn as HTMLElement).dataset.donatePct) });
+          render();
+        })
+      );
+      document.querySelector('[data-donate-none]')?.addEventListener('click', () => {
+        writeDon({ mode: 'none' });
+        render();
+      });
+      document.querySelector('[data-donate-remove]')?.addEventListener('click', () => {
+        writeDon({ mode: 'none' });
+        render();
+      });
+      document.querySelector('[data-donate-custom-add]')?.addEventListener('click', () => {
+        const input = document.querySelector('[data-donate-custom-input]') as HTMLInputElement | null;
+        const val = parseFloat((input?.value || '').replace(',', '.'));
+        if (!isNaN(val) && val > 0) {
+          writeDon({ mode: 'custom', amount: Math.round(val * 100) / 100 });
+          if (input) input.value = '';
+          render();
+        }
+      });
+
       // Checkout: hand off to Snipcart when configured
       const checkoutBtn = document.querySelector('[data-checkout]') as HTMLButtonElement | null;
       checkoutBtn?.addEventListener('click', async () => {
@@ -193,6 +269,20 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
               id: i.id, name: i.name, price: i.price, quantity: i.qty,
               url: '/product/' + i.id + '/', image: i.image,
             })));
+            // Spende an KKAD als 1-Cent-Positionen (Menge = Betrag in Cent),
+            // damit Snipcarts Preisvalidierung greift
+            const donAmt = donationAmount(items.reduce((s, i) => s + i.price * i.qty, 0));
+            if (donAmt > 0) {
+              await w.Snipcart.api.cart.items.add({
+                id: 'spende-kkad',
+                name: 'Spende an KKAD',
+                price: 0.01,
+                quantity: Math.round(donAmt * 100),
+                url: '/',
+                shippable: false,
+                taxable: false,
+              });
+            }
             w.Snipcart.api.theme.cart.open();
           } catch (err) { console.error('Snipcart error', err); }
         } else {
