@@ -1,6 +1,6 @@
 ---
 import type { Product } from '../data/products';
-import { productImage, formatPrice } from '../data/products';
+import { productImage, formatPrice, basePrice } from '../data/products';
 import HeatMeter from './HeatMeter.astro';
 
 interface Props { product: Product; loading?: 'lazy' | 'eager' }
@@ -17,7 +17,10 @@ const href = `/product/${p.slug}/`;
     <a href={href} class="product-card__name">{p.name}</a>
     {p.heat != null && <HeatMeter level={p.heat} size="sm" />}
     <div class="product-card__row">
-      <span class="product-card__price">{formatPrice(p.price)}</span>
+      <span class="product-card__pricebox">
+        <span class="product-card__price">{formatPrice(p.price)}</span>
+        {basePrice(p) && <span class="product-card__baseprice">{basePrice(p)}</span>}
+      </span>
       <button
         class="btn btn--primary btn--sm"
         data-add-to-cart
@@ -57,5 +60,7 @@ const href = `/product/${p.slug}/`;
     display: flex; align-items: center; justify-content: space-between;
     gap: 10px; margin-top: auto; padding-top: 6px; flex-wrap: wrap;
   }
+  .product-card__pricebox { display: flex; flex-direction: column; }
   .product-card__price { font-weight: 800; font-size: 17px; }
+  .product-card__baseprice { font-size: 11px; color: var(--color-text-muted); } /* Grundpreis (PAngV) */
 </style>

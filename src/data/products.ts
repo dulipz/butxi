@@ -175,6 +175,7 @@ export const products: Product[] = [
   },
   {
     slug: 'confitura-picante', name: 'Confitura Picante', price: 6.49, category: 'Saucen', heat: 2,
+    volume: '100 g',
     desc: 'Scharfe Konfitüre, süß trifft Feuer. Zu Käse, Brot und allem Gegrillten.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/confitura-picante.webp',
@@ -401,6 +402,20 @@ export const products: Product[] = [
 
 export function productImage(p: Product): string {
   return p.image ?? PLACEHOLDER;
+}
+
+/** Grundpreis nach § 4 PAngV: Preis je 1 l bzw. 1 kg, abgeleitet aus `volume` (z. B. "100 ml").
+ *  Für Sets/Bundles ohne eindeutige Füllmenge (Warenzusammenstellungen) entfällt die Angabe. */
+export function basePrice(p: Product): string | null {
+  const m = p.volume?.match(/^(\d+(?:[.,]\d+)?)\s*(ml|g|l|kg)$/i);
+  if (!m) return null;
+  let qty = parseFloat(m[1].replace(',', '.'));
+  const unit = m[2].toLowerCase();
+  if (unit === 'ml' || unit === 'g') qty /= 1000;
+  if (qty <= 0) return null;
+  const per = p.price / qty;
+  const label = unit === 'ml' || unit === 'l' ? 'l' : 'kg';
+  return per.toFixed(2).replace('.', ',') + ' €/' + label;
 }
 
 export function formatPrice(value: number): string {
