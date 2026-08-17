@@ -22,8 +22,8 @@ const homeRecipes = recipes.filter((r) =>
       <source media="(max-width: 767px)" srcset="/images/hero/hero-mobile-001.webp" />
       <img
         class="hero__bg"
-        src="/images/hero/hero-001.webp"
-        alt="BUTXI Sortiment: Hot Sauces, Öle und Gewürzsalze auf einem Holztisch auf Mallorca"
+        src="/images/hero/hero-002.webp"
+        alt="Das BUTXI Sortiment auf einem Holztisch in der Finca: Hot Sauces, Öle, Gewürzsalze und Sets vor einer Natursteinwand"
         loading="eager"
         fetchpriority="high"
       />
@@ -193,7 +193,8 @@ const homeRecipes = recipes.filter((r) =>
   .hero__overlay {
     position: absolute; inset: 0;
     background:
-      linear-gradient(to bottom, rgba(20, 14, 8, 0.28) 0%, rgba(20, 14, 8, 0) 30%, rgba(20, 14, 8, 0) 62%, rgba(20, 14, 8, 0.32) 100%),
+      /* unten kräftiger seit hero-002: das neue Motiv ist im Vordergrund hell (Holztisch, helle Etiketten) */
+      linear-gradient(to bottom, rgba(20, 14, 8, 0.28) 0%, rgba(20, 14, 8, 0) 30%, rgba(20, 14, 8, 0.10) 58%, rgba(20, 14, 8, 0.62) 100%),
       linear-gradient(to right, rgba(20, 14, 8, 0.38) 0%, rgba(20, 14, 8, 0.10) 40%, rgba(20, 14, 8, 0) 65%);
   }
   .hero__content {
@@ -227,7 +228,10 @@ const homeRecipes = recipes.filter((r) =>
     align-items: center; align-self: center; text-align: center;
     max-width: 640px;
   }
-  .hero__bottom .lead { margin: 0; font-size: 19px; color: rgba(255, 255, 255, 0.92); }
+  .hero__bottom .lead {
+    margin: 0; font-size: 19px; color: rgba(255, 255, 255, 0.96);
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+  }
   .hero__bottom .lead strong { color: #fff; }
   .hero__actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
