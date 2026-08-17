@@ -1,6 +1,6 @@
 // BUTXI Gourmet, Produktdaten (aus der Live-Site butxigourmet.com übernommen)
 // Bilder: lokale WebP-Dateien unter /public/images/products/ (aus den Produktfotos
-// zugeschnitten). 7 Produkte haben noch kein Foto und nutzen den Platzhalter.
+// zugeschnitten). Alle 28 Produkte haben ein lokales Foto (Stand 17.08.2026).
 // Details (Zutaten, Nährwerte, Allergene, Aufbewahrung) am 31.07.2026 von der Live-Site übernommen.
 
 export type Category = 'Saucen' | 'Gewürze' | 'Olivenöl' | 'Salz' | 'Bundles' | 'Startersets';
@@ -29,7 +29,6 @@ export interface ProductDetails {
   aufbewahrung?: string; // Aufbewahrung & Verwendung
 }
 
-const WP = 'https://butxigourmet.com/wp-content/uploads';
 const PLACEHOLDER = '/images/products/product_001.webp';
 
 export const products: Product[] = [
@@ -69,7 +68,7 @@ export const products: Product[] = [
     volume: '100 ml',
     desc: 'Die Allrounderin: würzig, mittelscharf, perfekt zu Tapas und Gegrilltem.',
     longDesc: 'Würzig, ausgewogen, mittelscharf, die Sauce für jeden Tag. Zu Tapas, Gegrilltem, Pasta oder einfach aufs Brot. Ein Tropfen genügt.',
-    image: `${WP}/2026/02/Unbenannt-52_ergebnis-413x413.webp`,
+    image: '/images/products/salsa-coenta.webp',
     tags: ['100% natürlich', 'Vegan'],
     details: {
       zutaten: 'Scharfe Paprika/Chili, Essig, Salz, Wasser.',
@@ -189,6 +188,7 @@ export const products: Product[] = [
   {
     slug: 'salsa-allioli-scharf', name: 'BUTXI Salsa Allioli – Scharf', price: 6.49, category: 'Saucen', heat: 2,
     desc: 'Cremiges Allioli mit Chili-Kick, mallorquinischer Klassiker, neu entfacht.',
+    image: '/images/products/salsa-allioli-scharf.webp',
     tags: ['Glutenfrei'],
     details: {
       zutaten: 'Sonnenblumenöl, Knoblauch, Wasser, Gewürze, Salz, Zitronensaft.',
@@ -200,6 +200,7 @@ export const products: Product[] = [
   {
     slug: 'salsa-allioli', name: 'BUTXI Salsa Allioli', price: 6.49, category: 'Saucen', heat: 0,
     desc: 'Das klassische Allioli: Knoblauch, Öl, Handwerk. Ohne Schärfe, voller Charakter.',
+    image: '/images/products/salsa-allioli.webp',
     tags: ['Glutenfrei'],
     details: {
       zutaten: 'Sonnenblumenöl, frischer Knoblauch, Salz, Zitrone. Hinweis: Ohne Konservierungsstoffe und ohne künstliche Farbstoffe.',
@@ -265,6 +266,7 @@ export const products: Product[] = [
   {
     slug: 'meersalz-mit-chili', name: 'BUTXI Meersalz mit Chili', price: 3.99, category: 'Salz', heat: 1,
     desc: 'Mallorquinische Salzflocken mit Chili, das Finish, das man sieht und schmeckt.',
+    image: '/images/products/meersalz-mit-chili.webp',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     details: {
       zutaten: '80 % Meersalz, 10 % Paprika, 10 % Rosmarinblätter, Basilikumblätter, zerkleinerte Chili.',
@@ -276,6 +278,7 @@ export const products: Product[] = [
   {
     slug: 'meersalz-mit-safran', name: 'BUTXI Meersalz mit Safran', price: 3.99, category: 'Salz', heat: 0,
     desc: 'Goldene Salzflocken mit Safran, für Reisgerichte, Fisch und besondere Momente.',
+    image: '/images/products/meersalz-mit-safran.webp',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     details: {
       zutaten: '80% Meersalz, 2% Safran, 10% Petersilie, 3% Kurkuma, 5% Knoblauch (zerkleinert).',
@@ -287,6 +290,7 @@ export const products: Product[] = [
   {
     slug: 'meersalz-mit-hibiskus', name: 'BUTXI Meersalz mit Hibiskus', price: 3.99, category: 'Salz', heat: 0,
     desc: 'Blumig-säuerliche Hibiskusnote auf Meersalz, auffällig auf Salaten und Desserts.',
+    image: '/images/products/meersalz-mit-hibiskus.webp',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     details: {
       zutaten: '80% Meersalz (Sal Marina), 18% Hibiskusblüte (Flor de Hibiscus), 2% Basilikumblatt (Albahaca hoja).',
@@ -350,6 +354,7 @@ export const products: Product[] = [
   {
     slug: 'chili-trio', name: 'Butxi Chili Trio', price: 6.49, category: 'Bundles', heat: 3,
     desc: 'Drei Chili-Klassiker im praktischen Set, die schnelle Tour durchs Feuer Mallorcas.',
+    image: '/images/products/chili-trio.webp',
     badge: 'Set', badgeVariant: 'sand',
     tags: ['Geschenkidee'],
     details: {
