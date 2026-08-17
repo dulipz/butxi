@@ -145,7 +145,9 @@ import { products, categories } from '../data/products';
     .hero__title { margin-top: 14px; }
     .hero__lead-full { display: none; }
     .hero__lead-short { display: inline; }
-    .hero__content { padding-top: calc(76px + 4px); }
+    /* Headline unter das "butxi MALLORCA"-Schild im Motiv setzen, sonst
+       ueberlagern sich zwei Schriftzuege (nur Shop, nur mobil). */
+    .hero__content { padding-top: calc(76px + 15svh); }
     .hero__copy {
       align-self: flex-start;
       width: 100%;
