@@ -212,6 +212,59 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         document.body.style.overflow = '';
       }
 
+      // ---- Snipcart-Feinschliff ----
+      // 1) Spendenzeile: Mengen-Stepper / "Anz: 125" / 0,01-€-Stückpreis verbergen
+      //    (die Spende läuft technisch als 1-Cent-Positionen, Kunden sehen nur den Betrag)
+      // 2) Bestellbestätigung: großer "Zurück zum Shop"-Button
+      const tidySnipcart = () => {
+        const root = document.getElementById('snipcart');
+        if (!root || !root.children.length) return;
+        root.querySelectorAll('[class*="item-line"]').forEach((line) => {
+          if (!line.textContent || !line.textContent.includes('Spende an KKAD')) return;
+          line.querySelectorAll('[class*="quantity"]').forEach((q) => { (q as HTMLElement).style.display = 'none'; });
+        });
+        root.querySelectorAll('span, small, p, div').forEach((el) => {
+          const t = (el.textContent || '').trim();
+          if (el.children.length > 0) return;
+          if (!/^(Anz\.?|Anzahl|Qty)\s*:?\s*\d+$/.test(t) && t !== '0,01 €') return;
+          let row: HTMLElement | null = el as HTMLElement;
+          for (let i = 0; i < 5 && row; i++) {
+            if (row.textContent && row.textContent.includes('Spende an KKAD')) {
+              (el as HTMLElement).style.visibility = 'hidden';
+              return;
+            }
+            row = row.parentElement;
+          }
+        });
+        const thanks = [...root.querySelectorAll('h1, h2, [class*="thank"]')].find(
+          (el) => el.textContent && el.textContent.includes('Vielen Dank')
+        );
+        if (thanks && !root.querySelector('[data-butxi-back]')) {
+          const btn = document.createElement('button');
+          btn.className = 'btn btn--primary btn--lg';
+          btn.textContent = 'Zurück zum Shop';
+          btn.setAttribute('data-butxi-back', '');
+          btn.style.margin = '18px 0 4px';
+          btn.addEventListener('click', () => {
+            const w = window as any;
+            try { w.Snipcart.api.theme.cart.close(); } catch {}
+            location.hash = '';
+          });
+          thanks.parentElement?.appendChild(btn);
+        }
+      };
+      new MutationObserver(() => requestAnimationFrame(tidySnipcart))
+        .observe(document.body, { childList: true, subtree: true });
+
+      // Nach erfolgreicher Bestellung: lokalen Warenkorb + Spendenwahl leeren
+      document.addEventListener('snipcart.ready', () => {
+        (window as any).Snipcart.events.on('cart.confirmed', () => {
+          write([]);
+          writeDon({ mode: 'none' });
+          render();
+        });
+      });
+
       // Wire up
       document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
         btn.addEventListener('click', () => {
