@@ -256,3 +256,20 @@ a, button:not([disabled]), [role='button'], summary, select, label, .btn:not([di
   cursor: image-set(url('/images/cursor/chili-v2-pointer-32.png') 1x, url('/images/cursor/chili-v2-pointer-64.png') 2x) 8 3, pointer;
 }
 input:not([type='checkbox']):not([type='radio']), textarea { cursor: text; }
+
+/* ---- Snipcart-Checkout: über allem anzeigen + BUTXI-Branding ---- */
+#snipcart {
+  position: relative;
+  z-index: calc(var(--z-modal) + 10); /* über Warenkorb-Drawer, Header und Promo-Banner */
+}
+#snipcart .snipcart-modal__container { z-index: 100; }
+#snipcart .snipcart {
+  --color-buttonPrimary: #fff;
+  --bgColor-buttonPrimary: #D83220;
+  --color-buttonPrimary-hover: #fff;
+  --bgColor-buttonPrimary-hover: #B62A1B;
+  --color-link: #D83220;
+  --color-link-hover: #B62A1B;
+  --bgColor-badge: #D83220;
+  font-family: var(--font-sans);
+}

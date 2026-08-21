@@ -283,6 +283,7 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
                 taxable: false,
               });
             }
+            closeDrawer(); // eigenen Warenkorb schließen, Snipcart übernimmt
             w.Snipcart.api.theme.cart.open();
           } catch (err) { console.error('Snipcart error', err); }
         } else {
