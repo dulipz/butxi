@@ -265,6 +265,12 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         if (checkoutBtn.dataset.snipcartKey && w.Snipcart) {
           const items = read();
           try {
+            // Erst vorhandene Snipcart-Positionen leeren – sonst addieren sich
+            // wiederholte Checkout-Klicks zu doppelten Warenkörben
+            const existing = w.Snipcart.store.getState().cart.items.items || [];
+            for (const ex of existing) {
+              await w.Snipcart.api.cart.items.remove(ex.uniqueId);
+            }
             await w.Snipcart.api.cart.items.add(...items.map((i) => ({
               id: i.id, name: i.name, price: i.price, quantity: i.qty,
               url: '/product/' + i.id + '/', image: i.image,

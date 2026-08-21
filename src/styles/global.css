@@ -263,7 +263,7 @@ input:not([type='checkbox']):not([type='radio']), textarea { cursor: text; }
   z-index: calc(var(--z-modal) + 10); /* über Warenkorb-Drawer, Header und Promo-Banner */
 }
 #snipcart .snipcart-modal__container { z-index: 100; }
-#snipcart .snipcart {
+#snipcart.snipcart, #snipcart .snipcart {
   --color-buttonPrimary: #fff;
   --bgColor-buttonPrimary: #D83220;
   --color-buttonPrimary-hover: #fff;
