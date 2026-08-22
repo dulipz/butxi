@@ -223,14 +223,21 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
           if (!line.textContent || !line.textContent.includes('Spende an KKAD')) return;
           line.querySelectorAll('[class*="quantity"]').forEach((q) => { (q as HTMLElement).style.display = 'none'; });
         });
+        const donLabel = localStorage.getItem('butxi-don-label') || '';
         root.querySelectorAll('span, small, p, div').forEach((el) => {
           const t = (el.textContent || '').trim();
           if (el.children.length > 0) return;
-          if (!/^(Anz\.?|Anzahl|Qty)\s*:?\s*\d+$/.test(t) && t !== '0,01 €') return;
+          const isQty = /^(Anz\.?|Anzahl|Qty)\s*:?\s*\d+$/.test(t) || /^x\s*\d+$/.test(t);
+          if (!isQty && t !== '0,01 €') return;
+          if (t === donLabel) return; // schon ersetzt
           let row: HTMLElement | null = el as HTMLElement;
           for (let i = 0; i < 5 && row; i++) {
             if (row.textContent && row.textContent.includes('Spende an KKAD')) {
-              (el as HTMLElement).style.visibility = 'hidden';
+              if (isQty && donLabel) {
+                el.textContent = donLabel; // "x32" -> "5 %"
+              } else {
+                (el as HTMLElement).style.visibility = 'hidden';
+              }
               return;
             }
             row = row.parentElement;
@@ -331,6 +338,8 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
             // Spende an KKAD als 1-Cent-Positionen (Menge = Betrag in Cent),
             // damit Snipcarts Preisvalidierung greift
             const donAmt = donationAmount(items.reduce((s, i) => s + i.price * i.qty, 0));
+            const dNow = readDon();
+            localStorage.setItem('butxi-don-label', dNow.mode === 'pct' && dNow.pct ? dNow.pct + ' %' : '');
             if (donAmt > 0) {
               await w.Snipcart.api.cart.items.add({
                 id: 'spende-kkad',
