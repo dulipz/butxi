@@ -263,8 +263,33 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
           const list = line.parentElement;
           if (isTopLine && list && line !== list.lastElementChild) list.appendChild(line);
         });
+        // Zeilen OHNE "item-line"-Klassen (z. B. die Bestellübersicht im Checkout)
+        // strukturell markieren: vom Namens-Blatt "Spende an KKAD" aufwärts bis zum
+        // kleinsten Vorfahren, der auch den Mengen-Marker ("x937") enthält = die Zeile.
+        root.querySelectorAll('span, p, div, li, dt, dd, td, th, strong').forEach((el) => {
+          if (el.children.length > 0) return;
+          if ((el.textContent || '').trim() !== 'Spende an KKAD') return;
+          // Bereits markierte Zeile nie erneut suchen — nach der Ersetzung fehlt ihr
+          // der Mengen-Marker und die Suche würde auf die ganze Liste eskalieren
+          if ((el as HTMLElement).closest('[data-butxi-don]')) return;
+          let row: HTMLElement | null = (el as HTMLElement).parentElement;
+          for (let i = 0; i < 6 && row && row !== root; i++) {
+            const rt = row.textContent || '';
+            if (/x\s*\d+|Anz\.?|Anzahl|Qty/.test(rt)) {
+              row.setAttribute('data-butxi-don', '1');
+              // Spende ans Listenende, wenn alle Geschwister Artikelzeilen sind (je ein €)
+              const list = row.parentElement;
+              if (list && row !== list.lastElementChild &&
+                  [...list.children].every((c) => (c.textContent || '').includes('€'))) {
+                list.appendChild(row);
+              }
+              break;
+            }
+            row = row.parentElement;
+          }
+        });
         const donLabel = localStorage.getItem('butxi-don-label') || '';
-        root.querySelectorAll('[data-butxi-don] span, [data-butxi-don] small, [data-butxi-don] p, [data-butxi-don] div').forEach((el) => {
+        root.querySelectorAll('[data-butxi-don] span, [data-butxi-don] small, [data-butxi-don] p, [data-butxi-don] div, [data-butxi-don] li, [data-butxi-don] td, [data-butxi-don] strong, [data-butxi-don] b, [data-butxi-don] em').forEach((el) => {
           if (el.children.length > 0) return;
           const t = (el.textContent || '').trim();
           if (t === donLabel) return; // schon ersetzt
