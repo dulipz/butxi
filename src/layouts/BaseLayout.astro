@@ -2,7 +2,6 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import CartDrawer from '../components/CartDrawer.astro';
 
 interface Props {
   title: string;
@@ -51,7 +50,13 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
       <slot />
     </main>
     <Footer />
-    <CartDrawer />
+
+    <!-- Feedback nach "In den Warenkorb" (der Warenkorb ist jetzt eine eigene Seite) -->
+    <div class="added-toast" data-added-toast hidden role="status">
+      <span class="added-toast__check">✓</span>
+      <span class="added-toast__text"><strong data-added-name></strong> wurde in den Warenkorb gelegt.</span>
+      <a class="btn btn--primary btn--sm" href="/warenkorb/">Warenkorb ansehen</a>
+    </div>
 
     {snipcartKey && (
       <>
@@ -102,7 +107,6 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         return 0;
       };
 
-      const drawer = document.querySelector('[data-cart]') as HTMLElement | null;
       const itemsEl = document.querySelector('[data-cart-items]') as HTMLElement | null;
       const tpl = document.querySelector('[data-cart-line-template]') as HTMLTemplateElement | null;
 
@@ -129,11 +133,18 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
             : `Noch ${fmt(FREE_SHIPPING - subtotal)} bis zum kostenlosen Versand`;
         }
 
+        // Tabellenkopf der Warenkorb-Seite nur zeigen, wenn Artikel da sind
+        document.querySelectorAll('[data-cart-head]').forEach((el) => {
+          (el as HTMLElement).hidden = items.length === 0;
+        });
+
         // Lines
         if (itemsEl && tpl) {
           itemsEl.innerHTML = '';
           if (items.length === 0) {
-            itemsEl.innerHTML = '<p class="cart__empty">Dein Warenkorb ist noch leer. Zeit für ein bisschen Gefahr.</p>';
+            itemsEl.innerHTML =
+              '<div class="cart__empty"><p>Dein Warenkorb ist noch leer. Zeit für ein bisschen Gefahr.</p>' +
+              '<a class="btn btn--primary" href="/shop/">Zum Shop</a></div>';
           } else {
             for (const it of items) {
               const node = tpl.content.cloneNode(true) as DocumentFragment;
@@ -142,6 +153,8 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
               node.querySelector('.cart-line__name')!.textContent = it.name;
               node.querySelector('.cart-line__meta')!.textContent = it.meta;
               node.querySelector('[data-qty-value]')!.textContent = String(it.qty);
+              const unitEl = node.querySelector('[data-line-unit]');
+              if (unitEl) unitEl.textContent = fmt(it.price);
               node.querySelector('.cart-line__price')!.textContent = fmt(it.price * it.qty);
               node.querySelector('[data-qty-plus]')!.addEventListener('click', () => changeQty(it.id, 1));
               node.querySelector('[data-qty-minus]')!.addEventListener('click', () => changeQty(it.id, -1));
@@ -179,6 +192,20 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         if (donAmtEl) donAmtEl.textContent = fmt(donAmt);
         const totalEl = document.querySelector('[data-cart-total]');
         if (totalEl) totalEl.textContent = fmt(subtotal + donAmt);
+
+        // Spendenzeile am Ende der Artikelliste (Warenkorb-Seite)
+        const donLine = document.querySelector('[data-donation-line]') as HTMLElement | null;
+        if (donLine) {
+          donLine.hidden = !showDon;
+          const lbl = donLine.querySelector('[data-donation-line-label]');
+          if (lbl) {
+            lbl.textContent = don.mode === 'pct' && don.pct
+              ? `Spende an KKAD – ${don.pct} %`
+              : 'Spende an KKAD';
+          }
+          const amt = donLine.querySelector('[data-donation-line-amount]');
+          if (amt) amt.textContent = fmt(donAmt);
+        }
       }
 
       function addItem(data: Omit<CartItem, 'qty'>, qty = 1) {
@@ -187,7 +214,7 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         if (ex) ex.qty += qty; else items.push({ ...data, qty });
         write(items);
         render();
-        openDrawer();
+        showAddedToast(data.name);
       }
       function changeQty(id: string, delta: number) {
         let items = read();
@@ -201,15 +228,20 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         write(read().filter((i) => i.id !== id));
         render();
       }
-      function openDrawer() {
-        drawer?.classList.add('is-open');
-        drawer?.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-      }
-      function closeDrawer() {
-        drawer?.classList.remove('is-open');
-        drawer?.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
+      // Kurzes Feedback nach "In den Warenkorb" mit Link zur Warenkorb-Seite
+      let toastTimer: ReturnType<typeof setTimeout> | undefined;
+      function showAddedToast(name: string) {
+        const toast = document.querySelector('[data-added-toast]') as HTMLElement | null;
+        if (!toast) return;
+        const nameEl = toast.querySelector('[data-added-name]');
+        if (nameEl) nameEl.textContent = name;
+        toast.hidden = false;
+        requestAnimationFrame(() => toast.classList.add('is-visible'));
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('is-visible');
+          setTimeout(() => { toast.hidden = true; }, 350);
+        }, 4000);
       }
 
       // ---- Snipcart-Feinschliff ----
@@ -221,6 +253,9 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         if (!root || !root.children.length) return;
         root.querySelectorAll('[class*="item-line"]').forEach((line) => {
           if (!line.textContent || !line.textContent.includes('Spende an KKAD')) return;
+          // Spendenzeilen strukturell markieren – nur INNERHALB dieser Zeilen
+          // wird später das Mengen-Label ersetzt (nie auf Produktzeilen)
+          line.setAttribute('data-butxi-don', '1');
           line.querySelectorAll('[class*="quantity"]').forEach((q) => { (q as HTMLElement).style.display = 'none'; });
           // Spende ans Ende der Artikelliste (direkt über der Gesamtsumme) verschieben —
           // nur das äußere Zeilen-Element, nicht dessen Kinder (item-line__…)
@@ -229,25 +264,16 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
           if (isTopLine && list && line !== list.lastElementChild) list.appendChild(line);
         });
         const donLabel = localStorage.getItem('butxi-don-label') || '';
-        root.querySelectorAll('span, small, p, div').forEach((el) => {
-          const t = (el.textContent || '').trim();
+        root.querySelectorAll('[data-butxi-don] span, [data-butxi-don] small, [data-butxi-don] p, [data-butxi-don] div').forEach((el) => {
           if (el.children.length > 0) return;
-          const isQty = /^(Anz\.?|Anzahl|Qty)\s*:?\s*\d+$/.test(t) || /^x\s*\d+$/.test(t);
-          if (!isQty && t !== '0,01 €') return;
+          const t = (el.textContent || '').trim();
           if (t === donLabel) return; // schon ersetzt
-          let row: HTMLElement | null = (el as HTMLElement).parentElement;
-          for (let i = 0; i < 5 && row; i++) {
-            const rt = row.textContent || '';
-            if (rt.length > 120) break; // Zeilengrenze überschritten: wir sind in der Liste, nicht in EINER Zeile
-            if (rt.includes('Spende an KKAD')) {
-              if (isQty && donLabel) {
-                el.textContent = donLabel; // "x32" -> "5 %"
-              } else {
-                (el as HTMLElement).style.visibility = 'hidden';
-              }
-              return;
-            }
-            row = row.parentElement;
+          const isQty = /^(Anz\.?|Anzahl|Qty)\s*:?\s*\d+$/.test(t) || /^x\s*\d+$/.test(t);
+          if (isQty) {
+            if (donLabel) el.textContent = donLabel; // "x32" -> "5 %"
+            else (el as HTMLElement).style.visibility = 'hidden';
+          } else if (t === '0,01 €') {
+            (el as HTMLElement).style.visibility = 'hidden'; // 1-Cent-Stückpreis verbergen
           }
         });
         const thanks = [...root.querySelectorAll('h1, h2, [class*="thank"]')].find(
@@ -296,9 +322,6 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
           }, qty);
         });
       });
-      document.querySelectorAll('[data-cart-open]').forEach((b) => b.addEventListener('click', openDrawer));
-      document.querySelectorAll('[data-cart-close]').forEach((b) => b.addEventListener('click', closeDrawer));
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
 
       // ---- Spende an KKAD: Auswahl-Events ----
       document.querySelectorAll('[data-donate-pct]').forEach((btn) =>
@@ -358,7 +381,6 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
                 taxable: false,
               });
             }
-            closeDrawer(); // eigenen Warenkorb schließen, Snipcart übernimmt
             w.Snipcart.api.theme.cart.open();
           } catch (err) { console.error('Snipcart error', err); }
         } else {

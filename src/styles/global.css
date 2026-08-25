@@ -257,6 +257,35 @@ a, button:not([disabled]), [role='button'], summary, select, label, .btn:not([di
 }
 input:not([type='checkbox']):not([type='radio']), textarea { cursor: text; }
 
+/* ---- "In den Warenkorb"-Toast (Warenkorb ist eine eigene Seite) ---- */
+.added-toast {
+  position: fixed;
+  right: 20px;
+  top: 92px;
+  z-index: calc(var(--z-sticky) + 2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(420px, calc(100vw - 40px));
+  padding: 14px 16px;
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.16);
+  transform: translateX(calc(100% + 40px));
+  transition: transform 0.35s var(--ease-standard);
+}
+.added-toast.is-visible { transform: translateX(0); }
+.added-toast__check {
+  flex: none;
+  display: grid; place-items: center;
+  width: 26px; height: 26px; border-radius: 99px;
+  background: var(--color-olive-green); color: var(--color-warm-white);
+  font-size: 14px; font-weight: 800;
+}
+.added-toast__text { font-size: 13.5px; line-height: 1.45; }
+.added-toast .btn { flex: none; }
+
 /* ---- Snipcart-Checkout: über allem anzeigen + BUTXI-Branding ---- */
 #snipcart {
   position: relative;
