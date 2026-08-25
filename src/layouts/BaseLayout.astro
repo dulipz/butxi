@@ -222,6 +222,11 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
         root.querySelectorAll('[class*="item-line"]').forEach((line) => {
           if (!line.textContent || !line.textContent.includes('Spende an KKAD')) return;
           line.querySelectorAll('[class*="quantity"]').forEach((q) => { (q as HTMLElement).style.display = 'none'; });
+          // Spende ans Ende der Artikelliste (direkt über der Gesamtsumme) verschieben —
+          // nur das äußere Zeilen-Element, nicht dessen Kinder (item-line__…)
+          const isTopLine = String(line.className).split(' ').some((c) => c.endsWith('item-line'));
+          const list = line.parentElement;
+          if (isTopLine && list && line !== list.lastElementChild) list.appendChild(line);
         });
         const donLabel = localStorage.getItem('butxi-don-label') || '';
         root.querySelectorAll('span, small, p, div').forEach((el) => {
@@ -230,9 +235,11 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
           const isQty = /^(Anz\.?|Anzahl|Qty)\s*:?\s*\d+$/.test(t) || /^x\s*\d+$/.test(t);
           if (!isQty && t !== '0,01 €') return;
           if (t === donLabel) return; // schon ersetzt
-          let row: HTMLElement | null = el as HTMLElement;
+          let row: HTMLElement | null = (el as HTMLElement).parentElement;
           for (let i = 0; i < 5 && row; i++) {
-            if (row.textContent && row.textContent.includes('Spende an KKAD')) {
+            const rt = row.textContent || '';
+            if (rt.length > 120) break; // Zeilengrenze überschritten: wir sind in der Liste, nicht in EINER Zeile
+            if (rt.includes('Spende an KKAD')) {
               if (isQty && donLabel) {
                 el.textContent = donLabel; // "x32" -> "5 %"
               } else {
