@@ -9,13 +9,46 @@ interface Props {
   description?: string;
   /** Header liegt transparent über dem Seitenanfang (z. B. Fullscreen-Hero) und wird beim Scrollen fest. */
   transparentHeader?: boolean;
+  /** Vorschaubild für Social/Google (absoluter Pfad ab /), Standard: BUTXI-Sortiment. */
+  image?: string;
 }
 const {
   title,
   description = 'BUTXI Gourmet, Hot Sauces, Salze & Gewürze aus Eigenanbau, handgemacht auf Mallorca. Das Feuer Mallorcas für deine Küche.',
   transparentHeader = false,
+  image = '/images/og/og-default.jpg',
 } = Astro.props;
 const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
+
+// SEO: kanonische URL + absolute Bild-URL auf Basis der finalen Domain (astro.config: site)
+const site = Astro.site ?? new URL('https://butxigourmet.com');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+const isHome = Astro.url.pathname === '/';
+// Organisations-Daten für Google (nur auf der Startseite ausgespielt)
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'BUTXI Gourmet',
+  legalName: 'BMK Brühl macht Küche GmbH',
+  url: site.href,
+  logo: new URL('/images/brand/butxi-logo-black.png', site).href,
+  description: 'Hot Sauces, Salze & Gewürze aus Eigenanbau, handgemacht auf Mallorca.',
+  email: 'info@butxigourmet.com',
+  telephone: '+49 3341 3088288',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Hohensteiner Chaussee 1A',
+    postalCode: '15344',
+    addressLocality: 'Strausberg',
+    addressCountry: 'DE',
+  },
+  sameAs: [
+    'https://www.instagram.com/butxigourmet',
+    'https://www.facebook.com/butxigourmet',
+    'https://www.youtube.com/@butxigourmet',
+  ],
+};
 ---
 <!doctype html>
 <html lang="de">
@@ -25,11 +58,18 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/png" href="/images/brand/butxi-logo-black.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="BUTXI Gourmet" />
+    <meta property="og:locale" content="de_DE" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+    {isHome && <script type="application/ld+json" set:html={JSON.stringify(orgLd)} />}
+    <slot name="head" />
   </head>
   <body>
     <Header transparent={transparentHeader} />

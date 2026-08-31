@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /warenkorb/
+
+Sitemap: https://butxigourmet.com/sitemap-index.xml
