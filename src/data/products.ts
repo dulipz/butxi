@@ -162,6 +162,7 @@ export const products: Product[] = [
   },
   {
     slug: 'la-rabiosa', name: 'BUTXI La Rabiosa', price: 6.49, category: 'Saucen', heat: 3,
+    volume: '100 g',
     desc: 'Die Wütende: Tomate, Knoblauch und ein Feuer, das langsam aufsteigt.',
     tags: ['100% natürlich', 'Vegan'],
     image: '/images/products/la-rabiosa.webp',
@@ -187,6 +188,7 @@ export const products: Product[] = [
   },
   {
     slug: 'salsa-allioli-scharf', name: 'BUTXI Salsa Allioli – Scharf', price: 6.49, category: 'Saucen', heat: 2,
+    volume: '185 g',
     desc: 'Cremiges Allioli mit Chili-Kick, mallorquinischer Klassiker, neu entfacht.',
     tags: ['Glutenfrei'],
     details: {
@@ -198,6 +200,7 @@ export const products: Product[] = [
   },
   {
     slug: 'salsa-allioli', name: 'BUTXI Salsa Allioli', price: 6.49, category: 'Saucen', heat: 0,
+    volume: '185 g',
     desc: 'Das klassische Allioli: Knoblauch, Öl, Handwerk. Ohne Schärfe, voller Charakter.',
     tags: ['Glutenfrei'],
     details: {
@@ -211,6 +214,7 @@ export const products: Product[] = [
   // ---------- Gewürze ----------
   {
     slug: 'jalapenos-laminados', name: 'Jalapeños Laminados', price: 3.99, category: 'Gewürze', heat: 2,
+    volume: '205 g',
     desc: 'Getrocknete Jalapeño-Scheiben, knusprige Schärfe zum Streuen und Kochen.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/jalapenos-laminados.webp',
@@ -223,6 +227,7 @@ export const products: Product[] = [
   },
   {
     slug: 'paella-spice-blend', name: 'Butxi Paella', price: 3.99, category: 'Gewürze', heat: 0,
+    volume: '70 g',
     desc: 'Die Gewürzmischung für echte Paella, Safran, Paprika und mallorquinische Kräuter.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/paella-spice-blend.webp',
@@ -237,6 +242,7 @@ export const products: Product[] = [
   // ---------- Olivenöl ----------
   {
     slug: 'aceite-picante', name: 'Aceite Picante', price: 7.99, category: 'Olivenöl', heat: 2,
+    volume: '140 g',
     desc: 'Natives Olivenöl, langsam mit Chilis aus Eigenanbau infundiert. Für Pizza, Pasta, Brot.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/aceite-picante.webp',
@@ -249,6 +255,7 @@ export const products: Product[] = [
   },
   {
     slug: 'aceite-sitrie', name: 'Aceite Sitrie', price: 14.95, category: 'Olivenöl', heat: 2,
+    volume: '140 g',
     desc: 'Scharfes Öl mit Zitrusnote, hell, aromatisch, mit feinem Feuer im Abgang.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/aceite-sitrie.webp',
@@ -263,6 +270,7 @@ export const products: Product[] = [
   // ---------- Salz ----------
   {
     slug: 'meersalz-mit-chili', name: 'BUTXI Meersalz mit Chili', price: 3.99, category: 'Salz', heat: 1,
+    volume: '100 g',
     desc: 'Mallorquinische Salzflocken mit Chili, das Finish, das man sieht und schmeckt.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     details: {
@@ -274,6 +282,7 @@ export const products: Product[] = [
   },
   {
     slug: 'meersalz-mit-safran', name: 'BUTXI Meersalz mit Safran', price: 3.99, category: 'Salz', heat: 0,
+    volume: '100 g',
     desc: 'Goldene Salzflocken mit Safran, für Reisgerichte, Fisch und besondere Momente.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     details: {
@@ -285,6 +294,7 @@ export const products: Product[] = [
   },
   {
     slug: 'meersalz-mit-hibiskus', name: 'BUTXI Meersalz mit Hibiskus', price: 3.99, category: 'Salz', heat: 0,
+    volume: '100 g',
     desc: 'Blumig-säuerliche Hibiskusnote auf Meersalz, auffällig auf Salaten und Desserts.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     details: {
@@ -296,6 +306,7 @@ export const products: Product[] = [
   },
   {
     slug: 'meersalz-rosmarin-zitrone', name: 'BUTXI Meersalz „Rosmarin & Zitrone"', price: 3.99, category: 'Salz', heat: 0,
+    volume: '100 g',
     desc: 'Rosmarin und Zitronenschale auf Salzflocken, mediterran, frisch, vielseitig.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/meersalz-rosmarin-zitrone.webp',
@@ -308,6 +319,7 @@ export const products: Product[] = [
   },
   {
     slug: 'meersalz-schwarze-olive', name: 'Meersalz mit Schwarzer Olive', price: 3.99, category: 'Salz', heat: 0,
+    volume: '100 g',
     desc: 'Dunkle Salzflocken mit schwarzer Olive, intensiv, erdig, umami.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/meersalz-schwarze-olive.webp',
