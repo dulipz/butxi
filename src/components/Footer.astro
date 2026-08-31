@@ -36,6 +36,7 @@ const year = new Date().getFullYear();
   </div>
   <div class="footer__bar">
     <p>© {year} Butxi Gourmet · BMK Brühl macht Küche GmbH. Alle Rechte vorbehalten.</p>
+    <p class="footer__credit">Entwickelt von <a href="https://codestadt.de" target="_blank" rel="noopener">CodeStadt Digital GmbH</a></p>
   </div>
 </footer>
 
@@ -68,6 +69,9 @@ const year = new Date().getFullYear();
     text-align: center; font-size: 13px; color: var(--color-text-inverse-secondary);
   }
   .footer__bar p { margin: 0; padding: 18px 32px; }
+  .footer__bar .footer__credit { padding-top: 0; margin-top: -10px; font-size: 12.5px; }
+  .footer__credit a { color: var(--color-text-inverse-secondary); text-decoration: underline; text-underline-offset: 2px; }
+  .footer__credit a:hover { color: var(--color-text-inverse); }
 
   @media (max-width: 1023px) { .footer__grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 639px)  { .footer__grid { grid-template-columns: 1fr; gap: 32px; } }
