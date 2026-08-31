@@ -1,0 +1,103 @@
+---
+// Cookie-Hinweis im BUTXI-Look. Die Seite lädt aktuell nur technisch
+// notwendige Dienste (Warenkorb/Snipcart-Checkout); die Einwilligung wird in
+// localStorage (butxi-consent) gespeichert und als Event 'butxi:consent'
+// gemeldet, damit z. B. der Promo-Toast erst danach erscheint.
+---
+<aside class="cookiebar" data-cookiebar hidden aria-label="Cookie-Hinweis">
+  <div class="cookiebar__card" role="dialog" aria-modal="false" aria-labelledby="cookiebar-title">
+    <p class="cookiebar__title" id="cookiebar-title">Cookies? Nur eine Prise.</p>
+    <p class="cookiebar__text">
+      Wir verwenden technisch notwendige Cookies für Warenkorb und Kasse.
+      Mit „Alle akzeptieren“ erlaubst du zusätzlich Komfort-Funktionen wie
+      gemerkte Einstellungen. Details in unserer&#32;<a href="/datenschutz/">Datenschutzerklärung</a>.
+    </p>
+    <div class="cookiebar__actions">
+      <button type="button" class="btn btn--primary" data-cookie-accept-all>Alle akzeptieren</button>
+      <button type="button" class="btn btn--secondary" data-cookie-necessary>Nur notwendige</button>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .cookiebar {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    z-index: calc(var(--z-modal) + 20); /* über Promo-Toast und Drawer */
+    width: min(400px, calc(100vw - 40px));
+  }
+  .cookiebar[hidden] { display: none !important; }
+  .cookiebar__card {
+    background: var(--color-background-primary);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 14px 44px rgba(23, 19, 16, 0.2);
+    padding: 22px 22px 20px;
+    transform: translateY(calc(100% + 40px));
+    transition: transform 0.45s var(--ease-standard);
+  }
+  .cookiebar.is-visible .cookiebar__card { transform: none; }
+  .cookiebar__title {
+    margin: 0 0 8px;
+    font-family: var(--font-accent);
+    font-size: 22px;
+    color: var(--color-text-primary);
+  }
+  .cookiebar__text {
+    margin: 0 0 16px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+  .cookiebar__text a {
+    color: var(--color-action-primary);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .cookiebar__actions { display: flex; gap: 10px; }
+  .cookiebar__actions .btn { flex: 1; padding-inline: 10px; }
+  @media (max-width: 479px) {
+    .cookiebar { left: 12px; bottom: 12px; width: calc(100vw - 24px); }
+    .cookiebar__actions { flex-direction: column; }
+  }
+</style>
+
+<script>
+  const KEY = 'butxi-consent';
+  const bar = document.querySelector('[data-cookiebar]') as HTMLElement | null;
+
+  const readConsent = (): { necessary: boolean; comfort: boolean } | null => {
+    try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; }
+  };
+  const announce = () => document.dispatchEvent(new CustomEvent('butxi:consent'));
+
+  const show = () => {
+    if (!bar) return;
+    bar.hidden = false;
+    requestAnimationFrame(() => bar.classList.add('is-visible'));
+  };
+  const hide = () => {
+    if (!bar) return;
+    bar.classList.remove('is-visible');
+    setTimeout(() => { bar.hidden = true; }, 500);
+  };
+  const save = (comfort: boolean) => {
+    localStorage.setItem(KEY, JSON.stringify({ necessary: true, comfort, ts: Date.now() }));
+    hide();
+    announce();
+  };
+
+  bar?.querySelector('[data-cookie-accept-all]')?.addEventListener('click', () => save(true));
+  bar?.querySelector('[data-cookie-necessary]')?.addEventListener('click', () => save(false));
+
+  // Footer-Link „Cookie-Einstellungen“: Banner erneut öffnen
+  document.querySelectorAll('[data-cookie-settings]').forEach((el) =>
+    el.addEventListener('click', (e) => { e.preventDefault(); show(); })
+  );
+
+  if (!readConsent()) {
+    setTimeout(show, 800);
+  }
+</script>

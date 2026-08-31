@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CookieBanner from '../components/CookieBanner.astro';
 
 interface Props {
   title: string;
@@ -50,6 +51,7 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
       <slot />
     </main>
     <Footer />
+    <CookieBanner />
 
     <!-- Feedback nach "In den Warenkorb" (der Warenkorb ist jetzt eine eigene Seite) -->
     <div class="added-toast" data-added-toast hidden role="status">

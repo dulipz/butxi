@@ -219,11 +219,16 @@ const isActive = (href: string) =>
   }
 
   // ---- Promo-Banner: nach kurzer Zeit von rechts einblenden ----
+  // Erst NACH der Cookie-Entscheidung, damit nicht zwei Banner konkurrieren.
   const promo = document.querySelector('[data-promo]') as HTMLElement | null;
   const PROMO_KEY = 'butxi-promo-dismissed';
   if (promo && !localStorage.getItem(PROMO_KEY)) {
-    promo.hidden = false;
-    setTimeout(() => promo.classList.add('is-visible'), 1500);
+    const startPromo = () => {
+      promo.hidden = false;
+      setTimeout(() => promo.classList.add('is-visible'), 1500);
+    };
+    if (localStorage.getItem('butxi-consent')) startPromo();
+    else document.addEventListener('butxi:consent', startPromo, { once: true });
 
     const dismiss = () => {
       promo.classList.remove('is-visible');
