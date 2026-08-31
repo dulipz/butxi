@@ -1,16 +1,28 @@
 ---
-// Cookie-Hinweis im BUTXI-Look. Die Seite lädt aktuell nur technisch
-// notwendige Dienste (Warenkorb/Snipcart-Checkout); die Einwilligung wird in
-// localStorage (butxi-consent) gespeichert und als Event 'butxi:consent'
-// gemeldet, damit z. B. der Promo-Toast erst danach erscheint.
+// Cookie-Hinweis im BUTXI-Look. Die Einwilligung wird in localStorage
+// (butxi-consent) gespeichert und als Event 'butxi:consent' gemeldet.
+// Tracking (GA4 / Meta Pixel) lädt NUR, wenn (a) unten eine ID konfiguriert
+// ist und (b) der Besucher „Alle akzeptieren" gewählt hat. IDs kommen aus
+// den env vars PUBLIC_GA4_ID / PUBLIC_META_PIXEL_ID (Cloudflare + .env);
+// ohne IDs bleibt die Seite komplett tracking-frei.
+const GA4 = import.meta.env.PUBLIC_GA4_ID ?? '';
+const PIXEL = import.meta.env.PUBLIC_META_PIXEL_ID ?? '';
+const hasTracking = Boolean(GA4 || PIXEL);
 ---
-<aside class="cookiebar" data-cookiebar hidden aria-label="Cookie-Hinweis">
+<aside class="cookiebar" data-cookiebar data-ga4={GA4} data-pixel={PIXEL} hidden aria-label="Cookie-Hinweis">
   <div class="cookiebar__card" role="dialog" aria-modal="false" aria-labelledby="cookiebar-title">
     <p class="cookiebar__title" id="cookiebar-title">Cookies? Nur eine Prise.</p>
     <p class="cookiebar__text">
-      Wir verwenden technisch notwendige Cookies für Warenkorb und Kasse.
-      Mit „Alle akzeptieren“ erlaubst du zusätzlich Komfort-Funktionen wie
-      gemerkte Einstellungen. Details in unserer&#32;<a href="/datenschutz/">Datenschutzerklärung</a>.
+      {hasTracking ? (
+        <>Wir verwenden technisch notwendige Cookies für Warenkorb und Kasse.
+        Mit „Alle akzeptieren“ erlaubst du zusätzlich Statistik- und
+        Marketing-Cookies, mit denen wir unseren Shop verbessern.
+        Details in unserer&#32;<a href="/datenschutz/">Datenschutzerklärung</a>.</>
+      ) : (
+        <>Wir verwenden technisch notwendige Cookies für Warenkorb und Kasse.
+        Mit „Alle akzeptieren“ erlaubst du zusätzlich Komfort-Funktionen wie
+        gemerkte Einstellungen. Details in unserer&#32;<a href="/datenschutz/">Datenschutzerklärung</a>.</>
+      )}
     </p>
     <div class="cookiebar__actions">
       <button type="button" class="btn btn--primary" data-cookie-accept-all>Alle akzeptieren</button>
@@ -83,14 +95,57 @@
     bar.classList.remove('is-visible');
     setTimeout(() => { bar.hidden = true; }, 500);
   };
+  // ---- Tracking nur nach Einwilligung laden (IDs via env vars, s. Frontmatter) ----
+  const cfg = { ga4: bar?.dataset.ga4 || '', pixel: bar?.dataset.pixel || '' };
+  let trackingLoaded = false;
+  const loadTracking = () => {
+    if (trackingLoaded || (!cfg.ga4 && !cfg.pixel)) return;
+    trackingLoaded = true;
+    const w = window as any;
+    if (cfg.ga4) {
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(cfg.ga4);
+      document.head.appendChild(s);
+      w.dataLayer = w.dataLayer || [];
+      w.gtag = function () { w.dataLayer.push(arguments); };
+      w.gtag('js', new Date());
+      w.gtag('config', cfg.ga4, { anonymize_ip: true });
+    }
+    if (cfg.pixel) {
+      if (!w.fbq) {
+        const n: any = (w.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        });
+        n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+        const t = document.createElement('script');
+        t.async = true;
+        t.src = 'https://connect.facebook.net/en_US/fbevents.js';
+        document.head.appendChild(t);
+      }
+      w.fbq('init', cfg.pixel);
+      w.fbq('track', 'PageView');
+    }
+  };
+
   const save = (comfort: boolean) => {
+    const prev = readConsent();
     localStorage.setItem(KEY, JSON.stringify({ necessary: true, comfort, ts: Date.now() }));
     hide();
     announce();
+    if (comfort) {
+      loadTracking();
+    } else if (prev?.comfort && trackingLoaded) {
+      // Widerruf: bereits geladene Tracker durch Neuladen der Seite entfernen
+      setTimeout(() => location.reload(), 400);
+    }
   };
 
   bar?.querySelector('[data-cookie-accept-all]')?.addEventListener('click', () => save(true));
   bar?.querySelector('[data-cookie-necessary]')?.addEventListener('click', () => save(false));
+
+  // Bei Rückkehr mit bestehender Einwilligung: Tracking direkt laden
+  if (readConsent()?.comfort) loadTracking();
 
   // Footer-Link „Cookie-Einstellungen“: Banner erneut öffnen
   document.querySelectorAll('[data-cookie-settings]').forEach((el) =>
