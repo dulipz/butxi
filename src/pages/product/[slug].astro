@@ -15,7 +15,7 @@ const related = products
   .slice(0, 4);
 
 // SEO: Product- und Brotkrumen-Daten für Google Rich Snippets (Preis, Verfügbarkeit)
-const site = Astro.site ?? new URL('https://butxigourmet.com');
+const site = Astro.site ?? new URL('https://www.butxigourmet.com');
 const productUrl = new URL(`/product/${p.slug}/`, site).href;
 const productLd = {
   '@context': 'https://schema.org',

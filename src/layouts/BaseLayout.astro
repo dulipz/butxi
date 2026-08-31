@@ -21,7 +21,7 @@ const {
 const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
 
 // SEO: kanonische URL + absolute Bild-URL auf Basis der finalen Domain (astro.config: site)
-const site = Astro.site ?? new URL('https://butxigourmet.com');
+const site = Astro.site ?? new URL('https://www.butxigourmet.com');
 const canonical = new URL(Astro.url.pathname, site).href;
 const ogImage = new URL(image, site).href;
 const isHome = Astro.url.pathname === '/';
