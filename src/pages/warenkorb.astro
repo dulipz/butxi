@@ -191,6 +191,20 @@ const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
   .cartpage :global(.cart-line__qtybtn:hover) { background: var(--color-neutral-100); color: var(--color-text-primary); }
   .cartpage :global(.cart-line__qtyval) { min-width: 26px; text-align: center; font-weight: 700; font-size: 14.5px; }
 
+  /* ---- Geschenkzeile: TopGear Fußball ab 100 € ---- */
+  .cartpage :global(.cart-line--gift) {
+    background: rgba(107, 122, 74, 0.06);
+    border-radius: var(--radius-md);
+    padding-left: 12px; padding-right: 12px;
+    margin: 0 -12px;
+  }
+  .cartpage :global(.cart-line__giftbadge) {
+    margin-left: 8px; vertical-align: middle;
+    font-size: 9.5px; padding: 2px 8px;
+  }
+  .cartpage :global(.cart-line--gift .cart-line__unit),
+  .cartpage :global(.cart-line--gift .cart-line__price) { color: var(--color-olive-green); }
+
   /* Leerer Warenkorb */
   .cartpage :global(.cart__empty) {
     padding: 72px 0;

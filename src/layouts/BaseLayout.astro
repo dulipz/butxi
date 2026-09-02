@@ -87,6 +87,21 @@ const orgLd = {
       data-item-taxable="false"
       data-item-max-quantity="100000"
     ></button>
+    <!-- Snipcart-Preisvalidierung für das TopGear-Fußball-Geschenk (ab 100 € Bestellwert) -->
+    <button
+      hidden
+      aria-hidden="true"
+      tabindex="-1"
+      class="snipcart-add-item"
+      data-item-id="geschenk-topgear-fussball"
+      data-item-name="TopGear Fußball (Geschenk ab 100 €)"
+      data-item-price="0.00"
+      data-item-url="/"
+      data-item-image="/images/products/topgear-fussball-geschenk.webp"
+      data-item-shippable="true"
+      data-item-taxable="false"
+      data-item-max-quantity="1"
+    ></button>
     <main>
       <slot />
     </main>
@@ -130,6 +145,15 @@ const orgLd = {
       const KEY = 'butxi-cart';
       const DON_KEY = 'butxi-donation';
       const FREE_SHIPPING = 39;
+
+      // ---- Geschenk: TopGear Fußball ab 100 € Warenwert ----
+      const GIFT_THRESHOLD = 100;
+      const GIFT = {
+        id: 'geschenk-topgear-fussball',
+        name: 'TopGear Fußball',
+        meta: 'Geschenk ab 100 € Bestellwert',
+        image: '/images/products/topgear-fussball-geschenk.webp',
+      };
 
       const read = (): CartItem[] => {
         try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
@@ -202,6 +226,22 @@ const orgLd = {
               node.querySelector('[data-qty-minus]')!.addEventListener('click', () => changeQty(it.id, -1));
               node.querySelector('[data-line-remove]')!.addEventListener('click', () => removeItem(it.id));
               itemsEl.appendChild(node);
+            }
+            // Geschenk-Zeile: erscheint automatisch ab 100 € Warenwert, nicht
+            // entfernbar/mengenveränderbar (kein echter CartItem, nur Anzeige)
+            if (subtotal >= GIFT_THRESHOLD) {
+              const gift = document.createElement('div');
+              gift.className = 'cart-line cart-line--gift';
+              gift.innerHTML =
+                '<div class="cart-line__product">' +
+                  '<div class="cart-line__imgwrap"><img src="' + GIFT.image + '" alt="' + GIFT.name + '" /></div>' +
+                  '<p class="cart-line__name">' + GIFT.name + ' <span class="badge badge--olive cart-line__giftbadge">Geschenk</span></p>' +
+                  '<p class="cart-line__meta">' + GIFT.meta + '</p>' +
+                '</div>' +
+                '<div class="cart-line__unit">Gratis</div>' +
+                '<div class="cart-line__qty"><span class="cart-line__qtyval">1</span></div>' +
+                '<strong class="cart-line__price">0,00 €</strong>';
+              itemsEl.appendChild(gift);
             }
           }
         }
@@ -434,7 +474,8 @@ const orgLd = {
             })));
             // Spende an KKAD als 1-Cent-Positionen (Menge = Betrag in Cent),
             // damit Snipcarts Preisvalidierung greift
-            const donAmt = donationAmount(items.reduce((s, i) => s + i.price * i.qty, 0));
+            const subtotalNow = items.reduce((s, i) => s + i.price * i.qty, 0);
+            const donAmt = donationAmount(subtotalNow);
             const dNow = readDon();
             localStorage.setItem('butxi-don-label', dNow.mode === 'pct' && dNow.pct ? dNow.pct + ' %' : '');
             if (donAmt > 0) {
@@ -445,6 +486,20 @@ const orgLd = {
                 quantity: Math.round(donAmt * 100),
                 url: '/',
                 shippable: false,
+                taxable: false,
+              });
+            }
+            // Geschenk: TopGear Fußball ab 100 € Warenwert (0-€-Position, damit sie
+            // in Bestellung/E-Mail/Rechnung erscheint und beim Fulfillment nicht vergessen wird)
+            if (subtotalNow >= GIFT_THRESHOLD) {
+              await w.Snipcart.api.cart.items.add({
+                id: GIFT.id,
+                name: GIFT.name,
+                price: 0,
+                quantity: 1,
+                url: '/',
+                image: GIFT.image,
+                shippable: true,
                 taxable: false,
               });
             }

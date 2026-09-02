@@ -52,6 +52,20 @@ const homeRecipes = recipes.filter((r) =>
     </div>
   </section>
 
+  <!-- Geschenk-Banner: TopGear Fußball ab 100 € -->
+  <section class="gift-banner-section">
+    <div class="container">
+      <div class="gift-banner reveal">
+        <img class="gift-banner__img" src="/images/products/topgear-fussball-geschenk.webp" alt="TopGear Fußball" loading="lazy" width="64" height="64" />
+        <p class="gift-banner__text">
+          <span class="badge badge--olive gift-banner__badge">Geschenk</span>
+          Bestell für über <strong>100 €</strong> und wir legen dir einen <strong>TopGear Fußball</strong> gratis dazu.
+        </p>
+        <a href="/shop/" class="btn btn--secondary btn--sm gift-banner__cta">Jetzt shoppen</a>
+      </div>
+    </div>
+  </section>
+
   <!-- Klassiker -->
   <section class="section">
     <div class="container">
@@ -234,6 +248,31 @@ const homeRecipes = recipes.filter((r) =>
   }
   .hero__bottom .lead strong { color: #fff; }
   .hero__actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+  /* Geschenk-Banner */
+  .gift-banner-section { padding: 28px 0 0; }
+  .gift-banner {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    background: var(--color-mallorca-sand);
+    border-radius: var(--radius-xl);
+    padding: 16px 26px;
+  }
+  .gift-banner__img {
+    width: 56px; height: 56px; border-radius: 50%;
+    object-fit: cover; object-position: 50% 42%;
+    border: 2px solid var(--color-warm-white);
+    flex-shrink: 0;
+  }
+  .gift-banner__text {
+    margin: 0; flex: 1; min-width: 220px;
+    font-size: 15px; line-height: 1.5; color: var(--color-deep-brown);
+  }
+  .gift-banner__badge { margin-right: 10px; vertical-align: middle; }
+  .gift-banner__cta { flex-shrink: 0; }
+  @media (max-width: 639px) {
+    .gift-banner { padding: 18px 20px; }
+    .gift-banner__cta { width: 100%; }
+  }
 
   .row-head {
     display: flex; justify-content: space-between; align-items: flex-end;
