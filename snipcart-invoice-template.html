@@ -1,0 +1,222 @@
+---
+{{#if refund}}
+Subject: Rückerstattung zu deiner Bestellung {{order.invoiceNumber}} - BUTXI Gourmet
+{{else}}
+Subject: Deine Rechnung {{order.invoiceNumber}} - BUTXI Gourmet
+{{/if}}
+---
+<!--
+  BUTXI Gourmet — Snipcart "Invoices" email/PDF template (Handlebars.Net)
+  Paste the ENTIRE contents of this file (including the --- Subject block
+  at the very top) into: Snipcart Dashboard -> Account -> Email settings
+  and templates -> Invoices -> code editor. Save, then check the live
+  preview panel on the right before sending a real test order.
+
+  Field names below are verified against docs.snipcart.com/v3/email-templates.
+  Special handling included for BUTXI's two synthetic order lines:
+    - id "spende-kkad"               -> KKAD donation (shown as one clean amount line, no qty/unit price)
+    - id "geschenk-topgear-fussball"  -> free football gift ab 100 EUR (shown as "Gratis" with a badge)
+  Everything else renders as a normal product line.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F7F2E8; padding:32px 0; font-family: Arial, Helvetica, sans-serif;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#FFFDF8; border-radius:12px; overflow:hidden; max-width:600px; width:100%;">
+
+        <!-- Kopf / Logo -->
+        <tr>
+          <td style="padding:36px 40px 24px; text-align:center; border-bottom:1px solid #DED8D1;">
+            {{#if settings.logoUrl}}
+            <img src="{{settings.logoUrl}}" alt="BUTXI Gourmet" width="140" style="display:block; margin:0 auto; width:140px; height:auto; border:0;" />
+            {{else}}
+            <img src="https://www.butxigourmet.com/images/brand/butxi-logo-black.png" alt="BUTXI Gourmet" width="140" style="display:block; margin:0 auto; width:140px; height:auto; border:0;" />
+            {{/if}}
+          </td>
+        </tr>
+
+        {{#if refund}}
+        <!-- Rückerstattungs-Hinweis -->
+        <tr>
+          <td style="padding:20px 40px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3E6E3; border-radius:8px;">
+              <tr>
+                <td style="padding:16px 20px; font-size:14px; color:#8F1B10; line-height:1.5;">
+                  <strong>{{money refund.amount}} wurden erstattet.</strong>
+                  {{#if refund.comment}}<br />{{refund.comment}}{{/if}}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        {{/if}}
+
+        <!-- Titel + Rechnungsdaten -->
+        <tr>
+          <td style="padding:28px 40px 8px;">
+            <h1 style="margin:0 0 4px; font-family: Georgia, 'Times New Roman', serif; font-weight:600; font-size:26px; color:#211C18;">
+              {{#if refund}}Rückerstattung{{else}}Rechnung{{/if}}
+            </h1>
+            <p style="margin:0; font-size:13.5px; color:#6B625A;">
+              Rechnungsnummer <strong style="color:#211C18;">{{order.invoiceNumber}}</strong> &middot; {{date order.completionDate 'dd.MM.yyyy'}}
+            </p>
+          </td>
+        </tr>
+
+        <!-- Adressen -->
+        <tr>
+          <td style="padding:20px 40px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="50%" valign="top" style="font-size:13.5px; line-height:1.6; color:#6B625A;">
+                  <p style="margin:0 0 6px; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#857B72;">Von</p>
+                  <p style="margin:0; color:#211C18; font-weight:700;">{{settings.businessAddress.company}}</p>
+                  <p style="margin:0;">{{settings.businessAddress.address1}}</p>
+                  {{#if settings.businessAddress.address2}}<p style="margin:0;">{{settings.businessAddress.address2}}</p>{{/if}}
+                  <p style="margin:0;">{{settings.businessAddress.postalCode}} {{settings.businessAddress.city}}</p>
+                  <p style="margin:0;">info@butxigourmet.com</p>
+                  {{#if settings.businessAddress.vatNumber}}<p style="margin:4px 0 0;">USt-IdNr.: {{settings.businessAddress.vatNumber}}</p>{{/if}}
+                </td>
+                <td width="50%" valign="top" style="font-size:13.5px; line-height:1.6; color:#6B625A;">
+                  <p style="margin:0 0 6px; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#857B72;">Rechnungsadresse</p>
+                  <p style="margin:0; color:#211C18; font-weight:700;">{{order.billingAddress.fullName}}</p>
+                  <p style="margin:0;">{{order.billingAddress.address1}}</p>
+                  {{#if order.billingAddress.address2}}<p style="margin:0;">{{order.billingAddress.address2}}</p>{{/if}}
+                  <p style="margin:0;">{{order.billingAddress.postalCode}} {{order.billingAddress.city}}</p>
+                  <p style="margin:0;">{{order.email}}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        {{#if order.shippingAddress}}
+        {{#unless order.shipToBillingAddress}}
+        <tr>
+          <td style="padding:0 40px 20px;">
+            <p style="margin:0 0 6px; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#857B72;">Lieferadresse</p>
+            <p style="margin:0; font-size:13.5px; line-height:1.6; color:#6B625A;">
+              {{order.shippingAddress.fullName}}<br />
+              {{order.shippingAddress.address1}}{{#if order.shippingAddress.address2}}, {{order.shippingAddress.address2}}{{/if}}<br />
+              {{order.shippingAddress.postalCode}} {{order.shippingAddress.city}}
+            </p>
+          </td>
+        </tr>
+        {{/unless}}
+        {{/if}}
+
+        <!-- Artikel -->
+        <tr>
+          <td style="padding:8px 40px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:10px 0; border-bottom:1.5px solid #211C18; font-size:11px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#857B72;">Beschreibung</td>
+                <td align="center" style="padding:10px 0; border-bottom:1.5px solid #211C18; font-size:11px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#857B72;">Menge</td>
+                <td align="right" style="padding:10px 0; border-bottom:1.5px solid #211C18; font-size:11px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#857B72;">Preis</td>
+                <td align="right" style="padding:10px 0; border-bottom:1.5px solid #211C18; font-size:11px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#857B72;">Betrag</td>
+              </tr>
+
+              {{#each order.items}}
+
+              {{#if_eq this.id 'spende-kkad'}}
+              <tr>
+                <td colspan="3" style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#687247; font-weight:600;">
+                  Spende an KKAD
+                </td>
+                <td align="right" style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#687247; font-weight:700;">
+                  {{money this.totalPrice}}
+                </td>
+              </tr>
+              {{/if_eq}}
+
+              {{#if_eq this.id 'geschenk-topgear-fussball'}}
+              <tr>
+                <td style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#211C18;">
+                  {{this.name}}
+                  <span style="display:inline-block; margin-left:8px; padding:2px 8px; border-radius:99px; background:#687247; color:#FFFDF8; font-size:9.5px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; vertical-align:middle;">Geschenk</span>
+                </td>
+                <td align="center" style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#6B625A;">{{this.quantity}}</td>
+                <td align="right" style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#687247;">Gratis</td>
+                <td align="right" style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#687247; font-weight:700;">Gratis</td>
+              </tr>
+              {{/if_eq}}
+
+              {{#if_not_eq this.id 'spende-kkad'}}{{#if_not_eq this.id 'geschenk-topgear-fussball'}}
+              <tr>
+                <td style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#211C18;">
+                  {{this.name}}
+                </td>
+                <td align="center" style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#6B625A;">{{this.quantity}}</td>
+                <td align="right" style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#6B625A;">{{money this.unitPrice}}</td>
+                <td align="right" style="padding:14px 0; border-bottom:1px solid #EFEAE4; font-size:14px; color:#211C18; font-weight:700;">{{money this.totalPrice}}</td>
+              </tr>
+              {{/if_not_eq}}{{/if_not_eq}}
+
+              {{/each}}
+            </table>
+          </td>
+        </tr>
+
+        <!-- Summe -->
+        <tr>
+          <td style="padding:20px 40px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:5px 0; font-size:13.5px; color:#6B625A;">Zwischensumme</td>
+                <td align="right" style="padding:5px 0; font-size:13.5px; color:#211C18;">{{money order.summary.subtotal}}</td>
+              </tr>
+              {{#if order.summary.shipping}}
+              <tr>
+                <td style="padding:5px 0; font-size:13.5px; color:#6B625A;">Versand</td>
+                <td align="right" style="padding:5px 0; font-size:13.5px; color:#211C18;">{{money order.summary.shipping}}</td>
+              </tr>
+              {{/if}}
+              {{#each order.summary.taxes}}
+              <tr>
+                <td style="padding:5px 0; font-size:13.5px; color:#6B625A;">{{this.name}} ({{this.rate}}%){{#if this.includedInPrice}} <span style="color:#857B72;">inkl.</span>{{/if}}</td>
+                <td align="right" style="padding:5px 0; font-size:13.5px; color:#211C18;">{{money this.amount}}</td>
+              </tr>
+              {{/each}}
+              {{#each order.discounts}}
+              <tr>
+                <td style="padding:5px 0; font-size:13.5px; color:#687247;">Rabatt{{#if this.code}} ({{this.code}}){{/if}}</td>
+                <td align="right" style="padding:5px 0; font-size:13.5px; color:#687247;">&minus;{{money this.amountSaved}}</td>
+              </tr>
+              {{/each}}
+              <tr>
+                <td style="padding:14px 0 0; border-top:1.5px solid #211C18; font-size:17px; font-weight:800; color:#211C18;">Gesamtbetrag</td>
+                <td align="right" style="padding:14px 0 0; border-top:1.5px solid #211C18; font-size:17px; font-weight:800; color:#211C18;">{{money order.summary.total}}</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        {{#if order.card}}
+        <tr>
+          <td style="padding:18px 40px 0;">
+            <p style="margin:0; font-size:12.5px; color:#857B72;">Bezahlt mit {{order.card.type}}, endet auf {{order.card.last4Digits}}</p>
+          </td>
+        </tr>
+        {{/if}}
+
+        <!-- Footer -->
+        <tr>
+          <td style="padding:32px 40px 36px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #DED8D1;">
+              <tr>
+                <td style="padding-top:24px;">
+                  {{#if settings.signature}}
+                  <div style="font-size:13px; line-height:1.6; color:#6B625A;">{{{settings.signature}}}</div>
+                  {{else}}
+                  <p style="margin:0 0 4px; font-size:13.5px; color:#211C18; font-weight:700;">Danke für deine Bestellung &mdash; und ein bisschen Gefahr auf dem Teller.</p>
+                  <p style="margin:0; font-size:12.5px; color:#857B72;">BUTXI Gourmet &middot; info@butxigourmet.com &middot; www.butxigourmet.com</p>
+                  {{/if}}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
