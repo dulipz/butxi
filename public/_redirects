@@ -118,9 +118,45 @@
 /planters-pickers-packers / 301
 /planters-pickers-packers/ / 301
 
+# Rezept-Blogposts aus WordPress (/<kategorie>/<post>/) -> Anker auf /rezepte/
+# WICHTIG: konkrete Regeln MUESSEN vor den Wildcards stehen (first match wins).
+/salads-and-sides/corn-lime-salad-with-jalapeno-kick /rezepte/#mais-limetten-salat 301
+/salads-and-sides/corn-lime-salad-with-jalapeno-kick/ /rezepte/#mais-limetten-salat 301
+/salads-and-sides/smoky-fantasma-cauliflower-wings-with-sticky-glaze /rezepte/#fantasma-cauliflower-wings 301
+/salads-and-sides/smoky-fantasma-cauliflower-wings-with-sticky-glaze/ /rezepte/#fantasma-cauliflower-wings 301
+/bread-baking/10-minute-garlic-bread-with-butxi-picante-spice-blend /rezepte/#knoblauchbrot-butxi-picante 301
+/bread-baking/10-minute-garlic-bread-with-butxi-picante-spice-blend/ /rezepte/#knoblauchbrot-butxi-picante 301
+/bread-baking/aceite-picante-focaccia-with-sea-salt-flakes /rezepte/#aceite-picante-focaccia 301
+/bread-baking/aceite-picante-focaccia-with-sea-salt-flakes/ /rezepte/#aceite-picante-focaccia 301
+/main-dishes/habanero-orange-sweet-potato-bowl-with-lime-dressing /rezepte/#habanero-orange-bowl 301
+/main-dishes/habanero-orange-sweet-potato-bowl-with-lime-dressing/ /rezepte/#habanero-orange-bowl 301
+/main-dishes/la-rabiosa-arrabbiata-pirate-pasta /rezepte/#la-rabiosa-arrabbiata 301
+/main-dishes/la-rabiosa-arrabbiata-pirate-pasta/ /rezepte/#la-rabiosa-arrabbiata 301
+/sweet-vegan/vegan-dark-chocolate-mousse-with-spicy-confitura-swirl /rezepte/#vegane-schoko-mousse 301
+/sweet-vegan/vegan-dark-chocolate-mousse-with-spicy-confitura-swirl/ /rezepte/#vegane-schoko-mousse 301
+/sweet-vegan/grilled-mango-with-citrus-chili-oil-maple-glaze-2 /rezepte/#gegrillte-mango-aceite-sitrie 301
+/sweet-vegan/grilled-mango-with-citrus-chili-oil-maple-glaze-2/ /rezepte/#gegrillte-mango-aceite-sitrie 301
+/breakfast-and-brunch/ueep-quick-shakshuka-egg-or-vegan-pan /rezepte/#ueep-shakshuka 301
+/breakfast-and-brunch/ueep-quick-shakshuka-egg-or-vegan-pan/ /rezepte/#ueep-shakshuka 301
+/breakfast-and-brunch/hoja-de-olivo-avocado-toast /rezepte/#hoja-de-olivo-avocado-toast 301
+/breakfast-and-brunch/hoja-de-olivo-avocado-toast/ /rezepte/#hoja-de-olivo-avocado-toast 301
+
+# Fehlende Einzelpfade
+/why-organic-sustainable /produktion/ 301
+/wp-sitemap.xml /sitemap-index.xml 301
+/feed / 301
+/feed/ / 301
+
 # Taxonomien & Unterseiten (Wildcards)
+/salads-and-sides/* /rezepte/ 301
+/bread-baking/* /rezepte/ 301
+/main-dishes/* /rezepte/ 301
+/sweet-vegan/* /rezepte/ 301
+/breakfast-and-brunch/* /rezepte/ 301
+/vegan/* /rezepte/ 301
 /why-organic-sustainable/* /produktion/ 301
 /product-category/* /shop/ 301
-/category/* / 301
+/product-tag/* /shop/ 301
+/category/* /rezepte/ 301
 /tag/* / 301
 /author/* / 301
