@@ -1,6 +1,6 @@
 // BUTXI Gourmet, Produktdaten (aus der Live-Site butxigourmet.com übernommen)
 // Bilder: lokale WebP-Dateien unter /public/images/products/ (aus den Produktfotos
-// zugeschnitten). 7 Produkte haben noch kein Foto und nutzen den Platzhalter.
+// zugeschnitten). Produkte ohne `image` fallen auf den Platzhalter zurück.
 // Details (Zutaten, Nährwerte, Allergene, Aufbewahrung) am 31.07.2026 von der Live-Site übernommen.
 
 export type Category = 'Saucen' | 'Gewürze' | 'Olivenöl' | 'Salz' | 'Bundles' | 'Startersets';
@@ -191,6 +191,7 @@ export const products: Product[] = [
     volume: '185 g',
     desc: 'Cremiges Allioli mit Chili-Kick, mallorquinischer Klassiker, neu entfacht.',
     tags: ['Glutenfrei'],
+    image: '/images/products/salsa-allioli-scharf.webp',
     details: {
       zutaten: 'Sonnenblumenöl, Knoblauch, Wasser, Gewürze, Salz, Zitronensaft.',
       naehrwerte: 'Nährwerte pro 100 g\nEnergie: 2821 kJ / 686 kcal\nFett: 73,88 g\ndavon gesättigte Fettsäuren: 11,77 g\nKohlenhydrate: 4,06 g\ndavon Zucker: 3,4 g\nEiweiß: 1,1 g\nSalz: 1,35 g',
@@ -203,6 +204,7 @@ export const products: Product[] = [
     volume: '185 g',
     desc: 'Das klassische Allioli: Knoblauch, Öl, Handwerk. Ohne Schärfe, voller Charakter.',
     tags: ['Glutenfrei'],
+    image: '/images/products/salsa-allioli.webp',
     details: {
       zutaten: 'Sonnenblumenöl, frischer Knoblauch, Salz, Zitrone. Hinweis: Ohne Konservierungsstoffe und ohne künstliche Farbstoffe.',
       naehrwerte: 'Nährwerte pro 100 g\nEnergie: 2821 kJ / 686 kcal\nFett: 73,88 g\ndavon gesättigte Fettsäuren: 11,77 g\nKohlenhydrate: 4,06 g\ndavon Zucker: 3,4 g\nEiweiß: 1,1 g\nSalz: 1,35 g',
@@ -273,6 +275,7 @@ export const products: Product[] = [
     volume: '100 g',
     desc: 'Mallorquinische Salzflocken mit Chili, das Finish, das man sieht und schmeckt.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
+    image: '/images/products/meersalz-mit-chili.webp',
     details: {
       zutaten: '80 % Meersalz, 10 % Paprika, 10 % Rosmarinblätter, Basilikumblätter, zerkleinerte Chili.',
       naehrwerte: 'Nährwerte pro 100 g\nEnergie: 81 kJ / 19 kcal\nFett: 0,5 g\ndavon gesättigte Fettsäuren: 0,1 g\nKohlenhydrate: 4,8 g\ndavon Zucker: 0,7 g\nEiweiß: 0,6 g\nSalz: 77,71 g',
@@ -285,6 +288,7 @@ export const products: Product[] = [
     volume: '100 g',
     desc: 'Goldene Salzflocken mit Safran, für Reisgerichte, Fisch und besondere Momente.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
+    image: '/images/products/meersalz-mit-safran.webp',
     details: {
       zutaten: '80% Meersalz, 2% Safran, 10% Petersilie, 3% Kurkuma, 5% Knoblauch (zerkleinert).',
       naehrwerte: 'Nährwerte pro 100 g\nEnergie: 81 kJ / 19 kcal\nFett: 0,5 g\ndavon gesättigte Fettsäuren: 0,1 g\nKohlenhydrate: 4,8 g\ndavon Zucker: 0,7 g\nEiweiß: 0,6 g\nSalz: 77,71 g',
@@ -297,6 +301,7 @@ export const products: Product[] = [
     volume: '100 g',
     desc: 'Blumig-säuerliche Hibiskusnote auf Meersalz, auffällig auf Salaten und Desserts.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
+    image: '/images/products/meersalz-mit-hibiskus.webp',
     details: {
       zutaten: '80% Meersalz (Sal Marina), 18% Hibiskusblüte (Flor de Hibiscus), 2% Basilikumblatt (Albahaca hoja).',
       naehrwerte: 'Nährwerte pro 100 g\nEnergie: 29 kJ / 7 kcal\nFett: 0,0 g\ndavon gesättigte Fettsäuren: 0,0 g\nKohlenhydrate: 1,4 g\ndavon Zucker: 1,0 g\nEiweiß: 0,0 g\nSalz: 77,71 g',
@@ -363,6 +368,7 @@ export const products: Product[] = [
     desc: 'Drei Chili-Klassiker im praktischen Set, die schnelle Tour durchs Feuer Mallorcas.',
     badge: 'Set', badgeVariant: 'sand',
     tags: ['Geschenkidee'],
+    image: '/images/products/chili-trio.webp',
     details: {
       zutaten: 'Gemahlene scharfe Paprika (Chili); Getrocknete Chilis; Salzflocken, scharfes Paprikapulver (Chili)',
       naehrwerte: '(je 100 g)\nGemahlene scharfe Paprika: Energie 1250 kJ / 300 kcal · Fett 0,9 g (davon gesättigt 0,1 g) · Kohlenhydrate 45 g (davon Zucker 1,7 g) · Eiweiß 18 g · Salz 2,32 g\nGetrocknete Chilis: Energie 1250 kJ / 300 kcal · Fett 0,9 g (davon gesättigt 0,1 g) · Kohlenhydrate 45 g (davon Zucker 1,7 g) · Eiweiß 18 g · Salz 2,32 g\nSalzflocken mit Chili: Energie 37 kJ / 9 kcal · Fett 0 g (davon gesättigt 0 g) · Kohlenhydrate 0,5 g (davon Zucker 0,5 g) · Eiweiß 0,5 g · Salz 93,5 g',
