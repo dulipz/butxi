@@ -1,0 +1,65 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import type { Lang } from '../i18n/config';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const T = {
+  de: {
+    title: 'Versand & Lieferung · BUTXI Gourmet', heading: 'Versand & Lieferung',
+    costsH: 'Versandkosten',
+    costs: ['Wir liefern innerhalb Deutschlands. Die Versandkosten betragen pauschal ', '4,19 €', ' pro Bestellung.'],
+    free: 'Ab einem Bestellwert von 39 € liefern wir versandkostenfrei.',
+    timeH: 'Lieferzeit',
+    time: ['Der Versand erfolgt aus Deutschland innerhalb von ', '2–4 Werktagen', ' nach Zahlungseingang. Über den Versand deiner Bestellung informieren wir dich per E-Mail.'],
+    areaH: 'Liefergebiet',
+    area: 'Aktuell liefern wir ausschließlich innerhalb Deutschlands. Eine Selbstabholung ist aus logistischen Gründen leider nicht möglich.',
+    payH: 'Zahlung',
+    pay: 'Die Bezahlung erfolgt bequem und sicher über unseren Zahlungsdienstleister Stripe (u. a. Kreditkarte). Alle Preise verstehen sich inklusive der gesetzlichen Mehrwertsteuer.',
+    qH: 'Fragen?', q: ['Bei Fragen zu deiner Lieferung erreichst du uns unter ', ' oder telefonisch unter '], phone: '03341 / 3088288',
+  },
+  en: {
+    title: 'Shipping & delivery · BUTXI Gourmet', heading: 'Shipping & delivery',
+    costsH: 'Shipping costs',
+    costs: ['We deliver within Germany. Shipping is a flat ', '€4.19', ' per order.'],
+    free: 'Orders of €39 or more ship free of charge.',
+    timeH: 'Delivery time',
+    time: ['Orders ship from Germany within ', '2–4 working days', ' of payment being received. We’ll let you know by email when your order is on its way.'],
+    areaH: 'Delivery area',
+    area: 'At the moment we only deliver within Germany. Unfortunately, collection in person is not possible for logistical reasons.',
+    payH: 'Payment',
+    pay: 'Payment is quick and secure via our payment provider Stripe (including credit card). All prices include German VAT.',
+    qH: 'Questions?', q: ['If you have any questions about your delivery, reach us at ', ' or by phone on '], phone: '+49 3341 3088288',
+  },
+  es: {
+    title: 'Envío y entrega · BUTXI Gourmet', heading: 'Envío y entrega',
+    costsH: 'Gastos de envío',
+    costs: ['Enviamos dentro de Alemania. Los gastos de envío son de ', '4,19 €', ' fijos por pedido.'],
+    free: 'A partir de 39 € de pedido, el envío es gratuito.',
+    timeH: 'Plazo de entrega',
+    time: ['Enviamos desde Alemania en un plazo de ', '2–4 días laborables', ' tras recibir el pago. Te avisaremos por correo electrónico cuando tu pedido esté en camino.'],
+    areaH: 'Zona de entrega',
+    area: 'Por ahora solo enviamos dentro de Alemania. Por motivos logísticos, no es posible recoger el pedido en persona.',
+    payH: 'Pago',
+    pay: 'El pago se realiza de forma cómoda y segura a través de nuestro proveedor de pagos Stripe (entre otros, con tarjeta de crédito). Todos los precios incluyen el IVA alemán.',
+    qH: '¿Preguntas?', q: ['Si tienes preguntas sobre tu entrega, escríbenos a ', ' o llámanos al '], phone: '+49 3341 3088288',
+  },
+}[lang];
+---
+<LegalLayout title={T.title} heading={T.heading} lang={lang}>
+  <h2>{T.costsH}</h2>
+  <p>{T.costs[0]}<strong>{T.costs[1]}</strong>{T.costs[2]}</p>
+  <p><strong>{T.free}</strong></p>
+
+  <h2>{T.timeH}</h2>
+  <p>{T.time[0]}<strong>{T.time[1]}</strong>{T.time[2]}</p>
+
+  <h2>{T.areaH}</h2>
+  <p>{T.area}</p>
+
+  <h2>{T.payH}</h2>
+  <p>{T.pay}</p>
+
+  <h2>{T.qH}</h2>
+  <p>{T.q[0]}<a href="mailto:info@butxigourmet.com">info@butxigourmet.com</a>{T.q[1]}<a href="tel:+4933413088288">{T.phone}</a>.</p>
+</LegalLayout>

@@ -1,0 +1,234 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { path, type Lang } from '../i18n/config';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const T = {
+  de: {
+    title: 'Über uns · BUTXI Gourmet',
+    desc: 'Die Legende von BUTXI: das Feuer Mallorcas, das Piraten einst suchten. Handgemachte Hot Sauces aus Eigenanbau.',
+    heroAlt: 'Ein Pirat mit Tigerkopf an einem Holztisch über dem Meer, mit BUTXI Hot Sauce, Seekarte und Segelschiff in der Bucht',
+    badge: 'Über uns · Die Legende', h1: ['Unsere', 'Geschichte'],
+    leadFull: 'BUTXI ist mehr als nur eine scharfe Soße, es ist das Feuer Mallorcas, das Piraten einst suchten.',
+    leadShort: 'Das Feuer Mallorcas, das Piraten einst suchten.', cta: 'Die Legende lesen',
+    eyebrow: 'Die Legende von BUTXI',
+    p1: 'Seefahrer erzählten sich von einer Sauce, deren Feuer selbst wettergegerbten Seemännern ein Lächeln ins Gesicht trieb. Ein Aroma von reifen Chilis, mallorquinischer Sonne, und einem Charakter, den man nicht vergisst.',
+    h2a: 'Ein Feuer, das lebendig machte',
+    p2: 'Dieses Feuer brannte nicht einfach, es weckte die Sinne. Ein gewöhnliches Essen wurde zu einem Erlebnis, an das man sich erinnert.',
+    p2strong: 'Schärfe war nie das Ziel. Geschmack war es immer.',
+    h2b: 'Die Piraten nannten es BUTXI',
+    p3: 'Die Piraten gaben diesem Feuer einen Namen: BUTXI. Für sie war es kein Gewürz, sondern ein Versprechen.',
+    quote: '„Wer BUTXI schmeckt, schmeckt Mallorca: Es beginnt mit Wärme auf den Lippen, und bleibt als Erinnerung."',
+    todayEyebrow: 'Heute', todayH: 'Handwerk statt Massenware',
+    todayP: 'Aus der Legende ist eine Manufaktur geworden: Wir bauen unsere Chilis selbst an, kochen in kleinen Chargen und füllen von Hand ab. Jede Flasche trägt das, was die Seefahrer damals suchten,',
+    todayStrong: 'Geschmack, der Mut macht.', claim: 'Natürlich. Bewusst. BUTXI.', todayCta: 'Entfache das Feuer',
+    todayAlt: 'Chilipflanzen im BUTXI Eigenanbau',
+  },
+  en: {
+    title: 'About us · BUTXI Gourmet',
+    desc: 'The legend of BUTXI: the fire of Mallorca that pirates once sought. Handmade hot sauces from our own fields.',
+    heroAlt: 'A tiger-headed pirate at a wooden table above the sea, with BUTXI hot sauce, a sea chart and a sailing ship in the bay',
+    badge: 'About us · The legend', h1: ['Our', 'story'],
+    leadFull: 'BUTXI is more than just a hot sauce. It is the fire of Mallorca that pirates once sought.',
+    leadShort: 'The fire of Mallorca that pirates once sought.', cta: 'Read the legend',
+    eyebrow: 'The legend of BUTXI',
+    p1: 'Seafarers told each other of a sauce whose fire put a smile even on the faces of weather-beaten sailors. An aroma of ripe chillies, Mallorcan sunshine and a character you never forget.',
+    h2a: 'A fire that brought things to life',
+    p2: 'This fire didn’t just burn, it woke up the senses. An ordinary meal became an experience to remember.',
+    p2strong: 'Heat was never the goal. Flavour always was.',
+    h2b: 'The pirates called it BUTXI',
+    p3: 'The pirates gave this fire a name: BUTXI. To them it wasn’t a spice, but a promise.',
+    quote: '“Taste BUTXI and you taste Mallorca: it starts with warmth on your lips, and stays as a memory.”',
+    todayEyebrow: 'Today', todayH: 'Craft, not mass production',
+    todayP: 'The legend has become a small craft kitchen: we grow our own chillies, cook in small batches and fill every bottle by hand. Each one carries what those seafarers were looking for:',
+    todayStrong: 'flavour that gives you courage.', claim: 'Natural. Mindful. BUTXI.', todayCta: 'Light the fire',
+    todayAlt: 'Chilli plants in the BUTXI fields',
+  },
+  es: {
+    title: 'Sobre nosotros · BUTXI Gourmet',
+    desc: 'La leyenda de BUTXI: el fuego de Mallorca que buscaban los piratas. Salsas picantes hechas a mano con chiles de cultivo propio.',
+    heroAlt: 'Un pirata con cabeza de tigre en una mesa de madera sobre el mar, con salsa BUTXI, una carta náutica y un velero en la bahía',
+    badge: 'Sobre nosotros · La leyenda', h1: ['Nuestra', 'historia'],
+    leadFull: 'BUTXI es mucho más que una salsa picante: es el fuego de Mallorca que buscaban los piratas.',
+    leadShort: 'El fuego de Mallorca que buscaban los piratas.', cta: 'Leer la leyenda',
+    eyebrow: 'La leyenda de BUTXI',
+    p1: 'Los marineros hablaban de una salsa cuyo fuego arrancaba una sonrisa incluso a los lobos de mar más curtidos. Un aroma de chiles maduros, sol mallorquín y un carácter que no se olvida.',
+    h2a: 'Un fuego que daba vida',
+    p2: 'Este fuego no solo quemaba: despertaba los sentidos. Una comida cualquiera se convertía en una experiencia para recordar.',
+    p2strong: 'El picante nunca fue el objetivo. El sabor, siempre.',
+    h2b: 'Los piratas lo llamaron BUTXI',
+    p3: 'Los piratas le pusieron nombre a este fuego: BUTXI. Para ellos no era una especia, sino una promesa.',
+    quote: '«Quien prueba BUTXI, prueba Mallorca: empieza con calor en los labios y se queda como recuerdo.»',
+    todayEyebrow: 'Hoy', todayH: 'Artesanía, no producción en masa',
+    todayP: 'La leyenda se ha convertido en un obrador artesanal: cultivamos nuestros propios chiles, cocinamos en pequeños lotes y embotellamos a mano. Cada botella lleva lo que buscaban aquellos marineros:',
+    todayStrong: 'sabor que da valor.', claim: 'Natural. Consciente. BUTXI.', todayCta: 'Enciende el fuego',
+    todayAlt: 'Plantas de chile en el cultivo de BUTXI',
+  },
+}[lang];
+---
+<BaseLayout title={T.title} description={T.desc} lang={lang} transparentHeader>
+  <!-- Fullscreen-Hero, gleiche Mechanik wie auf der Startseite -->
+  <section class="hero">
+    <picture>
+      <source media="(max-width: 767px)" srcset="/images/hero/hero-ueber-uns-mobile-001.webp" />
+      <img
+        class="hero__bg"
+        src="/images/hero/hero-ueber-uns-001.webp"
+        alt={T.heroAlt}
+        loading="eager"
+        fetchpriority="high"
+      />
+    </picture>
+    <div class="hero__overlay" aria-hidden="true"></div>
+    <div class="container hero__content">
+      <div class="hero__copy">
+        <span class="badge badge--olive hero__badge-top">{T.badge}</span>
+        <h1 class="hero__title display-xl">
+          <span>{T.h1[0]}</span>
+          <span class="hero__title-accent">{T.h1[1]}</span>
+        </h1>
+      </div>
+      <div class="hero__bottom">
+        <p class="lead">
+          <span class="hero__lead-full">{T.leadFull}</span>
+          <span class="hero__lead-short">{T.leadShort}</span>
+        </p>
+        <div class="hero__actions">
+          <a href="#legende" class="btn btn--primary btn--lg">{T.cta}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--dark section--editorial" id="legende">
+    <div class="container story">
+      <span class="eyebrow">{T.eyebrow}</span>
+      <p class="story__text">
+        {T.p1}
+      </p>
+      <h2 class="story__h">{T.h2a}</h2>
+      <p class="story__text">
+        {T.p2}
+        <strong>{T.p2strong}</strong>
+      </p>
+      <h2 class="story__h">{T.h2b}</h2>
+      <p class="story__text">
+        {T.p3}
+      </p>
+      <blockquote class="story__quote">
+        {T.quote}
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container today">
+      <div class="today__copy">
+        <span class="eyebrow">{T.todayEyebrow}</span>
+        <h2>{T.todayH}</h2>
+        <p>
+          {T.todayP} <strong>{T.todayStrong}</strong>
+        </p>
+        <p>{T.claim}</p>
+        <a href={path('shop', lang)} class="btn btn--primary btn--lg">{T.todayCta}</a>
+      </div>
+      <img class="today__img" src="/images/anbau/pflanze_002.webp" alt={T.todayAlt} loading="lazy" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Fullscreen-Hero: liegt unter dem transparenten Header (76px hochgezogen). */
+  .hero {
+    position: relative;
+    margin-top: -77px; /* 76px Header + 1px Border, sonst blitzt oben eine weiße Linie auf */
+    min-height: calc(100svh + 1px);
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+  }
+  .hero__bg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .hero__overlay {
+    position: absolute; inset: 0;
+    background:
+      /* unten kräftiger als auf der Startseite: der Vordergrund dieses Motivs ist hell */
+      linear-gradient(to bottom, rgba(20, 14, 8, 0.30) 0%, rgba(20, 14, 8, 0) 30%, rgba(20, 14, 8, 0.10) 58%, rgba(20, 14, 8, 0.62) 100%),
+      linear-gradient(to right, rgba(20, 14, 8, 0.42) 0%, rgba(20, 14, 8, 0.12) 40%, rgba(20, 14, 8, 0) 65%);
+  }
+  .hero__content {
+    position: relative; z-index: 1; width: 100%;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding-top: calc(76px + 36px);
+    padding-bottom: 44px;
+  }
+  .hero__copy .badge, .hero__bottom .badge { font-size: 19px; padding: 5px 18px; }
+  .hero__copy {
+    display: flex; flex-direction: column; gap: 16px;
+    align-items: center; width: fit-content;
+  }
+  .hero__title {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; line-height: 1.08;
+    color: #fff;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
+    font-size: clamp(1.75rem, 3.5vw, 3.25rem);
+  }
+  .hero__title-accent {
+    font-size: 1.3em;
+    color: var(--color-action-primary);
+  }
+  .hero__bottom {
+    display: flex; flex-direction: column; gap: 20px;
+    align-items: center; align-self: center; text-align: center;
+    max-width: 640px;
+  }
+  .hero__bottom .lead {
+    margin: 0; font-size: 19px; color: rgba(255, 255, 255, 0.96);
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.55);
+  }
+  .hero__actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .hero__lead-short { display: none; }
+
+  @media (max-width: 767px) {
+    .hero__copy .badge { display: none; }
+    .hero__title { margin-top: 14px; }
+    .hero__lead-full { display: none; }
+    .hero__lead-short { display: inline; }
+    .hero__content { padding-top: calc(76px + 4px); }
+    .hero__copy {
+      align-self: flex-start;
+      width: 100%;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .hero__title { align-items: flex-start; text-align: left; font-size: clamp(1.7rem, 7.65vw, 2.21rem); }
+  }
+  @media (max-width: 1023px) {
+    .hero__content { padding-bottom: 48px; }
+  }
+
+  .story { max-width: var(--editorial-max); display: flex; flex-direction: column; gap: 22px; }
+  .story__h { color: var(--color-text-inverse); font-size: clamp(1.6rem, 2.5vw, 2.2rem); margin-top: 16px; }
+  .story__text { margin: 0; font-size: 17px; line-height: 1.8; color: var(--color-text-inverse-secondary); }
+  .story__text strong { color: var(--color-text-inverse); }
+  .story__quote {
+    margin: 24px 0 0; padding: 0;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.3;
+    color: var(--color-heat-mild); text-wrap: balance;
+  }
+
+  .today { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+  .today__copy { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .today__copy p { margin: 0; color: var(--color-text-secondary); max-width: 52ch; }
+  .today__copy p strong { color: var(--color-text-primary); }
+  .today__img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-xl); }
+
+  @media (max-width: 1023px) { .today { grid-template-columns: 1fr; } }
+</style>

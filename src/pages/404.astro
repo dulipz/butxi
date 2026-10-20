@@ -1,13 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+// Eine 404-Seite für alle Sprachen (Cloudflare liefert sie für jeden unbekannten Pfad aus).
+// Deutsch ist vorgerendert; liegt der Pfad unter /en/ oder /es/, tauscht das Skript die Texte.
+const texts = {
+  en: { h1: 'Nothing burning here', lead: 'This page doesn’t exist, but the fire is waiting in the shop.', cta: 'Go to shop', href: '/en/shop/' },
+  es: { h1: 'Aquí no arde nada', lead: 'Esta página no existe, pero el fuego te espera en la tienda.', cta: 'Ir a la tienda', href: '/es/tienda/' },
+};
 ---
 <BaseLayout title="Seite nicht gefunden · BUTXI Gourmet">
   <section class="section--editorial section">
-    <div class="container wrap">
+    <div class="container wrap" data-notfound data-texts={JSON.stringify(texts)}>
       <span class="eyebrow">404</span>
-      <h1>Hier brennt nichts</h1>
-      <p class="lead">Diese Seite gibt es nicht, aber das Feuer wartet im Shop.</p>
-      <a href="/shop/" class="btn btn--primary btn--lg">Zum Shop</a>
+      <h1 data-nf-h1>Hier brennt nichts</h1>
+      <p class="lead" data-nf-lead>Diese Seite gibt es nicht, aber das Feuer wartet im Shop.</p>
+      <a href="/shop/" class="btn btn--primary btn--lg" data-nf-cta>Zum Shop</a>
     </div>
   </section>
 </BaseLayout>
@@ -16,3 +22,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .wrap { display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center; }
   .wrap p { margin: 0; }
 </style>
+
+<script>
+  const box = document.querySelector<HTMLElement>('[data-notfound]');
+  const m = location.pathname.match(/^\/(en|es)(\/|$)/);
+  if (box && m) {
+    const tx = JSON.parse(box.dataset.texts || '{}')[m[1]];
+    if (tx) {
+      document.documentElement.lang = m[1];
+      box.querySelector('[data-nf-h1]')!.textContent = tx.h1;
+      box.querySelector('[data-nf-lead]')!.textContent = tx.lead;
+      const a = box.querySelector<HTMLAnchorElement>('[data-nf-cta]')!;
+      a.textContent = tx.cta; a.href = tx.href;
+    }
+  }
+</script>

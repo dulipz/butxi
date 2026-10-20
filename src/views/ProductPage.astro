@@ -1,0 +1,238 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import ProductCard from '../components/ProductCard.astro';
+import HeatMeter from '../components/HeatMeter.astro';
+import { products, productImage, formatPrice, basePrice, type Product } from '../data/products';
+import { path, productPath, type Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
+import { localizeProduct } from '../i18n/products';
+
+interface Props { product: Product; lang: Lang }
+const { product, lang } = Astro.props;
+const p = localizeProduct(product, lang);
+const T = t(lang).product;
+const related = products
+  .filter((x) => x.category === p.category && x.slug !== p.slug)
+  .slice(0, 4);
+const homeLabel = t(lang).nav.home;
+const shopLabel = t(lang).nav.shop;
+
+// SEO: Product- und Brotkrumen-Daten für Google Rich Snippets (Preis, Verfügbarkeit)
+const site = Astro.site ?? new URL('https://www.butxigourmet.com');
+const productUrl = new URL(productPath(p.slug, lang), site).href;
+const productLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: p.name,
+  image: new URL(productImage(p), site).href,
+  description: p.longDesc ?? p.desc,
+  sku: p.slug,
+  brand: { '@type': 'Brand', name: 'BUTXI' },
+  offers: {
+    '@type': 'Offer',
+    url: productUrl,
+    priceCurrency: 'EUR',
+    price: p.price.toFixed(2),
+    availability: 'https://schema.org/InStock',
+    itemCondition: 'https://schema.org/NewCondition',
+  },
+};
+const crumbsLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: homeLabel, item: new URL(path('home', lang), site).href },
+    { '@type': 'ListItem', position: 2, name: shopLabel, item: new URL(path('shop', lang), site).href },
+    { '@type': 'ListItem', position: 3, name: p.name, item: productUrl },
+  ],
+};
+---
+<BaseLayout title={`${p.name} · BUTXI Gourmet`} description={p.desc} image={productImage(p)} lang={lang}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(productLd)} />
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(crumbsLd)} />
+  <section class="section" style="padding-top: 2.5rem;">
+    <div class="container">
+      <nav class="crumbs" aria-label={T.crumbs}>
+        <a href={path('home', lang)}>{homeLabel}</a> <span>/</span>
+        <a href={path('shop', lang)}>{shopLabel}</a> <span>/</span>
+        <strong>{p.name}</strong>
+      </nav>
+
+      <!-- Snipcart-Preisvalidierung: unsichtbare Produktdefinition, die der
+           Snipcart-Crawler beim Checkout gegen die Warenkorb-Daten prüft -->
+      <button
+        hidden
+        aria-hidden="true"
+        tabindex="-1"
+        class="snipcart-add-item"
+        data-item-id={p.slug}
+        data-item-name={product.name}
+        data-item-price={p.price.toFixed(2)}
+        data-item-url={`/product/${p.slug}/`}
+        data-item-image={productImage(p)}
+        data-item-has-taxes-included="true"
+      ></button>
+
+      <div class="pdp">
+        <div class="pdp__media">
+          {p.badge && <span class={`badge badge--${p.badgeVariant ?? 'sand'} pdp__badge`}>{p.badge}</span>}
+          <img src={productImage(p)} alt={p.name} loading="eager" fetchpriority="high" />
+        </div>
+
+        <div class="pdp__info">
+          <span class="pdp__category">{p.categoryLabel}{p.volume ? ` · ${p.volume}` : ''}</span>
+          <h1>{p.name}</h1>
+          {p.heat != null && <HeatMeter level={p.heat} size="lg" lang={lang} />}
+          <p class="pdp__price">
+            {formatPrice(p.price, lang)}
+            <span class="pdp__tax">{T.inclVat}{basePrice(p, lang) ? ` · ${T.basePrice}: ${basePrice(p, lang)}` : ''}</span>
+          </p>
+          <p class="pdp__desc">{p.longDesc ?? p.desc}</p>
+
+          {p.tags && p.tags.length > 0 && (
+            <div class="pdp__tags">
+              {p.tags.map((t) => <span class="badge badge--outline">{t}</span>)}
+            </div>
+          )}
+
+          <div class="pdp__buy">
+            <div class="stepper" data-pdp-stepper>
+              <button class="stepper__btn" data-pdp-minus aria-label={T.qtyDec}>−</button>
+              <span class="stepper__value" data-pdp-qty>1</span>
+              <button class="stepper__btn" data-pdp-plus aria-label={T.qtyInc}>+</button>
+            </div>
+            <button
+              class="btn btn--primary btn--lg pdp__add"
+              data-add-to-cart
+              data-use-pdp-qty
+              data-id={p.slug}
+              data-name={p.name}
+              data-price={p.price}
+              data-image={productImage(p)}
+              data-meta={p.volume ?? p.categoryLabel}
+            >{T.addToCart}</button>
+          </div>
+          <p class="pdp__shipnote">{T.shipnote}</p>
+
+          <div class="accordion">
+            {p.details?.zutaten && (
+              <details>
+                <summary>{T.ingredients}</summary>
+                <p>{p.details.zutaten}</p>
+              </details>
+            )}
+            {p.details?.naehrwerte && (
+              <details>
+                <summary>{T.nutrition}</summary>
+                <div class="accordion__body">
+                  {p.details.naehrwerte.split('\n').map((line) => <p class="nv-line">{line}</p>)}
+                </div>
+              </details>
+            )}
+            {p.details?.allergene && (
+              <details>
+                <summary>{T.allergens}</summary>
+                <p>{p.details.allergene}</p>
+              </details>
+            )}
+            {p.details?.aufbewahrung && (
+              <details>
+                <summary>{T.storage}</summary>
+                <p>{p.details.aufbewahrung}</p>
+              </details>
+            )}
+            <details>
+              <summary>{T.shippingReturns}</summary>
+              <p>{T.shippingReturnsText} <a href={path('shipping', lang)}>{T.shippingMore}</a></p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <SectionHeader eyebrow={T.relatedEyebrow} title={T.relatedTitle(p.categoryLabel)} />
+        <div class="related">
+          {related.map((r) => <ProductCard product={r} lang={lang} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .crumbs { font-size: 13.5px; color: var(--color-text-muted); margin-bottom: 28px; }
+  .crumbs a:hover { color: var(--color-action-primary); }
+  .crumbs strong { color: var(--color-text-primary); font-weight: 600; }
+  .crumbs span { margin: 0 6px; }
+
+  .pdp { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .pdp__media {
+    position: relative;
+    background: var(--color-soft-cream);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xl);
+    aspect-ratio: 1; display: grid; place-items: center; padding: 40px;
+  }
+  .pdp__badge { position: absolute; top: 20px; left: 20px; }
+  .pdp__media img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  .pdp__info { display: flex; flex-direction: column; gap: 18px; }
+  .pdp__category {
+    font-size: 12px; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--color-text-muted);
+  }
+  .pdp__price { margin: 0; font-size: 26px; font-weight: 800; display: flex; align-items: baseline; gap: 10px; }
+  .pdp__tax { font-size: 13px; font-weight: 500; color: var(--color-text-muted); }
+  .pdp__desc { margin: 0; font-size: 16.5px; line-height: 1.7; color: var(--color-text-secondary); }
+  .pdp__tags { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .pdp__buy { display: flex; gap: 14px; align-items: center; margin-top: 6px; }
+  .pdp__add { flex: 1; }
+  .stepper {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1.5px solid var(--color-border-strong); border-radius: var(--radius-pill);
+    padding: 4px;
+  }
+  .stepper__btn {
+    width: 36px; height: 36px; border: none; background: transparent;
+    font-size: 18px; font-weight: 700; cursor: pointer; border-radius: 99px;
+    color: var(--color-text-primary);
+  }
+  .stepper__btn:hover { background: var(--color-neutral-100); }
+  .stepper__value { min-width: 28px; text-align: center; font-weight: 800; font-size: 16px; }
+
+  .pdp__shipnote { margin: 0; font-size: 13.5px; color: var(--color-text-muted); }
+
+  .accordion { display: flex; flex-direction: column; margin-top: 8px; border-top: 1px solid var(--color-border-default); }
+  .accordion details { border-bottom: 1px solid var(--color-border-default); }
+  .accordion summary {
+    padding: 16px 4px; font-weight: 700; font-size: 15px; cursor: pointer;
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
+  }
+  .accordion summary::-webkit-details-marker { display: none; }
+  .accordion summary::after {
+    content: '+'; font-size: 20px; font-weight: 400; color: var(--color-text-muted);
+    transition: transform var(--duration-fast) var(--ease-standard);
+  }
+  .accordion details[open] summary::after { transform: rotate(45deg); }
+  .accordion details p { margin: 0; padding: 0 4px 18px; color: var(--color-text-secondary); }
+  .accordion .accordion__body { padding: 0 4px 18px; }
+  .accordion .nv-line { padding: 2px 0; font-size: 14.5px; }
+  .accordion .nv-line:first-child { font-weight: 600; }
+
+  .related { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 36px; }
+
+  @media (max-width: 1023px) {
+    .pdp { grid-template-columns: 1fr; gap: 32px; }
+    .related { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 559px) {
+    .related { grid-template-columns: 1fr; }
+    .pdp__buy { flex-wrap: wrap; }
+  }
+</style>

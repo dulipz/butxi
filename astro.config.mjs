@@ -7,8 +7,13 @@ export default defineConfig({
   trailingSlash: 'ignore',
   integrations: [
     sitemap({
-      // Warenkorb & 404 gehören nicht in den Google-Index
-      filter: (page) => !page.includes('/warenkorb/'),
+      // Warenkorb & 404 gehören nicht in den Google-Index; EN/ES-Rechtstexte sind
+      // nur das deutsche Original (kanonisch → deutsche Seite) und bleiben ebenfalls draußen
+      filter: (page) =>
+        !['/warenkorb/', '/en/cart/', '/es/carrito/',
+          '/en/imprint/', '/en/privacy/', '/en/terms/', '/en/withdrawal/',
+          '/es/aviso-legal/', '/es/privacidad/', '/es/condiciones/', '/es/desistimiento/',
+        ].some((p) => page.endsWith(p)),
     }),
   ],
 });

@@ -1,13 +1,16 @@
 ---
-import { HEAT_LABELS } from '../data/products';
+import { t } from '../i18n/ui';
+import type { Lang } from '../i18n/config';
 
-interface Props { level: number; size?: 'sm' | 'md' | 'lg'; showLabel?: boolean }
-const { level, size = 'md', showLabel = true } = Astro.props;
+interface Props { level: number; size?: 'sm' | 'md' | 'lg'; showLabel?: boolean; lang?: Lang }
+const { level, size = 'md', showLabel = true, lang = 'de' } = Astro.props;
+const T = t(lang);
+const HEAT_LABELS = T.heat;
 const lv = Math.max(0, Math.min(5, Math.round(level)));
 const segClass = (i: number) => (i < lv ? `heat__seg is-on-${i + 1}` : 'heat__seg');
 ---
 <div class={`heat heat--${size}`}>
-  <div class="heat__track" role="img" aria-label={`Schärfegrad ${lv} von 5: ${HEAT_LABELS[lv]}`}>
+  <div class="heat__track" role="img" aria-label={T.heatAria(lv, HEAT_LABELS[lv])}>
     {[0, 1, 2, 3, 4].map((i) => <span class={segClass(i)}></span>)}
   </div>
   {showLabel && (

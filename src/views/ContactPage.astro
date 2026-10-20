@@ -1,0 +1,146 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import type { Lang } from '../i18n/config';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const T = {
+  de: {
+    title: 'Kontakt · BUTXI Gourmet', desc: 'Fragen zu Saucen, Gewürzen oder Ölen? Kontaktiere BUTXI Gourmet, wir helfen gern weiter.',
+    eyebrow: 'Kontakt', h1: 'Sag uns, was brennt',
+    lead: 'Fragen zu Zutaten, Herkunft, Verarbeitung oder Sorten? Wir helfen gern weiter, schnell und unkompliziert.',
+    phone: 'Telefon', email: 'E-Mail', trade: 'Handel & Gastronomie',
+    name: 'Vorname *', mail: 'E-Mail-Adresse *', subject: 'Anliegen *', tel: 'Telefonnummer', message: 'Nachricht *',
+    send: 'Nachricht senden', success: 'Danke! Deine Nachricht ist unterwegs, wir melden uns so schnell wie möglich.',
+    note: '* Pflichtfelder. Deine Daten werden nur zur Bearbeitung deiner Anfrage verwendet.',
+  },
+  en: {
+    title: 'Contact · BUTXI Gourmet', desc: 'Questions about our sauces, spices or oils? Get in touch with BUTXI Gourmet, we’re happy to help.',
+    eyebrow: 'Contact', h1: 'Tell us what’s burning',
+    lead: 'Questions about ingredients, origin, production or flavours? We’re happy to help, quickly and simply. We reply in German, English or Spanish.',
+    phone: 'Phone', email: 'Email', trade: 'Retail & restaurants',
+    name: 'First name *', mail: 'Email address *', subject: 'Subject *', tel: 'Phone number', message: 'Message *',
+    send: 'Send message', success: 'Thank you! Your message is on its way, and we’ll get back to you as soon as possible.',
+    note: '* Required fields. Your data is only used to handle your enquiry.',
+  },
+  es: {
+    title: 'Contacto · BUTXI Gourmet', desc: '¿Preguntas sobre nuestras salsas, especias o aceites? Escribe a BUTXI Gourmet, te ayudamos encantados.',
+    eyebrow: 'Contacto', h1: 'Cuéntanos qué te quema',
+    lead: '¿Preguntas sobre ingredientes, origen, elaboración o variedades? Te ayudamos encantados, de forma rápida y sencilla. Respondemos en alemán, inglés o español.',
+    phone: 'Teléfono', email: 'Correo electrónico', trade: 'Comercio y hostelería',
+    name: 'Nombre *', mail: 'Correo electrónico *', subject: 'Asunto *', tel: 'Teléfono', message: 'Mensaje *',
+    send: 'Enviar mensaje', success: '¡Gracias! Tu mensaje está en camino y te responderemos lo antes posible.',
+    note: '* Campos obligatorios. Tus datos solo se usan para atender tu consulta.',
+  },
+}[lang];
+// Internationale Schreibweise der Telefonnummer außerhalb Deutschlands
+const phoneDisplay = lang === 'de' ? '03341 / 3088288' : '+49 3341 3088288';
+---
+<BaseLayout title={T.title} description={T.desc} lang={lang}>
+  <section class="section">
+    <div class="container grid">
+      <div class="info">
+        <span class="eyebrow">{T.eyebrow}</span>
+        <h1>{T.h1}</h1>
+        <p class="lead">{T.lead}</p>
+        <div class="channels">
+          <a href="tel:+4933413088288" class="channel">
+            <span class="channel__icon"><Icon name="phone" size={20} /></span>
+            <span>
+              <strong>{T.phone}</strong>
+              {phoneDisplay}
+            </span>
+          </a>
+          <a href="mailto:info@butxigourmet.com" class="channel">
+            <span class="channel__icon"><Icon name="mail" size={20} /></span>
+            <span>
+              <strong>{T.email}</strong>
+              info@butxigourmet.com
+            </span>
+          </a>
+          <a href="mailto:sales@butxigourmet.com" class="channel">
+            <span class="channel__icon"><Icon name="bag" size={20} /></span>
+            <span>
+              <strong>{T.trade}</strong>
+              sales@butxigourmet.com
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <form class="form card" data-contact-form>
+        <div class="form__row">
+          <div class="field">
+            <label for="c-name">{T.name}</label>
+            <input class="input" id="c-name" name="name" type="text" required />
+          </div>
+          <div class="field">
+            <label for="c-email">{T.mail}</label>
+            <input class="input" id="c-email" name="email" type="email" required />
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field">
+            <label for="c-subject">{T.subject}</label>
+            <input class="input" id="c-subject" name="subject" type="text" required />
+          </div>
+          <div class="field">
+            <label for="c-phone">{T.tel}</label>
+            <input class="input" id="c-phone" name="phone" type="tel" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="c-message">{T.message}</label>
+          <textarea class="input input--area" id="c-message" name="message" maxlength="1000" required></textarea>
+        </div>
+        <button class="btn btn--primary btn--lg" type="submit">{T.send}</button>
+        <p class="form__success" data-contact-success hidden>
+          {T.success}
+        </p>
+        <p class="form__note">{T.note}</p>
+      </form>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+  .info { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  .info p { margin: 0; }
+  .channels { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; width: 100%; }
+  .channel {
+    display: flex; gap: 14px; align-items: center;
+    padding: 14px 18px; border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg); background: var(--color-background-secondary);
+    transition: box-shadow var(--duration-default) var(--ease-standard);
+  }
+  .channel:hover { box-shadow: var(--shadow-md); }
+  .channel__icon {
+    display: grid; place-items: center; width: 44px; height: 44px; flex: none;
+    border-radius: var(--radius-md); background: var(--color-mallorca-sand);
+    color: var(--color-deep-brown);
+  }
+  .channel strong { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); }
+
+  .form { padding: 32px; display: flex; flex-direction: column; gap: 18px; }
+  .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form__success { margin: 0; font-weight: 700; color: var(--color-success); }
+  .form__note { margin: 0; font-size: 12.5px; color: var(--color-text-muted); }
+
+  @media (max-width: 1023px) {
+    .grid { grid-template-columns: 1fr; gap: 40px; }
+    .form__row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector('[data-contact-form]') as HTMLFormElement | null;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // TODO: An Form-Backend anbinden (z. B. Cloudflare Worker, Formspree oder Web3Forms)
+    const success = form.querySelector('[data-contact-success]') as HTMLElement | null;
+    if (success) success.hidden = false;
+    form.reset();
+  });
+</script>

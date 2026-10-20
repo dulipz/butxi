@@ -1,13 +1,24 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-interface Props { title: string; heading: string }
-const { title, heading } = Astro.props;
+import type { Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
+interface Props {
+  title: string;
+  heading: string;
+  lang?: Lang;
+  /** Rechtstexte gibt es nur auf Deutsch: EN/ES zeigen das Original mit Hinweis
+   *  und verweisen kanonisch auf die deutsche Seite. */
+  germanOriginal?: string;
+}
+const { title, heading, lang = 'de', germanOriginal } = Astro.props;
+const note = lang !== 'de' && germanOriginal ? t(lang).legalNote : '';
 ---
-<BaseLayout title={title}>
+<BaseLayout title={title} lang={lang} canonicalPath={germanOriginal}>
   <section class="section">
     <div class="container legal">
       <h1>{heading}</h1>
-      <div class="legal__body">
+      {note && <p class="legal__note">{note}</p>}
+      <div class="legal__body" lang={germanOriginal ? 'de' : undefined}>
         <slot />
       </div>
     </div>
@@ -17,6 +28,13 @@ const { title, heading } = Astro.props;
 <style>
   .legal { max-width: var(--editorial-max); }
   .legal h1 { margin-bottom: 32px; }
+  .legal__note {
+    margin: -12px 0 32px; padding: 14px 18px;
+    border-left: 3px solid var(--color-olive-green);
+    background: var(--color-background-secondary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: 14.5px; color: var(--color-text-secondary);
+  }
   .legal__body :global(h2) { font-size: 1.5rem; margin: 32px 0 12px; }
   .legal__body :global(p) { margin: 0 0 14px; color: var(--color-text-secondary); line-height: 1.75; }
   .legal__body :global(strong) { color: var(--color-text-primary); }

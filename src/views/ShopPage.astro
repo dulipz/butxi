@@ -1,0 +1,175 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { products, categories } from '../data/products';
+import type { Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const cats = t(lang).categories;
+const T = {
+  de: {
+    title: 'Shop · BUTXI Gourmet',
+    desc: 'Alle BUTXI Produkte: Hot Sauces, Gewürze, Olivenöl, Salze und Bundles, handgemacht, aus Eigenanbau auf Mallorca.',
+    heroAlt: 'Das BUTXI Sortiment: Hot Sauces, Salsas, Salze und Gewürze vor einer Bucht auf Mallorca',
+    eyebrow: 'Shop', h1: 'Alle Produkte', lead: 'Hot Sauces, Salze und Gewürze, handgemacht, aus Eigenanbau.',
+    empty: 'In dieser Kategorie ist gerade nichts auf Lager, schau bald wieder vorbei.',
+  },
+  en: {
+    title: 'Shop · BUTXI Gourmet',
+    desc: 'All BUTXI products: hot sauces, spices, olive oil, salts and bundles, handmade from our own fields in Mallorca.',
+    heroAlt: 'The BUTXI range: hot sauces, salsas, salts and spices in front of a bay in Mallorca',
+    eyebrow: 'Shop', h1: 'All products', lead: 'Hot sauces, salts and spices, handmade and home-grown.',
+    empty: 'Nothing in stock in this category right now. Check back soon.',
+  },
+  es: {
+    title: 'Tienda · BUTXI Gourmet',
+    desc: 'Todos los productos BUTXI: salsas picantes, especias, aceite de oliva, sales y packs, hechos a mano con cultivo propio en Mallorca.',
+    heroAlt: 'La gama BUTXI: salsas picantes, sales y especias frente a una cala de Mallorca',
+    eyebrow: 'Tienda', h1: 'Todos los productos', lead: 'Salsas picantes, sales y especias, hechas a mano y de cultivo propio.',
+    empty: 'Ahora mismo no hay nada disponible en esta categoría. Vuelve pronto.',
+  },
+}[lang];
+---
+<BaseLayout title={T.title} description={T.desc} lang={lang} transparentHeader>
+  <!-- Shop-Hero: Sortiment vor Mallorca-Kulisse als Hintergrund -->
+  <section class="shophero">
+    <picture>
+      <source media="(max-width: 767px)" srcset="/images/hero/shop-hero-mobile.webp" />
+      <img
+        class="shophero__bg"
+        src="/images/hero/shop-hero.webp"
+        alt={T.heroAlt}
+        loading="eager"
+        fetchpriority="high"
+      />
+    </picture>
+    <div class="shophero__overlay" aria-hidden="true"></div>
+    <div class="container shophero__content">
+      <span class="eyebrow shophero__eyebrow">{T.eyebrow}</span>
+      <h1 class="shophero__title">{T.h1}</h1>
+      <p class="shophero__lead">{T.lead}</p>
+    </div>
+  </section>
+
+  <!-- Produktpanel: schiebt sich über die Hero-Unterkante -->
+  <section class="shoppanel">
+    <div class="container">
+      <div class="filters" data-filters>
+        {categories.map((c, i) => (
+          <button class:list={['filter', { 'is-active': i === 0 }]} data-filter={c}>{cats[c] ?? c}</button>
+        ))}
+      </div>
+      <p class="empty" data-empty hidden>
+        {T.empty}
+      </p>
+      <div class="grid" data-product-grid>
+        {products.map((p, i) => <ProductCard product={p} lang={lang} loading={i < 8 ? 'eager' : 'lazy'} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---- Hero ---- */
+  .shophero {
+    position: relative;
+    margin-top: -77px; /* 76px Header + 1px Border: Hero läuft unter dem transparenten Header durch */
+    height: min(78vh, 720px);
+    overflow: hidden;
+  }
+  .shophero :global(picture), .shophero__bg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+  .shophero__bg { object-fit: cover; object-position: 50% 42%; }
+  .shophero__overlay {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(23,19,16,0.42) 0%, rgba(23,19,16,0.05) 30%),
+      linear-gradient(to top, rgba(23,19,16,0.6) 0%, rgba(23,19,16,0) 45%);
+  }
+  .shophero__content {
+    position: relative; z-index: 1;
+    height: 100%;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding-bottom: 108px; /* Platz für das überlappende Panel */
+    color: #fff;
+  }
+  .shophero__eyebrow { color: var(--color-heat-mild); }
+  .shophero__title {
+    font-size: clamp(38px, 5.4vw, 64px);
+    line-height: 1.05;
+    margin: 6px 0 10px;
+    text-shadow: 0 2px 24px rgba(23,19,16,0.45);
+  }
+  .shophero__lead {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 16.5px; line-height: 1.6;
+    color: rgba(255,255,255,0.92);
+    text-shadow: 0 1px 14px rgba(23,19,16,0.5);
+  }
+
+  /* ---- Panel mit Filtern + Grid, überlappt den Hero ---- */
+  .shoppanel {
+    position: relative; z-index: 2;
+    margin-top: -64px;
+    padding-bottom: var(--section-pad-desktop);
+  }
+  .shoppanel > .container {
+    background: var(--color-background-primary);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding-top: 28px;
+  }
+
+  @media (max-width: 1023px) {
+    .shophero { height: min(62vh, 560px); }
+  }
+  @media (max-width: 767px) {
+    .shophero { height: 66vh; }
+    .shophero__content { padding-bottom: 92px; }
+    .shoppanel { margin-top: -56px; }
+    .shoppanel > .container { padding-top: 20px; }
+  }
+
+  .filters { display: flex; gap: 10px; margin: 0 0 26px; flex-wrap: wrap; }
+  .filter {
+    font-family: var(--font-sans); font-size: 14px; font-weight: 700;
+    padding: 8px 18px; border-radius: 999px; cursor: pointer;
+    border: 1.5px solid var(--color-border-default);
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    transition: all var(--duration-fast) var(--ease-standard);
+  }
+  .filter:hover { border-color: var(--color-border-strong); }
+  .filter.is-active {
+    border-color: var(--color-neutral-950);
+    background: var(--color-neutral-950);
+    color: var(--color-text-inverse);
+  }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .empty { color: var(--color-text-secondary); padding: 40px 0; }
+  @media (max-width: 1023px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 559px)  { .grid { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-product-grid] [data-category]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+      const cat = btn.dataset.filter;
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = cat === 'Alle' || card.dataset.category === cat;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      if (empty) empty.hidden = visible > 0;
+    });
+  });
+</script>

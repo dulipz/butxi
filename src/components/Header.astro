@@ -1,46 +1,85 @@
 ---
 import Icon from './Icon.astro';
+import { LANGS, LANG_META, path, alternates, type Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
 
 interface Props {
   /** Transparent über einem Fullscreen-Hero; wird beim Scrollen fest (creme). */
   transparent?: boolean;
+  lang?: Lang;
 }
-const { transparent = false } = Astro.props;
+const { transparent = false, lang = 'de' } = Astro.props;
+const T = t(lang);
 
 const links = [
-  { label: 'Home', href: '/' },
-  { label: 'Shop', href: '/shop/' },
-  { label: 'Über uns', href: '/ueber-uns/' },
-  { label: 'Produktion', href: '/produktion/' },
-  { label: 'Rezepte', href: '/rezepte/' },
-  { label: 'Kontakt', href: '/kontakt/' },
+  { label: T.nav.home, href: path('home', lang) },
+  { label: T.nav.shop, href: path('shop', lang) },
+  { label: T.nav.about, href: path('about', lang) },
+  { label: T.nav.production, href: path('production', lang) },
+  { label: T.nav.recipes, href: path('recipes', lang) },
+  { label: T.nav.contact, href: path('contact', lang) },
 ];
-const path = Astro.url.pathname;
+const pathname = Astro.url.pathname;
+const home = path('home', lang);
 const isActive = (href: string) =>
-  href === '/' ? path === '/' : path.startsWith(href.replace(/\/$/, ''));
+  href === home ? pathname === home || pathname === home.replace(/\/$/, '') : pathname.startsWith(href.replace(/\/$/, ''));
+// Sprachumschalter: dieselbe Seite in der jeweils anderen Sprache
+const alt = alternates(pathname);
 ---
 <header class:list={['site-header', { 'site-header--transparent': transparent }]} data-header>
   <div class="site-header__inner container">
-    <button class="site-header__burger" data-menu-toggle aria-label="Menü öffnen" aria-expanded="false">
+    <button class="site-header__burger" data-menu-toggle aria-label={T.header.menuOpen} aria-expanded="false">
       <Icon name="menu" size={22} />
     </button>
-    <a href="/" class="site-header__logo" aria-label="BUTXI Gourmet · Startseite">
+    <a href={home} class="site-header__logo" aria-label={T.header.homeAria}>
       <img src="/images/brand/butxi-logo-black.png" alt="BUTXI Gourmet" width="132" height="44" />
     </a>
-    <nav class="site-header__nav" aria-label="Hauptnavigation">
+    <nav class="site-header__nav" aria-label={T.header.mainNav}>
       {links.map((l) => (
         <a href={l.href} class:list={['site-header__link', { 'is-active': isActive(l.href) }]}>{l.label}</a>
       ))}
     </nav>
     <div class="site-header__actions">
-      <a class="site-header__iconbtn" href="/warenkorb/" aria-label="Warenkorb ansehen">
+      <!-- Sprachumschalter Desktop: DE · EN · ES -->
+      <nav class="langswitch" aria-label={T.header.lang}>
+        {LANGS.map((l) => (
+          <a
+            href={alt[l]}
+            hreflang={LANG_META[l].htmlLang}
+            lang={LANG_META[l].htmlLang}
+            title={LANG_META[l].name}
+            class:list={['langswitch__opt', { 'is-active': l === lang }]}
+            aria-current={l === lang ? 'true' : undefined}
+            data-lang-link={l}
+          >{LANG_META[l].label}</a>
+        ))}
+      </nav>
+      <!-- Sprachumschalter Mobil: kompaktes Dropdown -->
+      <details class="langmenu" data-langmenu>
+        <summary class="langmenu__btn" aria-label={T.header.lang}>
+          {LANG_META[lang].label}<Icon name="chevron-down" size={14} />
+        </summary>
+        <div class="langmenu__list">
+          {LANGS.map((l) => (
+            <a
+              href={alt[l]}
+              hreflang={LANG_META[l].htmlLang}
+              lang={LANG_META[l].htmlLang}
+              class:list={['langmenu__opt', { 'is-active': l === lang }]}
+              aria-current={l === lang ? 'true' : undefined}
+              data-lang-link={l}
+            ><strong>{LANG_META[l].label}</strong> {LANG_META[l].name}</a>
+          ))}
+        </div>
+      </details>
+      <a class="site-header__iconbtn" href={path('cart', lang)} aria-label={T.header.cartAria}>
         <Icon name="bag" size={21} />
         <span class="site-header__count" data-cart-count hidden>0</span>
       </a>
     </div>
   </div>
 
-  <nav class="mobile-nav" data-mobile-nav aria-label="Mobile Navigation" hidden>
+  <nav class="mobile-nav" data-mobile-nav aria-label={T.header.mobileNav} hidden>
     {links.map((l) => (
       <a href={l.href} class:list={['mobile-nav__link', { 'is-active': isActive(l.href) }]}>{l.label}</a>
     ))}
@@ -48,19 +87,19 @@ const isActive = (href: string) =>
 </header>
 
 <!-- Promo-Banner: kommt von rechts unten herein, abonnieren oder schließen -->
-<aside class="promo-toast" data-promo hidden aria-label="Newsletter-Angebot">
-  <button class="promo-toast__close" data-promo-close aria-label="Banner schließen">
+<aside class="promo-toast" data-promo hidden aria-label={T.promo.aria}>
+  <button class="promo-toast__close" data-promo-close aria-label={T.promo.close}>
     <Icon name="x" size={16} />
   </button>
-  <p class="promo-toast__title">10 % Rabatt sichern</p>
-  <p class="promo-toast__text">Kostenloser Versand ab 39 €, und 10 % auf deine erste Lieferung mit dem Newsletter.</p>
+  <p class="promo-toast__title">{T.promo.title}</p>
+  <p class="promo-toast__text">{T.promo.text}</p>
   <form class="promo-toast__form" data-promo-form>
-    <label class="visually-hidden" for="promo-email">E-Mail-Adresse</label>
-    <input class="input" id="promo-email" type="email" name="email" placeholder="deine@email.com" required />
-    <button class="btn btn--primary" type="submit">Anmelden</button>
+    <label class="visually-hidden" for="promo-email">{T.promo.emailLabel}</label>
+    <input class="input" id="promo-email" type="email" name="email" placeholder={T.promo.placeholder} required />
+    <button class="btn btn--primary" type="submit">{T.promo.submit}</button>
   </form>
   <p class="promo-toast__success" data-promo-success hidden>
-    Fast geschafft, bitte bestätige deine Anmeldung in deinem Postfach.
+    {T.promo.success}
   </p>
 </aside>
 
@@ -142,6 +181,46 @@ const isActive = (href: string) =>
   }
   .site-header__burger { display: none; }
 
+  /* ---- Sprachumschalter ---- */
+  .site-header__actions { align-items: center; }
+  .langswitch {
+    display: flex; align-items: center; gap: 2px;
+    padding: 3px; margin-right: 4px;
+    border: 1px solid var(--color-border-default); border-radius: var(--radius-pill);
+  }
+  .langswitch__opt {
+    min-width: 34px; padding: 5px 8px; border-radius: var(--radius-pill);
+    font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-align: center;
+    color: var(--color-text-secondary);
+    transition: background var(--duration-fast) var(--ease-standard), color var(--duration-fast) var(--ease-standard);
+  }
+  .langswitch__opt:hover { color: var(--color-text-primary); background: var(--color-neutral-100); }
+  .langswitch__opt.is-active { background: var(--color-neutral-950); color: var(--color-text-inverse); }
+
+  .langmenu { display: none; position: relative; }
+  .langmenu__btn {
+    display: flex; align-items: center; gap: 2px; height: 42px; padding: 0 8px;
+    list-style: none; cursor: pointer; border-radius: var(--radius-pill);
+    font-size: 13px; font-weight: 800; letter-spacing: 0.06em; color: var(--color-text-primary);
+  }
+  .langmenu__btn::-webkit-details-marker { display: none; }
+  .langmenu[open] .langmenu__btn { background: var(--color-neutral-100); }
+  .langmenu__list {
+    position: absolute; right: 0; top: calc(100% + 6px); z-index: 5;
+    min-width: 168px; padding: 6px;
+    display: flex; flex-direction: column;
+    background: var(--color-background-primary);
+    border: 1px solid var(--color-border-default); border-radius: var(--radius-lg);
+    box-shadow: 0 12px 32px rgba(23, 19, 16, 0.16);
+  }
+  .langmenu__opt {
+    display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--radius-md);
+    font-size: 15px; color: var(--color-text-primary);
+  }
+  .langmenu__opt strong { min-width: 24px; font-size: 12.5px; letter-spacing: 0.06em; padding-top: 2px; }
+  .langmenu__opt:hover { background: var(--color-neutral-100); }
+  .langmenu__opt.is-active { color: var(--color-action-primary); font-weight: 700; }
+
   /* ---- Transparente Variante (über Fullscreen-Hero) ---- */
   .site-header--transparent:not(.is-scrolled) {
     background: transparent;
@@ -163,6 +242,12 @@ const isActive = (href: string) =>
   .site-header--transparent:not(.is-scrolled) .site-header__burger:hover {
     background: rgba(255, 255, 255, 0.15);
   }
+  .site-header--transparent:not(.is-scrolled) .langswitch { border-color: rgba(255, 255, 255, 0.45); }
+  .site-header--transparent:not(.is-scrolled) .langswitch__opt { color: rgba(255, 255, 255, 0.85); }
+  .site-header--transparent:not(.is-scrolled) .langswitch__opt:hover { color: #fff; background: rgba(255, 255, 255, 0.15); }
+  .site-header--transparent:not(.is-scrolled) .langswitch__opt.is-active { background: #fff; color: var(--color-neutral-950); }
+  .site-header--transparent:not(.is-scrolled) .langmenu__btn { color: #fff; }
+  .site-header--transparent:not(.is-scrolled) .langmenu[open] .langmenu__btn { background: rgba(255, 255, 255, 0.15); }
   .site-header--transparent:not(.is-scrolled) .site-header__logo img {
     filter: brightness(0) invert(1); /* schwarzes Logo -> weiß */
   }
@@ -190,6 +275,9 @@ const isActive = (href: string) =>
     .site-header__inner { gap: 12px; }
     .site-header__logo { position: absolute; left: 50%; transform: translateX(-50%); }
     .site-header__inner { position: relative; }
+    .site-header__actions { gap: 0; }
+    .langswitch { display: none; }
+    .langmenu { display: block; }
   }
 </style>
 
@@ -217,6 +305,12 @@ const isActive = (href: string) =>
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
   }
+
+  // Mobiles Sprach-Dropdown bei Klick daneben schließen
+  const langmenu = document.querySelector('[data-langmenu]') as HTMLDetailsElement | null;
+  document.addEventListener('click', (e) => {
+    if (langmenu?.open && !langmenu.contains(e.target as Node)) langmenu.open = false;
+  });
 
   // ---- Promo-Banner: nach kurzer Zeit von rechts einblenden ----
   // Erst NACH der Cookie-Entscheidung, damit nicht zwei Banner konkurrieren.

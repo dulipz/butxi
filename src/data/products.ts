@@ -29,6 +29,8 @@ export interface ProductDetails {
   aufbewahrung?: string; // Aufbewahrung & Verwendung
 }
 
+import { formatMoney, type Lang } from '../i18n/config';
+
 const PLACEHOLDER = '/images/products/product_001.webp';
 
 export const products: Product[] = [
@@ -423,7 +425,7 @@ export function productImage(p: Product): string {
 
 /** Grundpreis nach § 4 PAngV: Preis je 1 l bzw. 1 kg, abgeleitet aus `volume` (z. B. "100 ml").
  *  Für Sets/Bundles ohne eindeutige Füllmenge (Warenzusammenstellungen) entfällt die Angabe. */
-export function basePrice(p: Product): string | null {
+export function basePrice(p: Product, lang: Lang = 'de'): string | null {
   const m = p.volume?.match(/^(\d+(?:[.,]\d+)?)\s*(ml|g|l|kg)$/i);
   if (!m) return null;
   let qty = parseFloat(m[1].replace(',', '.'));
@@ -432,11 +434,11 @@ export function basePrice(p: Product): string | null {
   if (qty <= 0) return null;
   const per = p.price / qty;
   const label = unit === 'ml' || unit === 'l' ? 'l' : 'kg';
-  return per.toFixed(2).replace('.', ',') + ' €/' + label;
+  return formatMoney(per, lang) + '/' + label;
 }
 
-export function formatPrice(value: number): string {
-  return value.toFixed(2).replace('.', ',') + ' €';
+export function formatPrice(value: number, lang: Lang = 'de'): string {
+  return formatMoney(value, lang);
 }
 
 export const categories = ['Alle', 'Saucen', 'Gewürze', 'Olivenöl', 'Salz', 'Bundles', 'Startersets'] as const;

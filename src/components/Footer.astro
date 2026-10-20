@@ -1,31 +1,36 @@
 ---
+import { path, type Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
+interface Props { lang?: Lang }
+const { lang = 'de' } = Astro.props;
+const T = t(lang);
 const year = new Date().getFullYear();
 ---
 <footer class="footer">
   <div class="footer__grid container">
     <div class="footer__brand">
       <img src="/images/brand/butxi-logo-black.png" alt="BUTXI Gourmet" width="156" height="52" />
-      <p>Hot Sauces, Salze &amp; Gewürze aus Eigenanbau, handgemacht auf Mallorca.</p>
+      <p>{T.footer.tagline}</p>
     </div>
     <div class="footer__col">
-      <h4>Shop</h4>
-      <a href="/shop/">Alle Produkte</a>
-      <a href="/rezepte/">Rezepte</a>
-      <a href="/ueber-uns/">Über uns</a>
-      <a href="/produktion/">Produktion</a>
+      <h4>{T.footer.shop}</h4>
+      <a href={path('shop', lang)}>{T.footer.allProducts}</a>
+      <a href={path('recipes', lang)}>{T.nav.recipes}</a>
+      <a href={path('about', lang)}>{T.nav.about}</a>
+      <a href={path('production', lang)}>{T.nav.production}</a>
     </div>
     <div class="footer__col">
-      <h4>Rechtliches</h4>
-      <a href="/impressum/">Impressum</a>
-      <a href="/datenschutz/">Datenschutz</a>
-      <a href="/agb/">AGB</a>
-      <a href="/widerruf/">Widerruf</a>
-      <a href="/versand/">Versand &amp; Lieferung</a>
-      <a href="#" data-cookie-settings>Cookie-Einstellungen</a>
+      <h4>{T.footer.legal}</h4>
+      <a href={path('imprint', lang)}>{T.footer.imprint}</a>
+      <a href={path('privacy', lang)}>{T.footer.privacy}</a>
+      <a href={path('terms', lang)}>{T.footer.terms}</a>
+      <a href={path('withdrawal', lang)}>{T.footer.withdrawal}</a>
+      <a href={path('shipping', lang)}>{T.footer.shipping}</a>
+      <a href="#" data-cookie-settings>{T.footer.cookies}</a>
     </div>
     <div class="footer__col">
-      <h4>Kontakt</h4>
-      <a href="tel:+4933413088288">03341 / 3088288</a>
+      <h4>{T.footer.contact}</h4>
+      <a href="tel:+4933413088288">{lang === 'de' ? '03341 / 3088288' : '+49 3341 3088288'}</a>
       <a href="mailto:info@butxigourmet.com">info@butxigourmet.com</a>
       <div class="footer__social">
         <a href="https://www.instagram.com/butxigourmet" target="_blank" rel="noopener">Instagram</a>
@@ -35,8 +40,8 @@ const year = new Date().getFullYear();
     </div>
   </div>
   <div class="footer__bar">
-    <p>© {year} Butxi Gourmet · BMK Brühl macht Küche GmbH. Alle Rechte vorbehalten.</p>
-    <p class="footer__credit">Entwickelt von <a href="https://codestadt.de" target="_blank" rel="noopener">CodeStadt Digital GmbH</a></p>
+    <p>© {year} Butxi Gourmet · BMK Brühl macht Küche GmbH. {T.footer.rights}</p>
+    <p class="footer__credit">{T.footer.developedBy} <a href="https://codestadt.de" target="_blank" rel="noopener">CodeStadt Digital GmbH</a></p>
   </div>
 </footer>
 

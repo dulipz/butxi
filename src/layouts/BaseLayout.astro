@@ -3,6 +3,10 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
+import { LANGS, LANG_META, alternates, path, langFromPath, isLegalPath, type Lang } from '../i18n/config';
+import { t, DONATION_NAMES } from '../i18n/ui';
+import { products } from '../data/products';
+import { localizeProduct } from '../i18n/products';
 
 interface Props {
   title: string;
@@ -11,20 +15,39 @@ interface Props {
   transparentHeader?: boolean;
   /** Vorschaubild für Social/Google (absoluter Pfad ab /), Standard: BUTXI-Sortiment. */
   image?: string;
+  /** Seitensprache; ohne Angabe aus dem Pfad abgeleitet (/en/…, /es/…, sonst Deutsch). */
+  lang?: Lang;
+  /** Abweichende kanonische URL (z. B. EN/ES-Rechtstexte → deutsches Original). */
+  canonicalPath?: string;
+  /** hreflang-Alternativen unterdrücken (z. B. Rechtstexte, die nur auf Deutsch existieren). */
+  noAlternates?: boolean;
 }
+const DEFAULT_DESC: Record<Lang, string> = {
+  de: 'BUTXI Gourmet, Hot Sauces, Salze & Gewürze aus Eigenanbau, handgemacht auf Mallorca. Das Feuer Mallorcas für deine Küche.',
+  en: 'BUTXI Gourmet: hot sauces, salts & spices from our own fields, handmade in Mallorca. The fire of Mallorca for your kitchen.',
+  es: 'BUTXI Gourmet: salsas picantes, sales y especias de cultivo propio, hechas a mano en Mallorca. El fuego de Mallorca para tu cocina.',
+};
 const {
   title,
-  description = 'BUTXI Gourmet, Hot Sauces, Salze & Gewürze aus Eigenanbau, handgemacht auf Mallorca. Das Feuer Mallorcas für deine Küche.',
+  lang = langFromPath(Astro.url.pathname),
+  description = DEFAULT_DESC[lang],
   transparentHeader = false,
   image = '/images/og/og-default.jpg',
+  canonicalPath,
+  noAlternates = false,
 } = Astro.props;
+const T = t(lang);
 const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
 
 // SEO: kanonische URL + absolute Bild-URL auf Basis der finalen Domain (astro.config: site)
 const site = Astro.site ?? new URL('https://www.butxigourmet.com');
-const canonical = new URL(Astro.url.pathname, site).href;
+const canonical = new URL(canonicalPath ?? Astro.url.pathname, site).href;
+// hreflang: dieselbe Seite in allen drei Sprachen (x-default = Deutsch)
+const alt = alternates(Astro.url.pathname);
+const isNotFound = Astro.url.pathname.startsWith('/404');
+const showAlternates = !noAlternates && !isNotFound && !isLegalPath(Astro.url.pathname);
 const ogImage = new URL(image, site).href;
-const isHome = Astro.url.pathname === '/';
+const isHome = Astro.url.pathname === path('home', lang);
 // Organisations-Daten für Google (nur auf der Startseite ausgespielt)
 const orgLd = {
   '@context': 'https://schema.org',
@@ -33,7 +56,7 @@ const orgLd = {
   legalName: 'BMK Brühl macht Küche GmbH',
   url: site.href,
   logo: new URL('/images/brand/butxi-logo-black.png', site).href,
-  description: 'Hot Sauces, Salze & Gewürze aus Eigenanbau, handgemacht auf Mallorca.',
+  description: T.footer.tagline,
   email: 'info@butxigourmet.com',
   telephone: '+49 3341 3088288',
   address: {
@@ -49,9 +72,29 @@ const orgLd = {
     'https://www.youtube.com/@butxigourmet',
   ],
 };
+
+// Laufzeit-Texte + Produktnamen für das Warenkorb-Skript (Warenkorb ist sprachübergreifend
+// in localStorage; Namen werden beim Anzeigen in die aktuelle Sprache übersetzt).
+const names: Record<string, string> = {};
+const metas: Record<string, string> = {};
+for (const raw of products) {
+  const lp = localizeProduct(raw, lang);
+  names[lp.slug] = lp.name;
+  metas[lp.slug] = lp.volume ?? lp.categoryLabel;
+}
+const runtime = {
+  lang,
+  cartUrl: path('cart', lang),
+  shopUrl: path('shop', lang),
+  snipcartLang: lang,
+  strings: T.cart,
+  donationNames: DONATION_NAMES,
+  names,
+  metas,
+};
 ---
 <!doctype html>
-<html lang="de">
+<html lang={LANG_META[lang].htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -59,20 +102,24 @@ const orgLd = {
     <meta name="description" content={description} />
     <link rel="icon" type="image/png" href="/images/brand/butxi-logo-black.png" />
     <link rel="canonical" href={canonical} />
+    {showAlternates && LANGS.map((l) => (
+      <link rel="alternate" hreflang={LANG_META[l].htmlLang} href={new URL(alt[l], site).href} />
+    ))}
+    {showAlternates && <link rel="alternate" hreflang="x-default" href={new URL(alt.de, site).href} />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:site_name" content="BUTXI Gourmet" />
-    <meta property="og:locale" content="de_DE" />
+    <meta property="og:locale" content={LANG_META[lang].ogLocale} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
     {isHome && <script type="application/ld+json" set:html={JSON.stringify(orgLd)} />}
     <slot name="head" />
   </head>
   <body>
-    <Header transparent={transparentHeader} />
+    <Header transparent={transparentHeader} lang={lang} />
     <!-- Snipcart-Preisvalidierung für die KKAD-Spende (1-Cent-Einheit, Menge = Betrag in Cent) -->
     <button
       hidden
@@ -105,14 +152,15 @@ const orgLd = {
     <main>
       <slot />
     </main>
-    <Footer />
-    <CookieBanner />
+    <Footer lang={lang} />
+    <CookieBanner lang={lang} />
+    <script type="application/json" id="butxi-i18n" set:html={JSON.stringify(runtime)} />
 
     <!-- Feedback nach "In den Warenkorb" (der Warenkorb ist jetzt eine eigene Seite) -->
     <div class="added-toast" data-added-toast hidden role="status">
       <span class="added-toast__check">✓</span>
-      <span class="added-toast__text"><strong data-added-name></strong> wurde in den Warenkorb gelegt.</span>
-      <a class="btn btn--primary btn--sm" href="/warenkorb/">Warenkorb ansehen</a>
+      <span class="added-toast__text"><strong data-added-name></strong> {T.toast.added}</span>
+      <a class="btn btn--primary btn--sm" href={path('cart', lang)}>{T.toast.viewCart}</a>
     </div>
 
     {snipcartKey && (
@@ -121,12 +169,16 @@ const orgLd = {
         <script async src="https://cdn.snipcart.com/themes/v3.4.1/default/snipcart.js"></script>
         <div hidden id="snipcart" data-api-key={snipcartKey} data-config-modal-style="side" data-currency="eur"></div>
         <script>
-          // Snipcart-Checkout auf Deutsch umstellen (Übersetzungen aus dem offiziellen l10n-Repo)
+          // Snipcart-Checkout in der Seitensprache (Übersetzungen aus dem offiziellen l10n-Repo;
+          // Englisch ist Snipcarts Standard und braucht keine Datei)
           document.addEventListener('snipcart.ready', async () => {
+            const lang = document.documentElement.lang || 'de';
+            const Snip = (window as any).Snipcart;
+            if (lang === 'en') { Snip.api.session.setLanguage('en'); return; }
             try {
-              const res = await fetch('https://cdn.jsdelivr.net/gh/snipcart/snipcart-l10n@master/locales/de.json');
-              const de = await res.json();
-              (window as any).Snipcart.api.session.setLanguage('de', de);
+              const res = await fetch(`https://cdn.jsdelivr.net/gh/snipcart/snipcart-l10n@master/locales/${lang}.json`);
+              const dict = await res.json();
+              Snip.api.session.setLanguage(lang, dict);
             } catch (e) {
               console.warn('Snipcart-Übersetzung konnte nicht geladen werden', e);
             }
@@ -142,6 +194,12 @@ const orgLd = {
       // ------------------------------------------------------------------
       type CartItem = { id: string; name: string; price: number; image: string; meta: string; qty: number };
       type Donation = { mode: 'none' | 'pct' | 'custom'; pct?: number; amount?: number };
+      // Sprache + Texte (aus dem JSON-Block, den BaseLayout pro Seite ausgibt)
+      const I18N = JSON.parse(document.getElementById('butxi-i18n')?.textContent || '{}');
+      const S = I18N.strings || {};
+      const DON_NAMES: string[] = I18N.donationNames || ['Spende an KKAD'];
+      const nameOf = (it: { id: string; name: string }) => (I18N.names && I18N.names[it.id]) || it.name;
+      const metaOf = (it: { id: string; meta: string }) => (I18N.metas && I18N.metas[it.id]) || it.meta;
       const KEY = 'butxi-cart';
       const DON_KEY = 'butxi-donation';
       const FREE_SHIPPING = 39;
@@ -150,16 +208,18 @@ const orgLd = {
       const GIFT_THRESHOLD = 100;
       const GIFT = {
         id: 'geschenk-topgear-fussball',
-        name: 'TopGear Fußball',
-        meta: 'Geschenk ab 100 € Bestellwert',
+        name: S.giftName || 'TopGear Fußball',
+        meta: S.giftMeta || 'Geschenk ab 100 € Bestellwert',
         image: '/images/products/topgear-fussball-geschenk.webp',
       };
+      const DONATION = S.donation || 'Spende an KKAD';
 
       const read = (): CartItem[] => {
         try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
       };
       const write = (items: CartItem[]) => localStorage.setItem(KEY, JSON.stringify(items));
-      const fmt = (n: number) => n.toFixed(2).replace('.', ',') + ' €';
+      const fmt = (n: number) =>
+        I18N.lang === 'en' ? '€' + n.toFixed(2) : n.toFixed(2).replace('.', ',') + ' €';
 
       // ---- Spende an KKAD ----
       const readDon = (): Donation => {
@@ -195,8 +255,8 @@ const orgLd = {
         if (bar) bar.style.width = Math.min(100, (subtotal / FREE_SHIPPING) * 100) + '%';
         if (label) {
           label.textContent = subtotal >= FREE_SHIPPING
-            ? 'Kostenloser Versand, geschafft!'
-            : `Noch ${fmt(FREE_SHIPPING - subtotal)} bis zum kostenlosen Versand`;
+            ? S.freeDone
+            : String(S.freeRemaining).replace('{x}', fmt(FREE_SHIPPING - subtotal));
         }
 
         // Tabellenkopf der Warenkorb-Seite nur zeigen, wenn Artikel da sind
@@ -209,15 +269,15 @@ const orgLd = {
           itemsEl.innerHTML = '';
           if (items.length === 0) {
             itemsEl.innerHTML =
-              '<div class="cart__empty"><p>Dein Warenkorb ist noch leer. Zeit für ein bisschen Gefahr.</p>' +
-              '<a class="btn btn--primary" href="/shop/">Zum Shop</a></div>';
+              '<div class="cart__empty"><p>' + S.empty + '</p>' +
+              '<a class="btn btn--primary" href="' + I18N.shopUrl + '">' + S.toShop + '</a></div>';
           } else {
             for (const it of items) {
               const node = tpl.content.cloneNode(true) as DocumentFragment;
               const img = node.querySelector('img')!;
-              img.src = it.image; img.alt = it.name;
-              node.querySelector('.cart-line__name')!.textContent = it.name;
-              node.querySelector('.cart-line__meta')!.textContent = it.meta;
+              img.src = it.image; img.alt = nameOf(it);
+              node.querySelector('.cart-line__name')!.textContent = nameOf(it);
+              node.querySelector('.cart-line__meta')!.textContent = metaOf(it);
               node.querySelector('[data-qty-value]')!.textContent = String(it.qty);
               const unitEl = node.querySelector('[data-line-unit]');
               if (unitEl) unitEl.textContent = fmt(it.price);
@@ -235,12 +295,12 @@ const orgLd = {
               gift.innerHTML =
                 '<div class="cart-line__product">' +
                   '<div class="cart-line__imgwrap"><img src="' + GIFT.image + '" alt="' + GIFT.name + '" /></div>' +
-                  '<p class="cart-line__name">' + GIFT.name + ' <span class="badge badge--olive cart-line__giftbadge">Geschenk</span></p>' +
+                  '<p class="cart-line__name">' + GIFT.name + ' <span class="badge badge--olive cart-line__giftbadge">' + S.giftBadge + '</span></p>' +
                   '<p class="cart-line__meta">' + GIFT.meta + '</p>' +
                 '</div>' +
-                '<div class="cart-line__unit">Gratis</div>' +
+                '<div class="cart-line__unit">' + S.free + '</div>' +
                 '<div class="cart-line__qty"><span class="cart-line__qtyval">1</span></div>' +
-                '<strong class="cart-line__price">0,00 €</strong>';
+                '<strong class="cart-line__price">' + fmt(0) + '</strong>';
               itemsEl.appendChild(gift);
             }
           }
@@ -282,8 +342,8 @@ const orgLd = {
           const lbl = donLine.querySelector('[data-donation-line-label]');
           if (lbl) {
             lbl.textContent = don.mode === 'pct' && don.pct
-              ? `Spende an KKAD – ${don.pct} %`
-              : 'Spende an KKAD';
+              ? `${DONATION} – ${don.pct} %`
+              : DONATION;
           }
           const amt = donLine.querySelector('[data-donation-line-amount]');
           if (amt) amt.textContent = fmt(donAmt);
@@ -296,7 +356,7 @@ const orgLd = {
         if (ex) ex.qty += qty; else items.push({ ...data, qty });
         write(items);
         render();
-        showAddedToast(data.name);
+        showAddedToast(nameOf(data as CartItem));
       }
       function changeQty(id: string, delta: number) {
         let items = read();
@@ -334,7 +394,7 @@ const orgLd = {
         const root = document.getElementById('snipcart');
         if (!root || !root.children.length) return;
         root.querySelectorAll('[class*="item-line"]').forEach((line) => {
-          if (!line.textContent || !line.textContent.includes('Spende an KKAD')) return;
+          if (!line.textContent || !DON_NAMES.some((n) => line.textContent!.includes(n))) return;
           // Spendenzeilen strukturell markieren – nur INNERHALB dieser Zeilen
           // wird später das Mengen-Label ersetzt (nie auf Produktzeilen)
           line.setAttribute('data-butxi-don', '1');
@@ -350,14 +410,14 @@ const orgLd = {
         // kleinsten Vorfahren, der auch den Mengen-Marker ("x937") enthält = die Zeile.
         root.querySelectorAll('span, p, div, li, dt, dd, td, th, strong').forEach((el) => {
           if (el.children.length > 0) return;
-          if ((el.textContent || '').trim() !== 'Spende an KKAD') return;
+          if (!DON_NAMES.includes((el.textContent || '').trim())) return;
           // Bereits markierte Zeile nie erneut suchen — nach der Ersetzung fehlt ihr
           // der Mengen-Marker und die Suche würde auf die ganze Liste eskalieren
           if ((el as HTMLElement).closest('[data-butxi-don]')) return;
           let row: HTMLElement | null = (el as HTMLElement).parentElement;
           for (let i = 0; i < 6 && row && row !== root; i++) {
             const rt = row.textContent || '';
-            if (/x\s*\d+|Anz\.?|Anzahl|Qty/.test(rt)) {
+            if (/x\s*\d+|Anz\.?|Anzahl|Qty|Cant\.?|Cantidad/.test(rt)) {
               row.setAttribute('data-butxi-don', '1');
               // Spende ans Listenende, wenn alle Geschwister Artikelzeilen sind (je ein €)
               const list = row.parentElement;
@@ -375,21 +435,21 @@ const orgLd = {
           if (el.children.length > 0) return;
           const t = (el.textContent || '').trim();
           if (t === donLabel) return; // schon ersetzt
-          const isQty = /^(Anz\.?|Anzahl|Qty)\s*:?\s*\d+$/.test(t) || /^x\s*\d+$/.test(t);
+          const isQty = /^(Anz\.?|Anzahl|Qty|Cant\.?|Cantidad)\s*:?\s*\d+$/.test(t) || /^x\s*\d+$/.test(t);
           if (isQty) {
             if (donLabel) el.textContent = donLabel; // "x32" -> "5 %"
             else (el as HTMLElement).style.visibility = 'hidden';
-          } else if (t === '0,01 €') {
+          } else if (t === '0,01 €' || t === '€0.01') {
             (el as HTMLElement).style.visibility = 'hidden'; // 1-Cent-Stückpreis verbergen
           }
         });
         const thanks = [...root.querySelectorAll('h1, h2, [class*="thank"]')].find(
-          (el) => el.textContent && el.textContent.includes('Vielen Dank')
+          (el) => el.textContent && /Vielen Dank|Thank you|Gracias/.test(el.textContent)
         );
         if (thanks && !root.querySelector('[data-butxi-back]')) {
           const btn = document.createElement('button');
           btn.className = 'btn btn--primary btn--lg';
-          btn.textContent = 'Zurück zum Shop';
+          btn.textContent = S.backToShop;
           btn.setAttribute('data-butxi-back', '');
           btn.style.margin = '18px 0 4px';
           btn.addEventListener('click', () => {
@@ -471,7 +531,7 @@ const orgLd = {
             // hasTaxesIncluded: unsere Preise sind Bruttopreise (7 % MwSt. enthalten).
             // Ohne dieses Flag rechnet Snipcart die MwSt. OBEN DRAUF statt herauszurechnen.
             await w.Snipcart.api.cart.items.add(...items.map((i) => ({
-              id: i.id, name: i.name, price: i.price, quantity: i.qty,
+              id: i.id, name: nameOf(i), price: i.price, quantity: i.qty,
               url: '/product/' + i.id + '/', image: i.image,
               hasTaxesIncluded: true,
             })));
@@ -484,7 +544,7 @@ const orgLd = {
             if (donAmt > 0) {
               await w.Snipcart.api.cart.items.add({
                 id: 'spende-kkad',
-                name: 'Spende an KKAD',
+                name: DONATION,
                 price: 0.01,
                 quantity: Math.round(donAmt * 100),
                 url: '/',
@@ -510,7 +570,7 @@ const orgLd = {
           } catch (err) { console.error('Snipcart error', err); }
         } else {
           const note = document.querySelector('[data-checkout-note]');
-          if (note) note.textContent = 'Checkout folgt: Snipcart-API-Key in .env hinterlegen (PUBLIC_SNIPCART_API_KEY).';
+          if (note) note.textContent = S.noKey;
         }
       });
 

@@ -1,0 +1,377 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { formatMoney, type Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
+const snipcartKey = import.meta.env.PUBLIC_SNIPCART_API_KEY ?? '';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zero = formatMoney(0, lang);
+const donation = t(lang).cart.donation;
+const T = {
+  de: {
+    title: 'Warenkorb · BUTXI Gourmet', desc: 'Dein Warenkorb bei BUTXI Gourmet – Hot Sauces, Salze & Gewürze aus Mallorca.',
+    h1: 'Warenkorb', product: 'Produkt', price: 'Preis', qty: 'Menge', total: 'Gesamt',
+    removeDon: 'Spende entfernen', donTitle: 'Gemeinsam Gutes tun – Spende an KKAD', noThanks: 'Nein, danke',
+    customPh: 'Eigener Betrag in €', customAria: 'Eigener Spendenbetrag in Euro', add: 'Hinzufügen',
+    donNote: '100 % deiner Spende gehen an Kinder Krebs Aktion Deutschland e. V.',
+    grand: 'Gesamtsumme', subtotal: 'Zwischensumme', freeFrom: 'Kostenloser Versand ab 39 €',
+    checkout: 'Zur Kasse', vat: 'inkl. MwSt., zzgl. Versand',
+    removeItem: 'Artikel entfernen', qtyDec: 'Menge verringern', qtyInc: 'Menge erhöhen',
+  },
+  en: {
+    title: 'Cart · BUTXI Gourmet', desc: 'Your cart at BUTXI Gourmet – hot sauces, salts & spices from Mallorca.',
+    h1: 'Cart', product: 'Product', price: 'Price', qty: 'Quantity', total: 'Total',
+    removeDon: 'Remove donation', donTitle: 'Do some good together – donate to KKAD', noThanks: 'No, thanks',
+    customPh: 'Other amount (€)', customAria: 'Your own donation amount in euros', add: 'Add',
+    donNote: '100% of your donation goes to Kinder Krebs Aktion Deutschland e. V., a German children’s cancer charity.',
+    grand: 'Total', subtotal: 'Subtotal', freeFrom: 'Free shipping from €39',
+    checkout: 'Checkout', vat: 'incl. VAT, plus shipping',
+    removeItem: 'Remove item', qtyDec: 'Decrease quantity', qtyInc: 'Increase quantity',
+  },
+  es: {
+    title: 'Carrito · BUTXI Gourmet', desc: 'Tu carrito en BUTXI Gourmet – salsas picantes, sales y especias de Mallorca.',
+    h1: 'Carrito', product: 'Producto', price: 'Precio', qty: 'Cantidad', total: 'Total',
+    removeDon: 'Quitar donación', donTitle: 'Hagamos algo bueno juntos – donación a KKAD', noThanks: 'No, gracias',
+    customPh: 'Otro importe (€)', customAria: 'Importe de donación en euros', add: 'Añadir',
+    donNote: 'El 100 % de tu donación va a Kinder Krebs Aktion Deutschland e. V., una asociación alemana contra el cáncer infantil.',
+    grand: 'Total', subtotal: 'Subtotal', freeFrom: 'Envío gratis a partir de 39 €',
+    checkout: 'Finalizar compra', vat: 'IVA incluido, más gastos de envío',
+    removeItem: 'Quitar artículo', qtyDec: 'Reducir cantidad', qtyInc: 'Aumentar cantidad',
+  },
+}[lang];
+---
+<BaseLayout title={T.title} description={T.desc} lang={lang}>
+  <section class="cartpage">
+    <div class="cartpage__grid">
+
+      <!-- Linke Spalte: Artikelliste -->
+      <div class="cartpage__main">
+        <h1 class="cartpage__title">{T.h1} <span data-cart-title-count></span></h1>
+
+        <div class="cartpage__head" data-cart-head hidden>
+          <span>{T.product}</span>
+          <span>{T.price}</span>
+          <span class="cartpage__head-qty">{T.qty}</span>
+          <span class="cartpage__head-total">{T.total}</span>
+        </div>
+
+        <div class="cartpage__items" data-cart-items></div>
+
+        <!-- Spendenzeile am Ende der Artikelliste -->
+        <div class="cartpage__donline" data-donation-line hidden>
+          <span class="cartpage__donline-label">
+            <span data-donation-line-label>{donation}</span>
+            <button type="button" class="cartpage__donline-remove" data-donate-remove aria-label={T.removeDon}>×</button>
+          </span>
+          <strong class="cartpage__donline-amount" data-donation-line-amount>{zero}</strong>
+        </div>
+
+        <!-- Spende an KKAD: 5/10/15 % vom Warenwert oder eigener Betrag -->
+        <div class="cartpage__donation" data-donation-box hidden>
+          <p class="cartpage__donation-title">{T.donTitle}</p>
+          <div class="cartpage__donation-opts">
+            <button type="button" class="donate-opt" data-donate-pct="5">
+              <strong>5 %</strong><span data-donate-preview="5">{zero}</span>
+            </button>
+            <button type="button" class="donate-opt" data-donate-pct="10">
+              <strong>10 %</strong><span data-donate-preview="10">{zero}</span>
+            </button>
+            <button type="button" class="donate-opt" data-donate-pct="15">
+              <strong>15 %</strong><span data-donate-preview="15">{zero}</span>
+            </button>
+            <button type="button" class="donate-opt donate-opt--none" data-donate-none>{T.noThanks}</button>
+          </div>
+          <div class="cartpage__donation-custom">
+            <input class="input" type="text" inputmode="decimal" placeholder={T.customPh} data-donate-custom-input aria-label={T.customAria} />
+            <button type="button" class="btn btn--secondary btn--sm" data-donate-custom-add>{T.add}</button>
+          </div>
+          <p class="cartpage__donation-note">{T.donNote}</p>
+        </div>
+      </div>
+
+      <!-- Rechte Spalte: Summe & Kasse -->
+      <aside class="cartpage__side">
+        <div class="cartpage__summary">
+          <p class="cartpage__summary-label">{T.grand}</p>
+          <p class="cartpage__summary-total" data-cart-total>{zero}</p>
+
+          <div class="cartpage__summary-rows">
+            <div class="cartpage__row">
+              <span>{T.subtotal}</span>
+              <strong data-cart-subtotal>{zero}</strong>
+            </div>
+            <div class="cartpage__row" data-donation-row hidden>
+              <span>{donation}</span>
+              <strong data-donation-amount>{zero}</strong>
+            </div>
+          </div>
+
+          <p class="cartpage__shiplabel" data-shipping-label>{T.freeFrom}</p>
+          <div class="cartpage__shipbar"><span data-shipping-bar></span></div>
+
+          <button class="btn btn--primary btn--lg btn--full" data-checkout data-snipcart-key={snipcartKey} disabled>
+            {T.checkout}
+          </button>
+          <p class="cartpage__note" data-checkout-note>{T.vat}</p>
+
+          <div class="cartpage__watermark" aria-hidden="true">
+            <Icon name="bag" size={190} />
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<template data-cart-line-template>
+  <div class="cart-line">
+    <div class="cart-line__product">
+      <div class="cart-line__imgwrap">
+        <button class="cart-line__remove" data-line-remove aria-label={T.removeItem}>×</button>
+        <img src="" alt="" />
+      </div>
+      <p class="cart-line__name"></p>
+      <p class="cart-line__meta"></p>
+    </div>
+    <div class="cart-line__unit" data-line-unit></div>
+    <div class="cart-line__qty">
+      <button class="cart-line__qtybtn" data-qty-minus aria-label={T.qtyDec}>−</button>
+      <span class="cart-line__qtyval" data-qty-value>1</span>
+      <button class="cart-line__qtybtn" data-qty-plus aria-label={T.qtyInc}>+</button>
+    </div>
+    <strong class="cart-line__price"></strong>
+  </div>
+</template>
+
+<style>
+  .cartpage { min-height: 62vh; }
+  /* [hidden] muss auch gegen display:grid/flex gewinnen (Lektion aus der Lightbox) */
+  .cartpage [hidden] { display: none !important; }
+  .cartpage__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    align-items: stretch;
+  }
+
+  /* ---- Linke Spalte ---- */
+  .cartpage__main {
+    padding: 48px clamp(24px, 5vw, 72px) 72px;
+  }
+  .cartpage__title {
+    font-size: var(--text-h2-size);
+    margin-bottom: 34px;
+  }
+  .cartpage__title span { color: var(--color-text-muted); font-size: 0.6em; font-weight: 500; }
+
+  .cartpage__head,
+  .cartpage :global(.cart-line) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 130px 130px 110px;
+    gap: 16px;
+    align-items: start;
+  }
+  .cartpage__head {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+  .cartpage__head-qty { text-align: center; }
+  .cartpage__head-total { text-align: right; }
+
+  .cartpage :global(.cart-line) {
+    padding: 26px 0;
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+  .cartpage :global(.cart-line__imgwrap) {
+    position: relative;
+    width: 96px; height: 96px;
+    border-radius: var(--radius-md);
+    background: var(--color-soft-cream);
+    border: 1px solid var(--color-border-default);
+  }
+  .cartpage :global(.cart-line__imgwrap img) {
+    width: 100%; height: 100%; object-fit: contain; padding: 8px;
+  }
+  .cartpage :global(.cart-line__remove) {
+    position: absolute; top: -9px; right: -9px;
+    width: 22px; height: 22px;
+    display: grid; place-items: center;
+    border: none; border-radius: 99px;
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border-default);
+    color: var(--color-text-muted);
+    font-size: 13px; line-height: 1; cursor: pointer;
+  }
+  .cartpage :global(.cart-line__remove:hover) { color: var(--color-action-primary); border-color: var(--color-action-primary); }
+  .cartpage :global(.cart-line__name) { margin: 12px 0 0; font-weight: 700; font-size: 14.5px; }
+  .cartpage :global(.cart-line__meta) { margin: 3px 0 0; font-size: 12.5px; color: var(--color-text-muted); }
+
+  .cartpage :global(.cart-line__unit),
+  .cartpage :global(.cart-line__price),
+  .cartpage :global(.cart-line__qty) { padding-top: 36px; font-size: 15px; }
+  .cartpage :global(.cart-line__unit) { color: var(--color-text-secondary); letter-spacing: 0.04em; }
+  .cartpage :global(.cart-line__price) { text-align: right; font-weight: 700; letter-spacing: 0.04em; }
+
+  .cartpage :global(.cart-line__qty) {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding-top: 32px;
+  }
+  .cartpage :global(.cart-line__qtybtn) {
+    width: 30px; height: 30px;
+    border: none; background: transparent; border-radius: 99px;
+    font-size: 17px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer;
+  }
+  .cartpage :global(.cart-line__qtybtn:hover) { background: var(--color-neutral-100); color: var(--color-text-primary); }
+  .cartpage :global(.cart-line__qtyval) { min-width: 26px; text-align: center; font-weight: 700; font-size: 14.5px; }
+
+  /* ---- Geschenkzeile: TopGear Fußball ab 100 € ---- */
+  .cartpage :global(.cart-line--gift) {
+    background: rgba(107, 122, 74, 0.06);
+    border-radius: var(--radius-md);
+    padding-left: 12px; padding-right: 12px;
+    margin: 0 -12px;
+  }
+  .cartpage :global(.cart-line__giftbadge) {
+    margin-left: 8px; vertical-align: middle;
+    font-size: 9.5px; padding: 2px 8px;
+  }
+  .cartpage :global(.cart-line--gift .cart-line__unit),
+  .cartpage :global(.cart-line--gift .cart-line__price) { color: var(--color-olive-green); }
+
+  /* Leerer Warenkorb */
+  .cartpage :global(.cart__empty) {
+    padding: 72px 0;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 20px;
+  }
+  .cartpage :global(.cart__empty p) { margin: 0; font-size: 17px; color: var(--color-text-secondary); }
+
+  /* ---- Spendenzeile in der Liste ---- */
+  .cartpage__donline {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--color-neutral-100);
+    font-size: 15px;
+  }
+  .cartpage__donline-label { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--color-olive-green); }
+  .cartpage__donline-amount { font-weight: 700; letter-spacing: 0.04em; }
+  .cartpage__donline-remove {
+    border: none; background: transparent; cursor: pointer;
+    color: var(--color-text-muted); font-size: 15px; padding: 0 4px; border-radius: 99px;
+  }
+  .cartpage__donline-remove:hover { color: var(--color-action-primary); }
+
+  /* ---- Spendenbox unter der Liste ---- */
+  .cartpage__donation {
+    margin-top: 34px;
+    padding: 20px;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    background: var(--color-background-secondary);
+    display: flex; flex-direction: column; gap: 12px;
+    max-width: 560px;
+  }
+  .cartpage__donation-title { margin: 0; font-family: var(--font-accent); font-size: 20px; }
+  .cartpage__donation-opts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .cartpage__donation-custom { display: flex; gap: 8px; }
+  .cartpage__donation-custom .input { flex: 1; min-width: 0; padding: 8px 14px; font-size: 14px; }
+  .cartpage__donation-note { margin: 0; font-size: 11.5px; color: var(--color-text-muted); }
+
+  .cartpage :global(.donate-opt) {
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    padding: 9px 2px; border: 1.5px solid var(--color-border-default);
+    border-radius: var(--radius-md); background: transparent; cursor: pointer;
+    font-family: var(--font-sans); font-size: 13px; color: var(--color-text-primary);
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+  .cartpage :global(.donate-opt span) { font-size: 11.5px; color: var(--color-text-muted); }
+  .cartpage :global(.donate-opt:hover) { border-color: var(--color-border-strong); }
+  .cartpage :global(.donate-opt.is-active) { border-color: var(--color-olive-green); background: rgba(107, 122, 74, 0.08); }
+  .cartpage :global(.donate-opt--none) { justify-content: center; font-weight: 600; }
+
+  /* ---- Rechte Spalte ---- */
+  .cartpage__side { background: var(--color-mallorca-sand); }
+  .cartpage__summary {
+    position: sticky; top: 76px;
+    padding: 84px 44px 64px;
+    display: flex; flex-direction: column;
+    min-height: calc(100vh - 76px);
+  }
+  .cartpage__summary::before {
+    content: "";
+    display: block;
+    width: 100%; height: 4px;
+    background: var(--color-neutral-950);
+    margin-bottom: 44px;
+  }
+  .cartpage__summary-label {
+    margin: 0 0 6px;
+    font-size: 12px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--color-text-secondary);
+  }
+  .cartpage__summary-total {
+    margin: 0 0 26px;
+    font-family: var(--font-display);
+    font-size: 40px; font-weight: 600; letter-spacing: 0.02em;
+  }
+  .cartpage__summary-rows {
+    display: flex; flex-direction: column; gap: 8px;
+    padding-bottom: 20px; margin-bottom: 20px;
+    border-bottom: 1px solid rgba(23, 19, 16, 0.12);
+  }
+  .cartpage__row { display: flex; justify-content: space-between; font-size: 14.5px; }
+  .cartpage__row span { color: var(--color-text-secondary); }
+
+  .cartpage__shiplabel { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--color-text-secondary); }
+  .cartpage__shipbar {
+    height: 6px; border-radius: 99px; background: rgba(23, 19, 16, 0.1);
+    overflow: hidden; margin-bottom: 26px;
+  }
+  .cartpage__shipbar span {
+    display: block; height: 100%; width: 0; border-radius: 99px;
+    background: var(--color-olive-green);
+    transition: width var(--duration-slow) var(--ease-standard);
+  }
+  .cartpage__note { margin: 10px 0 0; font-size: 12.5px; color: var(--color-text-muted); text-align: center; }
+  .cartpage__watermark {
+    margin-top: auto; padding-top: 48px;
+    display: flex; justify-content: center;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 1180px) {
+    .cartpage__grid { grid-template-columns: minmax(0, 1fr) 360px; }
+    .cartpage__summary { padding: 64px 32px 48px; }
+  }
+  @media (max-width: 1023px) {
+    .cartpage__grid { grid-template-columns: 1fr; }
+    .cartpage__main { padding-bottom: 40px; }
+    .cartpage__summary { position: static; min-height: 0; padding: 40px 24px 48px; }
+    .cartpage__summary::before { margin-bottom: 28px; }
+    .cartpage__watermark { display: none; }
+  }
+  @media (max-width: 767px) {
+    .cartpage__head { display: none; }
+    .cartpage :global(.cart-line) {
+      grid-template-columns: 96px minmax(0, 1fr);
+      gap: 2px 18px;
+    }
+    .cartpage :global(.cart-line__product) { display: contents; }
+    .cartpage :global(.cart-line__imgwrap) { grid-row: 1 / span 4; grid-column: 1; }
+    .cartpage :global(.cart-line__name) { grid-column: 2; margin-top: 2px; }
+    .cartpage :global(.cart-line__meta) { grid-column: 2; }
+    .cartpage :global(.cart-line__unit) { display: none; }
+    .cartpage :global(.cart-line__qty) {
+      grid-column: 2; justify-content: flex-start; padding-top: 8px; margin-left: -8px;
+    }
+    .cartpage :global(.cart-line__price) { grid-column: 2; text-align: left; padding-top: 6px; }
+    .cartpage__donation-opts { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

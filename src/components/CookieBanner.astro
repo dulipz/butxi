@@ -8,25 +8,22 @@
 const GA4 = import.meta.env.PUBLIC_GA4_ID ?? '';
 const PIXEL = import.meta.env.PUBLIC_META_PIXEL_ID ?? '';
 const hasTracking = Boolean(GA4 || PIXEL);
+import { path, type Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
+interface Props { lang?: Lang }
+const { lang = 'de' } = Astro.props;
+const T = t(lang).cookie;
+const privacyHref = path('privacy', lang);
 ---
-<aside class="cookiebar" data-cookiebar data-ga4={GA4} data-pixel={PIXEL} hidden aria-label="Cookie-Hinweis">
+<aside class="cookiebar" data-cookiebar data-ga4={GA4} data-pixel={PIXEL} hidden aria-label={T.aria}>
   <div class="cookiebar__card" role="dialog" aria-modal="false" aria-labelledby="cookiebar-title">
-    <p class="cookiebar__title" id="cookiebar-title">Cookies? Nur eine Prise.</p>
+    <p class="cookiebar__title" id="cookiebar-title">{T.title}</p>
     <p class="cookiebar__text">
-      {hasTracking ? (
-        <>Wir verwenden technisch notwendige Cookies für Warenkorb und Kasse.
-        Mit „Alle akzeptieren“ erlaubst du zusätzlich Statistik- und
-        Marketing-Cookies, mit denen wir unseren Shop verbessern.
-        Details in unserer&#32;<a href="/datenschutz/">Datenschutzerklärung</a>.</>
-      ) : (
-        <>Wir verwenden technisch notwendige Cookies für Warenkorb und Kasse.
-        Mit „Alle akzeptieren“ erlaubst du zusätzlich Komfort-Funktionen wie
-        gemerkte Einstellungen. Details in unserer&#32;<a href="/datenschutz/">Datenschutzerklärung</a>.</>
-      )}
+      {hasTracking ? T.tracking : T.noTracking}&#32;<a href={privacyHref}>{T.privacyLink}</a>.
     </p>
     <div class="cookiebar__actions">
-      <button type="button" class="btn btn--primary" data-cookie-accept-all>Alle akzeptieren</button>
-      <button type="button" class="btn btn--secondary" data-cookie-necessary>Nur notwendige</button>
+      <button type="button" class="btn btn--primary" data-cookie-accept-all>{T.acceptAll}</button>
+      <button type="button" class="btn btn--secondary" data-cookie-necessary>{T.necessary}</button>
     </div>
   </div>
 </aside>

@@ -1,18 +1,21 @@
 ---
-interface Props { onDark?: boolean }
-const { onDark = false } = Astro.props;
+import type { Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
+interface Props { onDark?: boolean; lang?: Lang }
+const { onDark = false, lang = 'de' } = Astro.props;
+const T = t(lang).newsletter;
 ---
 <div class={`newsletter ${onDark ? 'newsletter--dark' : ''}`}>
-  <span class="eyebrow">Newsletter</span>
-  <h2>10 % auf deine erste Lieferung</h2>
-  <p>Neue Sorten, Rezepte und Aktionen, direkt aus der Manufaktur. Kein Spam, versprochen.</p>
+  <span class="eyebrow">{T.eyebrow}</span>
+  <h2>{T.title}</h2>
+  <p>{T.text}</p>
   <form class="newsletter__form" data-newsletter>
-    <label class="visually-hidden" for="nl-email">E-Mail-Adresse</label>
-    <input class="input" id="nl-email" type="email" name="email" placeholder="deine@email.com" required />
-    <button class="btn btn--primary" type="submit">Anmelden</button>
+    <label class="visually-hidden" for="nl-email">{T.emailLabel}</label>
+    <input class="input" id="nl-email" type="email" name="email" placeholder={T.placeholder} required />
+    <button class="btn btn--primary" type="submit">{T.submit}</button>
   </form>
   <p class="newsletter__success" data-newsletter-success hidden>
-    Fast geschafft, bitte bestätige deine Anmeldung in deinem Postfach.
+    {T.success}
   </p>
 </div>
 

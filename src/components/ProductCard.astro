@@ -2,10 +2,14 @@
 import type { Product } from '../data/products';
 import { productImage, formatPrice, basePrice } from '../data/products';
 import HeatMeter from './HeatMeter.astro';
+import { productPath, type Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
+import { localizeProduct } from '../i18n/products';
 
-interface Props { product: Product; loading?: 'lazy' | 'eager' }
-const { product: p, loading = 'lazy' } = Astro.props;
-const href = `/product/${p.slug}/`;
+interface Props { product: Product; loading?: 'lazy' | 'eager'; lang?: Lang }
+const { product, loading = 'lazy', lang = 'de' } = Astro.props;
+const p = localizeProduct(product, lang);
+const href = productPath(p.slug, lang);
 ---
 <article class="card product-card" data-category={p.category}>
   <a href={href} class="product-card__media">
@@ -13,13 +17,13 @@ const href = `/product/${p.slug}/`;
     <img src={productImage(p)} alt={p.name} loading={loading} width="413" height="413" />
   </a>
   <div class="product-card__body">
-    <span class="product-card__category">{p.category}</span>
+    <span class="product-card__category">{p.categoryLabel}</span>
     <a href={href} class="product-card__name">{p.name}</a>
-    {p.heat != null && <HeatMeter level={p.heat} size="sm" />}
+    {p.heat != null && <HeatMeter level={p.heat} size="sm" lang={lang} />}
     <div class="product-card__row">
       <span class="product-card__pricebox">
-        <span class="product-card__price">{formatPrice(p.price)}</span>
-        {basePrice(p) && <span class="product-card__baseprice">{basePrice(p)}</span>}
+        <span class="product-card__price">{formatPrice(p.price, lang)}</span>
+        {basePrice(p, lang) && <span class="product-card__baseprice">{basePrice(p, lang)}</span>}
       </span>
       <button
         class="btn btn--primary btn--sm"
@@ -28,8 +32,8 @@ const href = `/product/${p.slug}/`;
         data-name={p.name}
         data-price={p.price}
         data-image={productImage(p)}
-        data-meta={p.volume ?? p.category}
-      >In den Warenkorb</button>
+        data-meta={p.volume ?? p.categoryLabel}
+      >{t(lang).product.addToCart}</button>
     </div>
   </div>
 </article>

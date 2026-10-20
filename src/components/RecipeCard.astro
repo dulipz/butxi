@@ -1,9 +1,14 @@
 ---
 import type { Recipe } from '../data/recipes';
 import Icon from './Icon.astro';
+import type { Lang } from '../i18n/config';
+import { t } from '../i18n/ui';
+import { localizeRecipe } from '../i18n/products';
 
-interface Props { recipe: Recipe }
-const { recipe: r } = Astro.props;
+interface Props { recipe: Recipe; lang?: Lang }
+const { recipe, lang = 'de' } = Astro.props;
+const r = localizeRecipe(recipe, lang);
+const T = t(lang);
 const heatBadge = { mild: 'olive', mittel: 'sand', scharf: 'fire' } as const;
 ---
 <article class="card recipe-card" id={r.slug} data-category={r.category}>
@@ -13,20 +18,20 @@ const heatBadge = { mild: 'olive', mittel: 'sand', scharf: 'fire' } as const;
           class="recipe-card__zoom"
           data-lightbox={r.image}
           data-lightbox-title={r.title}
-          aria-label={`${r.title} in groß ansehen`}
+          aria-label={T.recipe.zoom(r.title)}
         >
           <img src={r.image} alt={r.title} loading="lazy" />
         </button>
       : <Icon name="flame" size={44} class="recipe-card__flame" />}
-    <span class={`badge badge--${heatBadge[r.heat]} recipe-card__heat`}>{r.heat}</span>
+    <span class={`badge badge--${heatBadge[r.heat]} recipe-card__heat`}>{T.recipe.heat[r.heat]}</span>
   </div>
   <div class="recipe-card__body">
-    <span class="recipe-card__category">{r.category}</span>
+    <span class="recipe-card__category">{r.categoryLabel}</span>
     <h3 class="recipe-card__title">{r.title}</h3>
     <p class="recipe-card__desc">{r.desc}</p>
     <div class="recipe-card__meta">
       <span class="recipe-card__time"><Icon name="clock" size={15} /> {r.time}</span>
-      <span class="recipe-card__product">mit {r.product}</span>
+      <span class="recipe-card__product">{T.recipe.with} {r.product}</span>
     </div>
   </div>
 </article>

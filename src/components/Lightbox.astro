@@ -1,9 +1,13 @@
 ---
 // Lightbox: öffnet Bilder mit [data-lightbox] als Vollbild-Overlay.
 // Einmal pro Seite einbinden; Klick aufs Bild, Schließen per X, Klick daneben oder Esc.
+import type { Lang } from '../i18n/config';
+interface Props { lang?: Lang }
+const { lang = 'de' } = Astro.props;
+const closeLabel = { de: 'Bild schließen', en: 'Close image', es: 'Cerrar imagen' }[lang];
 ---
 <div class="lightbox" data-lightbox-overlay hidden>
-  <button class="lightbox__close" data-lightbox-close aria-label="Bild schließen">×</button>
+  <button class="lightbox__close" data-lightbox-close aria-label={closeLabel}>×</button>
   <figure class="lightbox__figure">
     <img class="lightbox__img" src="" alt="" />
     <figcaption class="lightbox__caption"></figcaption>
