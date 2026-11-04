@@ -174,13 +174,44 @@ const runtime = {
           document.addEventListener('snipcart.ready', async () => {
             const lang = document.documentElement.lang || 'de';
             const Snip = (window as any).Snipcart;
-            if (lang === 'en') { Snip.api.session.setLanguage('en'); return; }
+            // Aufgeschobene Zahlung = Vorkasse (Überweisung oder PayPal); Bankdaten +
+            // PayPal-Link kommen per E-Mail „Bestellung eingegangen“ (Snipcart-Dashboard)
+            const VORKASSE: Record<string, { method: string; title: string; text: string }> = {
+              de: {
+                method: 'Vorkasse (Überweisung oder PayPal)',
+                title: 'Vorkasse per Überweisung oder PayPal',
+                text: 'Nach Ihrer Bestellung erhalten Sie per E-Mail unsere Bankverbindung und einen PayPal-Link. Bitte zahlen Sie innerhalb von 7 Tagen und geben Sie Ihre Bestellnummer als Verwendungszweck an. Der Versand erfolgt nach Zahlungseingang.',
+              },
+              en: {
+                method: 'Prepayment (bank transfer or PayPal)',
+                title: 'Prepayment by bank transfer or PayPal',
+                text: 'After placing your order you will receive our bank details and a PayPal link by email. Please pay within 7 days and quote your order number as the payment reference. Your order ships once payment has been received.',
+              },
+              es: {
+                method: 'Pago por adelantado (transferencia o PayPal)',
+                title: 'Pago por adelantado con transferencia o PayPal',
+                text: 'Tras realizar el pedido recibirás por correo electrónico nuestros datos bancarios y un enlace de PayPal. Paga en un plazo de 7 días e indica tu número de pedido como concepto. Enviamos el pedido en cuanto recibimos el pago.',
+              },
+            };
+            const v = VORKASSE[lang] ?? VORKASSE.de;
+            const withVorkasse = (dict: any = {}) => {
+              dict.payment = dict.payment ?? {};
+              dict.payment.methods = { ...(dict.payment.methods ?? {}), deferred_payment: v.method };
+              dict.payment.form = {
+                ...(dict.payment.form ?? {}),
+                deferred_payment_title: v.title,
+                deferred_payment_instructions: v.text,
+              };
+              return dict;
+            };
+            if (lang === 'en') { Snip.api.session.setLanguage('en', withVorkasse()); return; }
             try {
               const res = await fetch(`https://cdn.jsdelivr.net/gh/snipcart/snipcart-l10n@master/locales/${lang}.json`);
               const dict = await res.json();
-              Snip.api.session.setLanguage(lang, dict);
+              Snip.api.session.setLanguage(lang, withVorkasse(dict));
             } catch (e) {
               console.warn('Snipcart-Übersetzung konnte nicht geladen werden', e);
+              Snip.api.session.setLanguage(lang, withVorkasse());
             }
           });
         </script>

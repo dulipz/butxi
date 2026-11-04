@@ -1,0 +1,51 @@
+<!--
+  Vorkasse-Hinweis für die Snipcart-E-Mail „Bestellung eingegangen“ (Order received).
+  Snipcart-Dashboard → Notifications/E-Mail-Vorlagen → „Bestellung eingegangen“ →
+  den passenden Block in den jeweiligen Sprach-Tab (de / en / es) einfügen,
+  z. B. direkt unter der Begrüßung.
+
+  Vorher ersetzen: [KONTOINHABER] [IBAN] [BIC] [PAYPALME]
+  Der Block erscheint nur bei Bestellungen OHNE Kartenzahlung (= Vorkasse).
+-->
+
+<!-- ===================== de ===================== -->
+{{#unless order.card}}
+<div style="background:#F6F1EA; border-radius:10px; padding:16px 18px; margin:16px 0; font-size:14px; line-height:1.55; color:#211C18;">
+  <p style="margin:0 0 8px; font-weight:800;">Bitte bezahlen Sie Ihre Bestellung innerhalb von 7 Tagen</p>
+  <p style="margin:0 0 8px;">Betrag: <strong>{{money order.summary.total}}</strong><br />Verwendungszweck: <strong>{{order.invoiceNumber}}</strong></p>
+  <p style="margin:0 0 4px; font-weight:700;">Per Überweisung</p>
+  <p style="margin:0 0 12px;">Kontoinhaber: [KONTOINHABER]<br />IBAN: [IBAN]<br />BIC: [BIC]</p>
+  <p style="margin:0 0 4px; font-weight:700;">Oder per PayPal</p>
+  <p style="margin:0 0 12px;">Bitte den Betrag senden, die Bestellnummer als Nachricht angeben und „Waren und Dienstleistungen“ wählen.</p>
+  <a href="https://paypal.me/[PAYPALME]" style="display:inline-block; background:#FFC439; color:#111; font-weight:800; text-decoration:none; padding:10px 22px; border-radius:999px;">Mit PayPal bezahlen</a>
+  <p style="margin:12px 0 0;">Sobald Ihre Zahlung eingegangen ist, versenden wir Ihre Bestellung.</p>
+</div>
+{{/unless}}
+
+<!-- ===================== en ===================== -->
+{{#unless order.card}}
+<div style="background:#F6F1EA; border-radius:10px; padding:16px 18px; margin:16px 0; font-size:14px; line-height:1.55; color:#211C18;">
+  <p style="margin:0 0 8px; font-weight:800;">Please pay for your order within 7 days</p>
+  <p style="margin:0 0 8px;">Amount: <strong>{{money order.summary.total}}</strong><br />Payment reference: <strong>{{order.invoiceNumber}}</strong></p>
+  <p style="margin:0 0 4px; font-weight:700;">By bank transfer</p>
+  <p style="margin:0 0 12px;">Account holder: [KONTOINHABER]<br />IBAN: [IBAN]<br />BIC: [BIC]</p>
+  <p style="margin:0 0 4px; font-weight:700;">Or with PayPal</p>
+  <p style="margin:0 0 12px;">Please send the amount, add your order number as a note and choose “Goods and services”.</p>
+  <a href="https://paypal.me/[PAYPALME]" style="display:inline-block; background:#FFC439; color:#111; font-weight:800; text-decoration:none; padding:10px 22px; border-radius:999px;">Pay with PayPal</a>
+  <p style="margin:12px 0 0;">We will ship your order as soon as your payment has been received.</p>
+</div>
+{{/unless}}
+
+<!-- ===================== es ===================== -->
+{{#unless order.card}}
+<div style="background:#F6F1EA; border-radius:10px; padding:16px 18px; margin:16px 0; font-size:14px; line-height:1.55; color:#211C18;">
+  <p style="margin:0 0 8px; font-weight:800;">Paga tu pedido en un plazo de 7 días</p>
+  <p style="margin:0 0 8px;">Importe: <strong>{{money order.summary.total}}</strong><br />Concepto: <strong>{{order.invoiceNumber}}</strong></p>
+  <p style="margin:0 0 4px; font-weight:700;">Por transferencia</p>
+  <p style="margin:0 0 12px;">Titular: [KONTOINHABER]<br />IBAN: [IBAN]<br />BIC: [BIC]</p>
+  <p style="margin:0 0 4px; font-weight:700;">O con PayPal</p>
+  <p style="margin:0 0 12px;">Envía el importe, indica tu número de pedido en el mensaje y elige «Bienes y servicios».</p>
+  <a href="https://paypal.me/[PAYPALME]" style="display:inline-block; background:#FFC439; color:#111; font-weight:800; text-decoration:none; padding:10px 22px; border-radius:999px;">Pagar con PayPal</a>
+  <p style="margin:12px 0 0;">Enviaremos tu pedido en cuanto recibamos el pago.</p>
+</div>
+{{/unless}}

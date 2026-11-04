@@ -196,6 +196,24 @@ Subject: Deine Rechnung {{order.invoiceNumber}} - BUTXI Gourmet
             <p style="margin:0; font-size:12.5px; color:#857B72;">Bezahlt mit {{order.card.type}}, endet auf {{order.card.last4Digits}}</p>
           </td>
         </tr>
+        {{else}}
+        {{#unless refund}}
+        <!-- Vorkasse (aufgeschobene Zahlung): Zahlungshinweis -->
+        <tr>
+          <td style="padding:18px 40px 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F6F1EA; border-radius:10px;">
+              <tr>
+                <td style="padding:16px 18px; font-size:13px; line-height:1.55; color:#211C18;">
+                  <p style="margin:0 0 8px; font-weight:800;">Zahlungsart: Vorkasse &ndash; bitte innerhalb von 7 Tagen bezahlen</p>
+                  <p style="margin:0 0 8px;">Bitte &uuml;berweisen Sie <strong>{{money order.summary.total}}</strong> unter Angabe des Verwendungszwecks <strong>{{order.invoiceNumber}}</strong>:</p>
+                  <p style="margin:0 0 8px;">Kontoinhaber: [KONTOINHABER]<br />IBAN: [IBAN]<br />BIC: [BIC]</p>
+                  <p style="margin:0;">Oder per PayPal: <a href="https://paypal.me/[PAYPALME]" style="color:#C8321E; font-weight:700;">paypal.me/[PAYPALME]</a> (Betrag und Bestellnummer angeben, Zahlung als &bdquo;Waren und Dienstleistungen&ldquo;). Der Versand erfolgt nach Zahlungseingang.</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        {{/unless}}
         {{/if}}
 
         <!-- Footer -->
