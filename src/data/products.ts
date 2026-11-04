@@ -246,7 +246,7 @@ export const products: Product[] = [
   // ---------- Olivenöl ----------
   {
     slug: 'aceite-picante', name: 'Aceite Picante', price: 7.99, category: 'Olivenöl', heat: 2,
-    volume: '140 g',
+    volume: '140 ml',
     desc: 'Natives Olivenöl, langsam mit Chilis aus Eigenanbau infundiert. Für Pizza, Pasta, Brot.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/aceite-picante.webp',
@@ -259,7 +259,7 @@ export const products: Product[] = [
   },
   {
     slug: 'aceite-sitrie', name: 'Aceite Sitrie', price: 14.95, category: 'Olivenöl', heat: 2,
-    volume: '140 g',
+    volume: '140 ml',
     desc: 'Scharfes Öl mit Zitrusnote, hell, aromatisch, mit feinem Feuer im Abgang.',
     tags: ['100% natürlich', 'Vegan', 'Glutenfrei'],
     image: '/images/products/aceite-sitrie.webp',
