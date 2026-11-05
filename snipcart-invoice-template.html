@@ -164,10 +164,10 @@ Subject: Deine Rechnung {{order.invoiceNumber}} - BUTXI Gourmet
                 <td style="padding:5px 0; font-size:13.5px; color:#6B625A;">Zwischensumme</td>
                 <td align="right" style="padding:5px 0; font-size:13.5px; color:#211C18;">{{money order.summary.subtotal}}</td>
               </tr>
-              {{#if order.summary.shipping}}
+              {{#if order.shippingInformation}}
               <tr>
-                <td style="padding:5px 0; font-size:13.5px; color:#6B625A;">Versand</td>
-                <td align="right" style="padding:5px 0; font-size:13.5px; color:#211C18;">{{money order.summary.shipping}}</td>
+                <td style="padding:5px 0; font-size:13.5px; color:#6B625A;">Versand{{#if order.shippingInformation.method}} <span style="color:#857B72;">({{order.shippingInformation.method}})</span>{{/if}}</td>
+                <td align="right" style="padding:5px 0; font-size:13.5px; color:#211C18;">{{#if order.shippingInformation.fees}}{{money order.shippingInformation.fees}}{{else}}{{#if order.shippingFees}}{{money order.shippingFees}}{{else}}kostenlos{{/if}}{{/if}}</td>
               </tr>
               {{/if}}
               {{#each order.summary.taxes}}
